@@ -31,3 +31,6 @@ gen/
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
+
+# ignore mysql password
+SpringBoot/src/main/resources/application.properties
