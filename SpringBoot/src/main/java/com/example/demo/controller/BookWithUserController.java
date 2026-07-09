@@ -6,9 +6,11 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.commom.Result;
+import com.example.demo.entity.Book;
 import com.example.demo.entity.BookWithUser;
-import com.example.demo.entity.BookWithUser;
+import com.example.demo.mapper.BookMapper;
 import com.example.demo.mapper.BookWithUserMapper;
+import com.example.demo.service.BorrowService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -19,50 +21,88 @@ import java.util.Map;
 @RestController
 @RequestMapping("/bookwithuser")
 public class BookWithUserController {
+
     @Resource
     BookWithUserMapper BookWithUserMapper;
-//
-//    @PostMapping
-//    public Result<?> save(@RequestBody Book Book){
-//        BookMapper.insert(Book);
-//        return Result.success();
-//    }
 
-//    //    批量删除
-//    @PostMapping("/deleteBatch")
-//    public  Result<?> deleteBatch(@RequestBody List<Integer> ids){
-//        BookMapper.deleteBatchIds(ids);
-//        return Result.success();
-//    }
-//    @PutMapping
-//    public  Result<?> update(@RequestBody Book Book){
-//        BookMapper.updateById(Book);
-//        return Result.success();
-//    }
-//    @DeleteMapping("/{id}")
-//    public Result<?> delete(@PathVariable Long id){
-//        BookMapper.deleteById(id);
-//        return Result.success();
-//    }
+    @Resource
+    private BookMapper bookMapper;
+
+    @Resource
+    private BorrowService borrowService;
+
+    /**
+     * 借书操作：委托 BorrowService.borrowBook() 统一处理。
+     * BorrowService 在同一事务中完成:
+     *   1. 校验图书可借 + 用户借阅数 < 5
+     *   2. 更新 book.status / borrownum
+     *   3. 插入 lend_record
+     *   4. 插入 bookwithuser
+     */
     @PostMapping("/insertNew")
     public Result<?> insertNew(@RequestBody BookWithUser BookWithUser){
-        BookWithUserMapper.insert(BookWithUser);
+        // 通过 isbn 查找图书获取 bookId 和用户 ID
+        LambdaQueryWrapper<Book> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Book::getIsbn, BookWithUser.getIsbn());
+        Book book = bookMapper.selectOne(queryWrapper);
+        if (book == null) {
+            return Result.error("1", "图书不存在");
+        }
+
+        borrowService.borrowBook(
+                (long) BookWithUser.getId(),   // userId (BookWithUser.id 存储的是用户ID)
+                (long) book.getId()             // bookId
+        );
         return Result.success();
     }
+
+    /**
+     * 更新 bookwithuser 记录。
+     * - 续借场景（prolong 减少）: 委托 BorrowService.renewBook() 处理
+     * - 管理员编辑场景: 保持原有 UpdateWrapper 逻辑
+     */
     @PostMapping
-    public Result<?> update(@RequestBody BookWithUser BookWithUser){
+    public Result<?> update(@RequestBody BookWithUser bookWithUser){
+        // 判断是否为续借操作：查出现有记录，若 prolong 在减少则为续借
+        LambdaQueryWrapper<BookWithUser> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(BookWithUser::getIsbn, bookWithUser.getIsbn())
+                    .eq(BookWithUser::getId, bookWithUser.getId());
+        BookWithUser existing = BookWithUserMapper.selectOne(queryWrapper);
+
+        if (existing != null
+                && bookWithUser.getProlong() != null
+                && existing.getProlong() != null
+                && bookWithUser.getProlong() < existing.getProlong()) {
+            // 续借操作：prolong 值减少 → 委托 BorrowService
+            LambdaQueryWrapper<Book> bookQuery = new LambdaQueryWrapper<>();
+            bookQuery.eq(Book::getIsbn, bookWithUser.getIsbn());
+            Book book = bookMapper.selectOne(bookQuery);
+            if (book == null) {
+                return Result.error("1", "图书不存在");
+            }
+
+            borrowService.renewBook(
+                    (long) bookWithUser.getId(),
+                    (long) book.getId()
+            );
+            return Result.success();
+        }
+
+        // 管理员编辑：保持原有更新逻辑
         UpdateWrapper<BookWithUser> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("isbn",BookWithUser.getIsbn()).eq("id",BookWithUser.getId());
-        BookWithUserMapper.update(BookWithUser, updateWrapper);
+        updateWrapper.eq("isbn", bookWithUser.getIsbn())
+                     .eq("id", bookWithUser.getId());
+        BookWithUserMapper.update(bookWithUser, updateWrapper);
         return Result.success();
     }
-//删除一条记录
+
+    /**
+     * 还书时的 bookwithuser 删除已由 BorrowService.returnBook() 统一处理，
+     * 此处保留端点以维持前端兼容性（直接返回成功）。
+     */
     @PostMapping("/deleteRecord")
-    public  Result<?> deleteRecord(@RequestBody BookWithUser BookWithUser){
-        Map<String,Object> map = new HashMap<>();
-        map.put("isbn",BookWithUser.getIsbn());
-        map.put("id",BookWithUser.getId());
-        BookWithUserMapper.deleteByMap(map);
+    public Result<?> deleteRecord(@RequestBody BookWithUser BookWithUser){
+        // bookwithuser 删除已迁移至 BorrowService.returnBook()
         return Result.success();
     }
 
@@ -78,6 +118,7 @@ public class BookWithUserController {
         }
         return Result.success();
     }
+
     @GetMapping
     public Result<?> findPage(@RequestParam(defaultValue = "1") Integer pageNum,
                               @RequestParam(defaultValue = "10") Integer pageSize,

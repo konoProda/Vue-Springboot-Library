@@ -53,9 +53,13 @@ public class LendRecordController {
         }
         return Result.success();
     }
+    /**
+     * 借书时的 lend_record 插入已由 BorrowService.borrowBook() 统一处理，
+     * 此处保留端点以维持前端兼容性（直接返回成功）。
+     */
     @PostMapping
     public Result<?> save(@RequestBody LendRecord LendRecord){
-        LendRecordMapper.insert(LendRecord);
+        // lend_record 插入已迁移至 BorrowService.borrowBook()
         return Result.success();
     }
     @GetMapping

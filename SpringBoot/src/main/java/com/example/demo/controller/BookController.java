@@ -6,7 +6,10 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.commom.Result;
 import com.example.demo.entity.Book;
+import com.example.demo.entity.User;
 import com.example.demo.mapper.BookMapper;
+import com.example.demo.service.BorrowService;
+import com.example.demo.utils.TokenUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -18,13 +21,40 @@ public class BookController {
     @Resource
     BookMapper BookMapper;
 
+    @Resource
+    BorrowService borrowService;
+
     @PostMapping
     public Result<?> save(@RequestBody Book Book){
         BookMapper.insert(Book);
         return Result.success();
     }
+
+    /**
+     * 更新图书信息。
+     * - 当 status 变更时（借书/还书），优先通过 BorrowService 统一处理事务
+     * - 当无法获取当前用户（无 token）时，回退为 no-op，由
+     *   BookWithUserController / LendRecordController1 触发 BorrowService
+     * - 常规编辑（不改 status）保持原有 updateById 逻辑
+     */
     @PutMapping
     public  Result<?> update(@RequestBody Book Book){
+        // 借书(status="0") / 还书(status="1") → 委托 BorrowService
+        if ("0".equals(Book.getStatus()) || "1".equals(Book.getStatus())) {
+            User currentUser = TokenUtils.getUser();
+            if (currentUser != null && Book.getId() != null) {
+                if ("0".equals(Book.getStatus())) {
+                    borrowService.borrowBook((long) currentUser.getId(), (long) Book.getId());
+                } else {
+                    borrowService.returnBook((long) currentUser.getId(), (long) Book.getId());
+                }
+                return Result.success();
+            }
+            // 无 token 时不做本地 updateById，避免和 BorrowService 重复写入
+            // 实际 borrow/return 由 BookWithUserController / LendRecordController1 触发
+            return Result.success();
+        }
+        // 常规编辑
         BookMapper.updateById(Book);
         return Result.success();
     }
