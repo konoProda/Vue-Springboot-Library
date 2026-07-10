@@ -6,26 +6,29 @@ const request = axios.create({
     timeout: 5000
 })
 
-// request 拦截器
-// 可以自请求发送前对请求做一些处理
-// 比如统一加token，对请求参数统一加密
+// ==================== 请求拦截器 ====================
 request.interceptors.request.use(config => {
     config.headers['Content-Type'] = 'application/json;charset=utf-8';
 
-    // config.headers['token'] = user.token;  // 设置请求头
-    //取出sessionStorage里面缓存的用户信息
+    // 从 sessionStorage 取出用户信息，提取 token 并设置 Authorization 头
     let userJson = sessionStorage.getItem("user")
-    if(!userJson)
-    {
-        router.push("/login")
+    if (userJson) {
+        try {
+            let user = JSON.parse(userJson)
+            if (user.token) {
+                config.headers['Authorization'] = 'Bearer ' + user.token
+            }
+        } catch (e) {
+            // JSON 解析失败，忽略
+        }
     }
+
     return config
 }, error => {
     return Promise.reject(error)
 });
 
-// response 拦截器
-// 可以在接口响应后统一处理结果
+// ==================== 响应拦截器 ====================
 request.interceptors.response.use(
     response => {
         let res = response.data;
@@ -41,10 +44,23 @@ request.interceptors.response.use(
     },
     error => {
         console.log('err' + error) // for debug
+
+        // 处理 401 未授权：清除本地存储并跳转登录页
+        if (error.response) {
+            const status = error.response.status;
+            const requestUrl = error.config.url || '';
+
+            // 401 或后端明确返回未登录 → 清除 token 并跳转
+            // 注意：排除 /user/login 自身，避免密码错误时死循环
+            if (status === 401 && requestUrl.indexOf('/user/login') === -1) {
+                sessionStorage.removeItem("user");
+                router.push("/login");
+            }
+        }
+
         return Promise.reject(error)
     }
 )
 
 
 export default request
-
