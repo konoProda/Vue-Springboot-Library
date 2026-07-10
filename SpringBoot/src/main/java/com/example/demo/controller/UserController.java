@@ -18,6 +18,7 @@ import com.example.demo.utils.TokenUtils;
 
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +28,9 @@ import java.util.Map;
 public class UserController {
     @Resource
     UserMapper userMapper;
+
+    // ==================== 公开接口（无需管理员权限） ====================
+
     @PostMapping("/register")
     public Result<?> register(@RequestBody User user){
         User res = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUsername,user.getUsername()));
@@ -37,6 +41,7 @@ public class UserController {
         userMapper.insert(user);
         return Result.success();
     }
+
     @CrossOrigin
     @PostMapping("/login")
     public Result<?> login(@RequestBody User user){
@@ -51,14 +56,8 @@ public class UserController {
         loginuser.addVisitCount();
         return Result.success(res);
     }
-    @PostMapping
-    public Result<?> save(@RequestBody User user){
-        if(user.getPassword() == null){
-            user.setPassword("abc123456");
-        }
-        userMapper.insert(user);
-        return Result.success();
-    }
+
+    /** 修改自己的密码（任何已登录用户均可操作） */
     @PutMapping("/password")
     public  Result<?> update( @RequestParam Integer id,
                               @RequestParam String password2){
@@ -69,25 +68,62 @@ public class UserController {
         userMapper.update(user,updateWrapper);
         return Result.success();
     }
+
+    // ==================== 管理员专属接口 ====================
+
+    @PostMapping
+    public Result<?> save(@RequestBody User user, HttpServletRequest request){
+        Integer role = (Integer) request.getAttribute("role");
+        if (role == null || role != 1) {
+            return Result.error("403", "无权限操作");
+        }
+        if(user.getPassword() == null){
+            user.setPassword("abc123456");
+        }
+        userMapper.insert(user);
+        return Result.success();
+    }
+
+    /** 管理员修改用户信息 */
     @PutMapping
-    public  Result<?> password(@RequestBody User user){
+    public  Result<?> password(@RequestBody User user, HttpServletRequest request){
+        Integer role = (Integer) request.getAttribute("role");
+        if (role == null || role != 1) {
+            return Result.error("403", "无权限操作");
+        }
         userMapper.updateById(user);
         return Result.success();
     }
+
     @PostMapping("/deleteBatch")
-    public  Result<?> deleteBatch(@RequestBody List<Integer> ids){
+    public  Result<?> deleteBatch(@RequestBody List<Integer> ids, HttpServletRequest request){
+        Integer role = (Integer) request.getAttribute("role");
+        if (role == null || role != 1) {
+            return Result.error("403", "无权限操作");
+        }
         userMapper.deleteBatchIds(ids);
         return Result.success();
     }
+
     @DeleteMapping("/{id}")
-    public Result<?> delete(@PathVariable Long id){
+    public Result<?> delete(@PathVariable Long id, HttpServletRequest request){
+        Integer role = (Integer) request.getAttribute("role");
+        if (role == null || role != 1) {
+            return Result.error("403", "无权限操作");
+        }
         userMapper.deleteById(id);
         return Result.success();
     }
+
     @GetMapping
     public Result<?> findPage(@RequestParam(defaultValue = "1") Integer pageNum,
                               @RequestParam(defaultValue = "10") Integer pageSize,
-                              @RequestParam(defaultValue = "") String search){
+                              @RequestParam(defaultValue = "") String search,
+                              HttpServletRequest request){
+        Integer role = (Integer) request.getAttribute("role");
+        if (role == null || role != 1) {
+            return Result.error("403", "无权限操作");
+        }
         LambdaQueryWrapper<User> wrappers = Wrappers.<User>lambdaQuery();
         if(StringUtils.isNotBlank(search)){
             wrappers.like(User::getNickName,search);
@@ -96,13 +132,19 @@ public class UserController {
         Page<User> userPage =userMapper.selectPage(new Page<>(pageNum,pageSize), wrappers);
         return Result.success(userPage);
     }
+
     @GetMapping("/usersearch")
     public Result<?> findPage2(@RequestParam(defaultValue = "1") Integer pageNum,
                               @RequestParam(defaultValue = "10") Integer pageSize,
                               @RequestParam(defaultValue = "") String search1,
                                @RequestParam(defaultValue = "") String search2,
                                @RequestParam(defaultValue = "") String search3,
-                               @RequestParam(defaultValue = "") String search4){
+                               @RequestParam(defaultValue = "") String search4,
+                               HttpServletRequest request){
+        Integer role = (Integer) request.getAttribute("role");
+        if (role == null || role != 1) {
+            return Result.error("403", "无权限操作");
+        }
         LambdaQueryWrapper<User> wrappers = Wrappers.<User>lambdaQuery();
         if(StringUtils.isNotBlank(search1)){
             wrappers.like(User::getId,search1);

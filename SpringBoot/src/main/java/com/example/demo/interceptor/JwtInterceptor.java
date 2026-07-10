@@ -39,7 +39,18 @@ public class JwtInterceptor implements HandlerInterceptor {
 
         // ========== 2. 放行白名单路径 ==========
         String uri = request.getRequestURI();
+        String method = request.getMethod();
+
+        // 无需登录的路径
         if (uri.startsWith("/user/login") || uri.startsWith("/user/register")) {
+            return true;
+        }
+        // 展示板 — 无需登录
+        if (uri.startsWith("/dashboard")) {
+            return true;
+        }
+        // 图书查询 — 任何人都可以查
+        if (uri.startsWith("/book") && "GET".equalsIgnoreCase(method)) {
             return true;
         }
 

@@ -13,6 +13,7 @@ import com.example.demo.utils.TokenUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -24,21 +25,25 @@ public class BookController {
     @Resource
     BorrowService borrowService;
 
+    // ==================== 管理员专属接口 ====================
+
     @PostMapping
-    public Result<?> save(@RequestBody Book Book){
+    public Result<?> save(@RequestBody Book Book, HttpServletRequest request){
+        Integer role = (Integer) request.getAttribute("role");
+        if (role == null || role != 1) {
+            return Result.error("403", "无权限操作");
+        }
         BookMapper.insert(Book);
         return Result.success();
     }
 
     /**
      * 更新图书信息。
-     * - 当 status 变更时（借书/还书），优先通过 BorrowService 统一处理事务
-     * - 当无法获取当前用户（无 token）时，回退为 no-op，由
-     *   BookWithUserController / LendRecordController1 触发 BorrowService
-     * - 常规编辑（不改 status）保持原有 updateById 逻辑
+     * - 当 status 变更时（借书/还书），通过 BorrowService 统一处理事务（读者可操作）
+     * - 常规编辑（不改 status）为管理员专属操作
      */
     @PutMapping
-    public  Result<?> update(@RequestBody Book Book){
+    public  Result<?> update(@RequestBody Book Book, HttpServletRequest request){
         // 借书(status="0") / 还书(status="1") → 委托 BorrowService
         if ("0".equals(Book.getStatus()) || "1".equals(Book.getStatus())) {
             User currentUser = TokenUtils.getUser();
@@ -51,25 +56,39 @@ public class BookController {
                 return Result.success();
             }
             // 无 token 时不做本地 updateById，避免和 BorrowService 重复写入
-            // 实际 borrow/return 由 BookWithUserController / LendRecordController1 触发
             return Result.success();
         }
-        // 常规编辑
+        // 常规编辑 → 管理员专属
+        Integer role = (Integer) request.getAttribute("role");
+        if (role == null || role != 1) {
+            return Result.error("403", "无权限操作");
+        }
         BookMapper.updateById(Book);
         return Result.success();
     }
 
-    //    批量删除
     @PostMapping("/deleteBatch")
-    public  Result<?> deleteBatch(@RequestBody List<Integer> ids){
+    public  Result<?> deleteBatch(@RequestBody List<Integer> ids, HttpServletRequest request){
+        Integer role = (Integer) request.getAttribute("role");
+        if (role == null || role != 1) {
+            return Result.error("403", "无权限操作");
+        }
         BookMapper.deleteBatchIds(ids);
         return Result.success();
     }
+
     @DeleteMapping("/{id}")
-    public Result<?> delete(@PathVariable Long id){
+    public Result<?> delete(@PathVariable Long id, HttpServletRequest request){
+        Integer role = (Integer) request.getAttribute("role");
+        if (role == null || role != 1) {
+            return Result.error("403", "无权限操作");
+        }
         BookMapper.deleteById(id);
         return Result.success();
     }
+
+    // ==================== 公开接口 ====================
+
     @GetMapping
     public Result<?> findPage(@RequestParam(defaultValue = "1") Integer pageNum,
                               @RequestParam(defaultValue = "10") Integer pageSize,

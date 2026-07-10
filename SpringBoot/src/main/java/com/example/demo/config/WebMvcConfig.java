@@ -24,6 +24,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .excludePathPatterns(                            // 白名单：无需认证的路径
                         "/user/login",
                         "/user/register",
+                        "/dashboard",
                         "/error"                                 // Spring Boot 默认错误页
                 );
     }

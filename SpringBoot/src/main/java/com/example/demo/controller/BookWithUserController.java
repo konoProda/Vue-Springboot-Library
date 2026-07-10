@@ -14,6 +14,7 @@ import com.example.demo.service.BorrowService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +64,7 @@ public class BookWithUserController {
      * - 管理员编辑场景: 保持原有 UpdateWrapper 逻辑
      */
     @PostMapping
-    public Result<?> update(@RequestBody BookWithUser bookWithUser){
+    public Result<?> update(@RequestBody BookWithUser bookWithUser, HttpServletRequest request){
         // 判断是否为续借操作：查出现有记录，若 prolong 在减少则为续借
         LambdaQueryWrapper<BookWithUser> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(BookWithUser::getIsbn, bookWithUser.getIsbn())
@@ -89,7 +90,11 @@ public class BookWithUserController {
             return Result.success();
         }
 
-        // 管理员编辑：保持原有更新逻辑
+        // 管理员编辑：需要管理员权限
+        Integer role = (Integer) request.getAttribute("role");
+        if (role == null || role != 1) {
+            return Result.error("403", "无权限操作");
+        }
         UpdateWrapper<BookWithUser> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("isbn", bookWithUser.getIsbn())
                      .eq("user_id", bookWithUser.getUserId());
@@ -108,7 +113,11 @@ public class BookWithUserController {
     }
 
     @PostMapping("/deleteRecords")
-    public Result<?> deleteRecords(@RequestBody List<BookWithUser> bookWithUsers){
+    public Result<?> deleteRecords(@RequestBody List<BookWithUser> bookWithUsers, HttpServletRequest request){
+        Integer role = (Integer) request.getAttribute("role");
+        if (role == null || role != 1) {
+            return Result.error("403", "无权限操作");
+        }
         for (BookWithUser curRecord : bookWithUsers) {
             Map<String, Object> map = new HashMap<>();
             map.put("isbn", curRecord.getIsbn());
