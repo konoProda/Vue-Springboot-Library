@@ -59,18 +59,18 @@ public class BorrowService {
     private int maxRenewCount;
 
     /**
-     * 借书操作。
+     * 借书操作（多副本支持）。
      * 在一个事务中完成:
-     *   1. 校验图书是否可借 (status == "1")
+     *   1. 校验图书是否有可借副本 (availableCopies > 0)
      *   2. 校验用户当前借阅数量是否 < maxBorrowCount (默认5)
      *   3. 校验用户是否已借阅该书（防重复借阅）
-     *   4. 更新 book.status = "0", book.borrownum + 1
+     *   4. availableCopies -= 1, book.borrownum + 1
      *   5. 插入 lend_record 记录
      *   6. 插入 bookwithuser 记录
      *
      * @param userId 读者 ID
      * @param bookId 图书 ID (对应 book 表主键)
-     * @throws RuntimeException 图书不存在 / 不可借 / 借阅数量超限 / 重复借阅
+     * @throws RuntimeException 图书不存在 / 库存不足 / 借阅数量超限 / 重复借阅
      */
     @Transactional(rollbackFor = Exception.class)
     public void borrowBook(Long userId, Long bookId) {
@@ -79,8 +79,8 @@ public class BorrowService {
         if (book == null) {
             throw new RuntimeException("图书不存在");
         }
-        if (!"1".equals(book.getStatus())) {
-            throw new RuntimeException("该图书已被借出，暂不可借");
+        if (book.getAvailableCopies() == null || book.getAvailableCopies() <= 0) {
+            throw new RuntimeException("库存不足，暂无可用副本");
         }
 
         // ========== 2. 校验用户借阅数量 < maxBorrowCount ==========
@@ -100,8 +100,8 @@ public class BorrowService {
             throw new RuntimeException("不可重复借阅同一本书");
         }
 
-        // ========== 4. 更新图书状态 ==========
-        book.setStatus("0");
+        // ========== 4. 更新库存和借阅次数 ==========
+        book.setAvailableCopies(book.getAvailableCopies() - 1);
         book.setBorrownum(book.getBorrownum() != null ? book.getBorrownum() + 1 : 1);
         bookMapper.updateById(book);
 
@@ -136,9 +136,9 @@ public class BorrowService {
     }
 
     /**
-     * 还书操作。
+     * 还书操作（多副本支持）。
      * 在一个事务中完成:
-     *   1. 更新 book.status = "1"
+     *   1. availableCopies += 1（归还一个副本）
      *   2. 更新 lend_record 的 return_time 和 status = "1"
      *   3. 删除 bookwithuser 中对应的记录
      *
@@ -154,8 +154,9 @@ public class BorrowService {
             throw new RuntimeException("图书不存在");
         }
 
-        // ========== 1. 更新图书状态为可借 ==========
-        book.setStatus("1");
+        // ========== 1. 归还副本 ==========
+        book.setAvailableCopies(book.getAvailableCopies() != null
+                ? book.getAvailableCopies() + 1 : 1);
         bookMapper.updateById(book);
 
         // ========== 2. 更新借阅历史: 设置归还时间 + 状态 ==========

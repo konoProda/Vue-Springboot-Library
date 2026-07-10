@@ -63,6 +63,7 @@
       <el-table-column prop="author" label="作者" />
       <el-table-column prop="publisher" label="出版社" />
       <el-table-column prop="createTime" label="出版时间" sortable/>
+      <!-- TODO: 前端需要适配多副本 — 将 status 替换为 availableCopies 显示 -->
       <el-table-column prop="status" label="状态">
         <template v-slot="scope">
           <el-tag v-if="scope.row.status == 0" type="warning">已借阅</el-tag>
@@ -77,9 +78,11 @@
               <el-button type="danger" size="mini" >删除</el-button>
             </template>
           </el-popconfirm>
+          <!-- TODO: 前端需要适配多副本 — disabled 条件改为 availableCopies <= 0 -->
           <el-button  size="mini" @click ="handlelend(scope.row.id,scope.row.isbn,scope.row.name,scope.row.borrownum)" v-if="user.role == 2" :disabled="scope.row.status == 0">借阅</el-button>
           <el-popconfirm title="确认还书?" @confirm="handlereturn(scope.row.id,scope.row.isbn,scope.row.borrownum)" v-if="user.role == 2" :disabled="scope.row.status == 1">
             <template #reference>
+              <!-- TODO: 前端需要适配多副本 — 还书可用条件改为用户持有该书 -->
               <el-button type="danger" size="mini" :disabled="(this.isbnArray.indexOf(scope.row.isbn)) == -1 ||scope.row.status == 1" >还书</el-button>
             </template>
           </el-popconfirm>
@@ -297,6 +300,7 @@ export default {
       //     break;
       //   }
       // }
+      // TODO: 前端需要适配多副本 — form.status 已无效，需移除
       this.form.status = "1"
       this.form.id = id
       request.put("/book",this.form).then(res =>{
@@ -368,6 +372,7 @@ export default {
         ElMessage.warning("在您归还逾期书籍前不能再借阅书籍")
         return;
       }
+      // TODO: 前端需要适配多副本 — form.status 已无效，需移除
       this.form.status = "0"
       this.form.id = id
       this.form.borrownum = bn+1
@@ -442,6 +447,7 @@ export default {
       }
       else {
         this.form.borrownum = 0
+        // TODO: 前端需要适配多副本 — form.status 已无效，改为 totalCopies / availableCopies
         this.form.status = 1
         request.post("/book",this.form).then(res =>{
           console.log(res)

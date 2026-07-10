@@ -6,10 +6,8 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.commom.Result;
 import com.example.demo.entity.Book;
-import com.example.demo.entity.User;
 import com.example.demo.mapper.BookMapper;
 import com.example.demo.service.BorrowService;
-import com.example.demo.utils.TokenUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -39,30 +37,20 @@ public class BookController {
 
     /**
      * 更新图书信息。
-     * - 当 status 变更时（借书/还书），通过 BorrowService 统一处理事务（读者可操作）
-     * - 常规编辑（不改 status）为管理员专属操作
+     * - 管理员 (role=1): 执行常规编辑（如修改书名、作者、副本数等）
+     * - 读者 (role≠1): 前端借书/还书流程中仍会调用此接口（携带已移除的 status 字段），
+     *   此处返回空成功，实际的借/还逻辑由 BorrowService 统一处理
+     *   （通过 BookWithUserController / LendRecordController1 触发）。
      */
     @PutMapping
     public  Result<?> update(@RequestBody Book Book, HttpServletRequest request){
-        // 借书(status="0") / 还书(status="1") → 委托 BorrowService
-        if ("0".equals(Book.getStatus()) || "1".equals(Book.getStatus())) {
-            User currentUser = TokenUtils.getUser();
-            if (currentUser != null && Book.getId() != null) {
-                if ("0".equals(Book.getStatus())) {
-                    borrowService.borrowBook((long) currentUser.getId(), (long) Book.getId());
-                } else {
-                    borrowService.returnBook((long) currentUser.getId(), (long) Book.getId());
-                }
-                return Result.success();
-            }
-            // 无 token 时不做本地 updateById，避免和 BorrowService 重复写入
-            return Result.success();
-        }
-        // 常规编辑 → 管理员专属
         Integer role = (Integer) request.getAttribute("role");
         if (role == null || role != 1) {
-            return Result.error("403", "无权限操作");
+            // 读者调用：借书/还书兼容路径 — no-op
+            // 真实业务由 BorrowService（经 BookWithUserController / LendRecordController1）处理
+            return Result.success();
         }
+        // 管理员编辑图书信息
         BookMapper.updateById(Book);
         return Result.success();
     }
