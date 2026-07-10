@@ -63,13 +63,19 @@
       <el-table-column prop="author" label="作者" />
       <el-table-column prop="publisher" label="出版社" />
       <el-table-column prop="createTime" label="出版时间" sortable/>
-      <!-- TODO: 前端需要适配多副本 — 将 status 替换为 availableCopies 显示 -->
-      <el-table-column prop="status" label="状态">
+
+      <!-- 多副本库存列 -->
+      <el-table-column label="库存">
         <template v-slot="scope">
-          <el-tag v-if="scope.row.status == 0" type="warning">已借阅</el-tag>
-          <el-tag v-else type="success">未借阅</el-tag>
+          <span v-if="scope.row.availableCopies > 0" style="color: #67c23a">
+            可借 {{ scope.row.availableCopies }} / {{ scope.row.totalCopies || 0 }}
+          </span>
+          <span v-else style="color: #f56c6c">
+            已借完 ({{ scope.row.totalCopies || 0 }})
+          </span>
         </template>
       </el-table-column>
+
       <el-table-column fixed="right" label="操作" >
         <template v-slot="scope">
           <el-button  size="mini" @click ="handleEdit(scope.row)" v-if="user.role == 1">修改</el-button>
@@ -78,18 +84,31 @@
               <el-button type="danger" size="mini" >删除</el-button>
             </template>
           </el-popconfirm>
-          <!-- TODO: 前端需要适配多副本 — disabled 条件改为 availableCopies <= 0 -->
-          <el-button  size="mini" @click ="handlelend(scope.row.id,scope.row.isbn,scope.row.name,scope.row.borrownum)" v-if="user.role == 2" :disabled="scope.row.status == 0">借阅</el-button>
-          <el-popconfirm title="确认还书?" @confirm="handlereturn(scope.row.id,scope.row.isbn,scope.row.borrownum)" v-if="user.role == 2" :disabled="scope.row.status == 1">
+
+          <!-- 借阅按钮：availableCopies > 0 时可借 -->
+          <el-button  size="mini"
+            @click="handlelend(scope.row.id, scope.row.isbn, scope.row.name, scope.row.borrownum)"
+            v-if="user.role == 2"
+            :disabled="scope.row.availableCopies == 0">
+            {{ scope.row.availableCopies > 0 ? '借阅' : '已借完' }}
+          </el-button>
+
+          <!-- 还书按钮：用户持有该书时可还 -->
+          <el-popconfirm title="确认还书?"
+            @confirm="handlereturn(scope.row.id, scope.row.isbn, scope.row.borrownum)"
+            v-if="user.role == 2">
             <template #reference>
-              <!-- TODO: 前端需要适配多副本 — 还书可用条件改为用户持有该书 -->
-              <el-button type="danger" size="mini" :disabled="(this.isbnArray.indexOf(scope.row.isbn)) == -1 ||scope.row.status == 1" >还书</el-button>
+              <el-button type="danger" size="mini"
+                :disabled="(isbnArray.indexOf(scope.row.isbn)) == -1">
+                还书
+              </el-button>
             </template>
           </el-popconfirm>
         </template>
       </el-table-column>
     </el-table>
-<!--测试,通知对话框-->
+
+    <!-- 逾期通知对话框 -->
     <el-dialog
         v-model="dialogVisible3"
         v-if="numOfOutDataBook!=0"
@@ -106,11 +125,11 @@
 
       <template #footer>
       <span class="dialog-footer">
-        <el-button type="primary" @click="dialogVisible3 = false"
-        >确认</el-button>
+        <el-button type="primary" @click="dialogVisible3 = false">确认</el-button>
       </span>
       </template>
     </el-dialog>
+
     <!--    分页-->
     <div style="margin: 10px 0">
       <el-pagination
@@ -124,9 +143,9 @@
       >
       </el-pagination>
 
+      <!-- 上架书籍对话框 -->
       <el-dialog v-model="dialogVisible" title="上架书籍" width="30%">
         <el-form :model="form" label-width="120px">
-
           <el-form-item label="图书编号">
             <el-input style="width: 80%" v-model="form.isbn"></el-input>
           </el-form-item>
@@ -146,6 +165,9 @@
             <div>
               <el-date-picker value-format="YYYY-MM-DD" type="date" style="width: 80%" clearable v-model="form.createTime" ></el-date-picker>
             </div>
+          </el-form-item>
+          <el-form-item label="总馆藏数">
+            <el-input-number style="width: 80%" v-model="form.totalCopies" :min="1" :max="999" />
           </el-form-item>
         </el-form>
         <template #footer>
@@ -156,9 +178,9 @@
         </template>
       </el-dialog>
 
+      <!-- 修改书籍信息对话框 -->
       <el-dialog v-model="dialogVisible2" title="修改书籍信息" width="30%">
         <el-form :model="form" label-width="120px">
-
           <el-form-item label="图书编号">
             <el-input style="width: 80%" v-model="form.isbn"></el-input>
           </el-form-item>
@@ -178,6 +200,12 @@
             <div>
               <el-date-picker value-format="YYYY-MM-DD" type="date" style="width: 80%" clearable v-model="form.createTime" ></el-date-picker>
             </div>
+          </el-form-item>
+          <el-form-item label="总馆藏数">
+            <el-input-number style="width: 80%" v-model="form.totalCopies" :min="1" :max="999" />
+          </el-form-item>
+          <el-form-item label="可借数量">
+            <el-input-number style="width: 80%" v-model="form.availableCopies" :min="0" :max="form.totalCopies || 999" />
           </el-form-item>
         </el-form>
         <template #footer>
@@ -204,7 +232,7 @@ export default {
   },
   name: 'Book',
   methods: {
-  // (this.isbnArray.indexOf(scope.row.isbn)) == -1
+
     handleSelectionChange(val){
       this.ids = val.map(v =>v.id)
     },
@@ -213,7 +241,6 @@ export default {
         ElMessage.warning("请选择数据！")
         return
       }
-      //  一个小优化，直接发送这个数组，而不是一个一个的提交删除
       request.post("/book/deleteBatch",this.ids).then(res =>{
         if(res.code === '0'){
           ElMessage.success("批量删除成功")
@@ -291,30 +318,18 @@ export default {
         this.load()
       })
     },
-    handlereturn(id,isbn,bn){
-      // (this.isbnArray.indexOf(scope.row.isbn)) == -1
-      // for(let i=0; i<this.numOfOutDataBook; i++){
-      //   if(this.outDateBook[i].isbn == isbn){
-      //     this.numOfOutDataBook = this.numOfOutDataBook -1;
-      //     console.log("in handlereturn: " + this.numOfOutDataBook);
-      //     break;
-      //   }
-      // }
-      // TODO: 前端需要适配多副本 — form.status 已无效，需移除
-      this.form.status = "1"
+    handlereturn(id, isbn, bn){
+      // 还书流程: PUT /book (兼容) → PUT /LendRecord1 → POST /bookwithuser/deleteRecord
       this.form.id = id
       request.put("/book",this.form).then(res =>{
         console.log(res)
         if(res.code == 0){
-          ElMessage({
-            message: '还书成功',
-            type: 'success',
-          })
+          ElMessage({ message: '还书成功', type: 'success' })
         }
         else {
           ElMessage.error(res.msg)
         }
-      //
+
         this.form3.isbn = isbn
         this.form3.readerId = this.user.id
         let endDate = moment(new Date()).format("yyyy-MM-DD HH:mm:ss")
@@ -336,54 +351,26 @@ export default {
             console.log(res)
             this.load()
           })
-
         })
-      //
       })
-      // this.form3.isbn = isbn
-      // this.form3.readerId = this.user.id
-      // let endDate = moment(new Date()).format("yyyy-MM-DD HH:mm:ss")
-      // this.form3.returnTime = endDate
-      // this.form3.status = "1"
-      // console.log(bn)
-      // this.form3.borrownum = bn
-      // request.put("/LendRecord1/",this.form3).then(res =>{
-      //   console.log(res)
-      // })
-      // let form3 ={};
-      // form3.isbn = isbn;
-      // form3.bookName = name;
-      // form3.nickName = this.user.username;
-      // form3.id = this.user.id;
-      // form3.lendtime = endDate;
-      // form3.deadtime = endDate;
-      // form3.prolong  = 1;
-      // request.post("/bookwithuser/deleteRecord",form3).then(res =>{
-      //   console.log(res)
-      //   this.load()
-      // })
     },
-    handlelend(id,isbn,name,bn){
-      if(this.number ==5){
+    handlelend(id, isbn, name, bn){
+      if(this.number == 5){
         ElMessage.warning("您不能再借阅更多的书籍了")
         return;
       }
-      if(this.numOfOutDataBook !=0){
+      if(this.numOfOutDataBook != 0){
         ElMessage.warning("在您归还逾期书籍前不能再借阅书籍")
         return;
       }
-      // TODO: 前端需要适配多副本 — form.status 已无效，需移除
-      this.form.status = "0"
+      // 借书流程: PUT /book (兼容) → POST /LendRecord → POST /bookwithuser/insertNew
       this.form.id = id
       this.form.borrownum = bn+1
       console.log(bn)
       request.put("/book",this.form).then(res =>{
         console.log(res)
         if(res.code == 0){
-          ElMessage({
-            message: '借阅成功',
-            type: 'success',
-          })
+          ElMessage({ message: '借阅成功', type: 'success' })
         }
         else {
           ElMessage.error(res.msg)
@@ -403,7 +390,6 @@ export default {
       request.post("/LendRecord",this.form2).then(res =>{
         console.log(res)
         this.load();
-
       })
       let form3 ={};
       form3.isbn = isbn;
@@ -421,34 +407,33 @@ export default {
       })
     },
     add(){
-      this.dialogVisible= true
-      this.form ={}
+      this.dialogVisible = true
+      this.form = {}
     },
     save(){
-      //ES6语法
-      //地址,但是？IP与端口？+请求参数
-      // this.form?这是自动保存在form中的，虽然显示时没有使用，但是这个对象中是有它的
       if(this.form.id){
+        // 修改已有图书
         request.put("/book",this.form).then(res =>{
           console.log(res)
           if(res.code == 0){
-            ElMessage({
-              message: '修改书籍信息成功',
-              type: 'success',
-            })
+            ElMessage({ message: '修改书籍信息成功', type: 'success' })
           }
           else {
             ElMessage.error(res.msg)
           }
-
           this.load()
           this.dialogVisible2 = false
         })
       }
       else {
+        // 上架新书：初始化多副本字段
         this.form.borrownum = 0
-        // TODO: 前端需要适配多副本 — form.status 已无效，改为 totalCopies / availableCopies
-        this.form.status = 1
+        if (!this.form.totalCopies) {
+          this.form.totalCopies = 1
+        }
+        if (this.form.availableCopies == null) {
+          this.form.availableCopies = this.form.totalCopies
+        }
         request.post("/book",this.form).then(res =>{
           console.log(res)
           if(res.code == 0){
@@ -461,11 +446,7 @@ export default {
           this.dialogVisible = false
         })
       }
-
     },
-    // formatter(row) {:formatter="formatter"
-    //   return row.address
-    // },
 
     handleEdit(row){
       this.form = JSON.parse(JSON.stringify(row))
@@ -480,7 +461,7 @@ export default {
       this.load()
     },
     toLook(){
-      this.dialogVisible3 =true;
+      this.dialogVisible3 = true;
     },
   },
   data() {
@@ -508,3 +489,23 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.login-container {
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  background: url('../img/bg2.svg');
+  background-size: contain;
+  overflow: hidden;
+}
+.login-page {
+  border-radius: 5px;
+  margin: 180px auto;
+  width: 350px;
+  padding: 35px 35px 15px;
+  background: #fff;
+  border: 1px solid #eaeaea;
+  box-shadow: 0 0 25px #cac6c6;
+}
+</style>
