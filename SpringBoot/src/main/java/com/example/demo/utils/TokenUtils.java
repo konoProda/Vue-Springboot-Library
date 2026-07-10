@@ -56,4 +56,22 @@ public class TokenUtils {
             return null;
         }
     }
+
+    /**
+     * 根据指定的 token 字符串解析用户信息（不依赖 RequestContextHolder）。
+     * 适用于拦截器等无法使用请求上下文的场景。
+     *
+     * @param token JWT token 字符串
+     * @return 解析出的 User 对象；token 无效或用户不存在时返回 null
+     */
+    public static User getUserFromToken(String token) {
+        try {
+            String aud = JWT.decode(token).getAudience().get(0);
+            Integer userId = Integer.valueOf(aud);
+            return staticUserMapper.selectById(userId);
+        } catch (Exception e) {
+            log.error("解析token失败", e);
+            return null;
+        }
+    }
 }
