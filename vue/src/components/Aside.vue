@@ -1,9 +1,9 @@
 <template>
-<div>
+<div style="background-color: #30333c; min-height: calc(100vh - 50px); display: flex; flex-direction: column;">
 
 
   <el-menu
-      style="width: 200px; min-height: calc(100vh - 50px);"
+      style="width: 200px; flex: 1;"
       :default-active="path"
       class="el-menu-vertical-demo"
       @open="handleOpen"
