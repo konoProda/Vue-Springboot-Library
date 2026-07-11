@@ -11,6 +11,7 @@ import com.example.demo.commom.Result;
 import com.example.demo.entity.BookWithUser;
 import com.example.demo.entity.User;
 import com.example.demo.mapper.UserMapper;
+import com.example.demo.service.OperationLogService;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.jdbc.Null;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ import com.example.demo.utils.TokenUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +30,9 @@ import java.util.Map;
 public class UserController {
     @Resource
     UserMapper userMapper;
+
+    @Resource
+    OperationLogService operationLogService;
 
     // ==================== 公开接口（无需管理员权限） ====================
 
@@ -102,6 +107,14 @@ public class UserController {
             return Result.error("403", "无权限操作");
         }
         userMapper.deleteBatchIds(ids);
+        // 记录操作日志
+        Integer userId = (Integer) request.getAttribute("userId");
+        String username = (String) request.getAttribute("username");
+        Map<String, Object> detail = new HashMap<>();
+        detail.put("userIds", ids);
+        detail.put("count", ids.size());
+        operationLogService.log(userId != null ? userId.longValue() : null,
+                username != null ? username : "", "DELETE_USER", detail);
         return Result.success();
     }
 
@@ -112,6 +125,13 @@ public class UserController {
             return Result.error("403", "无权限操作");
         }
         userMapper.deleteById(id);
+        // 记录操作日志
+        Integer userId = (Integer) request.getAttribute("userId");
+        String username = (String) request.getAttribute("username");
+        Map<String, Object> detail = new HashMap<>();
+        detail.put("deletedUserId", id);
+        operationLogService.log(userId != null ? userId.longValue() : null,
+                username != null ? username : "", "DELETE_USER", detail);
         return Result.success();
     }
 

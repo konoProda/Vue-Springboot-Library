@@ -55,6 +55,12 @@
       </svg>
       <span>图书查询</span>
     </el-menu-item>
+    <el-menu-item index="/log" v-if="user.role == 1">
+      <svg class="icon" aria-hidden="true">
+        <use xlink:href="#iconlend-record "></use>
+      </svg>
+      <span>操作日志</span>
+    </el-menu-item>
     <el-menu-item index="/lendrecord" v-if="user.role == 1">
       <svg class="icon" aria-hidden="true">
         <use xlink:href="#iconlend-record "></use>

@@ -8,11 +8,14 @@ import com.example.demo.commom.Result;
 import com.example.demo.entity.Book;
 import com.example.demo.mapper.BookMapper;
 import com.example.demo.service.BorrowService;
+import com.example.demo.service.OperationLogService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/book")
@@ -22,6 +25,9 @@ public class BookController {
 
     @Resource
     BorrowService borrowService;
+
+    @Resource
+    OperationLogService operationLogService;
 
     // ==================== 管理员专属接口 ====================
 
@@ -62,6 +68,14 @@ public class BookController {
             return Result.error("403", "无权限操作");
         }
         BookMapper.deleteBatchIds(ids);
+        // 记录操作日志
+        Integer userId = (Integer) request.getAttribute("userId");
+        String username = (String) request.getAttribute("username");
+        Map<String, Object> detail = new HashMap<>();
+        detail.put("bookIds", ids);
+        detail.put("count", ids.size());
+        operationLogService.log(userId != null ? userId.longValue() : null,
+                username != null ? username : "", "DELETE_BOOK", detail);
         return Result.success();
     }
 
@@ -72,6 +86,13 @@ public class BookController {
             return Result.error("403", "无权限操作");
         }
         BookMapper.deleteById(id);
+        // 记录操作日志
+        Integer userId = (Integer) request.getAttribute("userId");
+        String username = (String) request.getAttribute("username");
+        Map<String, Object> detail = new HashMap<>();
+        detail.put("bookId", id);
+        operationLogService.log(userId != null ? userId.longValue() : null,
+                username != null ? username : "", "DELETE_BOOK", detail);
         return Result.success();
     }
 

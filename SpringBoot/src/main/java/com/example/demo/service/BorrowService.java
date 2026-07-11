@@ -42,6 +42,9 @@ public class BorrowService {
     @Resource
     private UserMapper userMapper;
 
+    @Resource
+    private OperationLogService operationLogService;
+
     /** 最大借阅数量 (从 application.properties 读取) */
     @Value("${borrow.max-count:5}")
     private int maxBorrowCount;
@@ -133,6 +136,13 @@ public class BorrowService {
         bookWithUser.setDeadtime(cal.getTime());
         bookWithUser.setProlong(maxRenewCount);      // 初始可续借次数
         bookWithUserMapper.insert(bookWithUser);
+
+        // 记录操作日志
+        Map<String, Object> logDetail = new HashMap<>();
+        logDetail.put("isbn", book.getIsbn());
+        logDetail.put("bookName", book.getName());
+        logDetail.put("borrownum", book.getBorrownum());
+        operationLogService.log(userId, nickName, "BORROW", logDetail);
     }
 
     /**
@@ -174,6 +184,14 @@ public class BorrowService {
         deleteMap.put("isbn", book.getIsbn());
         deleteMap.put("user_id", userId.intValue());
         bookWithUserMapper.deleteByMap(deleteMap);
+
+        // 记录操作日志
+        User returnUser = userMapper.selectById(userId.intValue());
+        String returnUsername = (returnUser != null && returnUser.getNickName() != null) ? returnUser.getNickName() : "";
+        Map<String, Object> logDetail = new HashMap<>();
+        logDetail.put("isbn", book.getIsbn());
+        logDetail.put("bookName", book.getName());
+        operationLogService.log(userId, returnUsername, "RETURN", logDetail);
     }
 
     /**
@@ -221,5 +239,13 @@ public class BorrowService {
         updateWrapper.eq("isbn", book.getIsbn())
                      .eq("user_id", userId.intValue());
         bookWithUserMapper.update(bookWithUser, updateWrapper);
+
+        // 记录操作日志
+        Map<String, Object> logDetail = new HashMap<>();
+        logDetail.put("isbn", book.getIsbn());
+        logDetail.put("bookName", book.getName());
+        logDetail.put("newDeadtime", bookWithUser.getDeadtime());
+        logDetail.put("remainingProlong", bookWithUser.getProlong());
+        operationLogService.log(userId, bookWithUser.getNickName(), "RENEW", logDetail);
     }
 }
