@@ -16,6 +16,7 @@ public class OperationLog {
     private Long id;
     private Long userId;
     private String username;
+    private Integer userRole;
     private String operationType;
     private String detail;
 

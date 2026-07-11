@@ -39,7 +39,14 @@
     <!-- 表格 -->
     <el-table :data="tableData" stripe border>
       <el-table-column type="index" label="序号" width="60" />
-      <el-table-column prop="username" label="操作人" width="120" />
+      <el-table-column prop="username" label="操作人" width="100" />
+      <el-table-column prop="userRole" label="角色" width="80">
+        <template v-slot="scope">
+          <el-tag :type="scope.row.userRole == 1 ? 'danger' : 'success'" size="small">
+            {{ scope.row.userRole == 1 ? '管理员' : '读者' }}
+          </el-tag>
+        </template>
+      </el-table-column>
       <el-table-column prop="operationType" label="操作类型" width="110">
         <template v-slot="scope">
           <el-tag :type="typeColor(scope.row.operationType)" size="small">
@@ -127,7 +134,7 @@ export default {
     typeColor(type) {
       const colors = {
         BORROW: 'success',
-        RETURN: '',
+        RETURN: 'primary',
         RENEW: 'warning',
         DELETE_BOOK: 'danger',
         DELETE_USER: 'danger'

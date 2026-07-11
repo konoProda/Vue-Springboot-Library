@@ -75,7 +75,7 @@ public class BookController {
         detail.put("bookIds", ids);
         detail.put("count", ids.size());
         operationLogService.log(userId != null ? userId.longValue() : null,
-                username != null ? username : "", "DELETE_BOOK", detail);
+                username != null ? username : "", 1, "DELETE_BOOK", detail);
         return Result.success();
     }
 
@@ -92,7 +92,7 @@ public class BookController {
         Map<String, Object> detail = new HashMap<>();
         detail.put("bookId", id);
         operationLogService.log(userId != null ? userId.longValue() : null,
-                username != null ? username : "", "DELETE_BOOK", detail);
+                username != null ? username : "", 1, "DELETE_BOOK", detail);
         return Result.success();
     }
 

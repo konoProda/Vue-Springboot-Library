@@ -32,7 +32,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="submitForm" style="text-align: center">提交</el-button>
-          <el-button @click="resetForm('form')" style="text-align: center">重置</el-button>
+          <el-button type="danger" @click="resetForm('form')" style="text-align: center">重置</el-button>
         </el-form-item>
       </el-form>
     </el-card>

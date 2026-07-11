@@ -114,7 +114,7 @@ public class UserController {
         detail.put("userIds", ids);
         detail.put("count", ids.size());
         operationLogService.log(userId != null ? userId.longValue() : null,
-                username != null ? username : "", "DELETE_USER", detail);
+                username != null ? username : "", 1, "DELETE_USER", detail);
         return Result.success();
     }
 
@@ -131,7 +131,7 @@ public class UserController {
         Map<String, Object> detail = new HashMap<>();
         detail.put("deletedUserId", id);
         operationLogService.log(userId != null ? userId.longValue() : null,
-                username != null ? username : "", "DELETE_USER", detail);
+                username != null ? username : "", 1, "DELETE_USER", detail);
         return Result.success();
     }
 

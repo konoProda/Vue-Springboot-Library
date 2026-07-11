@@ -56,7 +56,7 @@
       </el-table-column>
       <el-table-column v-if="user.role === 1" label="操作" width="230px">
         <template v-slot="scope">
-          <el-button  size="mini" @click ="handleEdit(scope.row)">编辑</el-button>
+          <el-button type="primary" class="btn-edit" size="mini" @click ="handleEdit(scope.row)">编辑</el-button>
           <el-popconfirm title="确认删除?" @confirm="handleDelete(scope.row)">
             <template #reference>
               <el-button type="danger" size="mini" >删除</el-button>
@@ -107,7 +107,7 @@
         </el-form>
         <template #footer>
       <span class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="danger" @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="save(form.isbn)">确 定</el-button>
       </span>
         </template>

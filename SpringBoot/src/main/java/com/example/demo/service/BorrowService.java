@@ -142,7 +142,7 @@ public class BorrowService {
         logDetail.put("isbn", book.getIsbn());
         logDetail.put("bookName", book.getName());
         logDetail.put("borrownum", book.getBorrownum());
-        operationLogService.log(userId, nickName, "BORROW", logDetail);
+        operationLogService.log(userId, nickName, user != null ? user.getRole() : null, "BORROW", logDetail);
     }
 
     /**
@@ -191,7 +191,7 @@ public class BorrowService {
         Map<String, Object> logDetail = new HashMap<>();
         logDetail.put("isbn", book.getIsbn());
         logDetail.put("bookName", book.getName());
-        operationLogService.log(userId, returnUsername, "RETURN", logDetail);
+        operationLogService.log(userId, returnUsername, returnUser != null ? returnUser.getRole() : null, "RETURN", logDetail);
     }
 
     /**
@@ -246,6 +246,8 @@ public class BorrowService {
         logDetail.put("bookName", book.getName());
         logDetail.put("newDeadtime", bookWithUser.getDeadtime());
         logDetail.put("remainingProlong", bookWithUser.getProlong());
-        operationLogService.log(userId, bookWithUser.getNickName(), "RENEW", logDetail);
+        User renewUser = userMapper.selectById(userId.intValue());
+        Integer renewUserRole = renewUser != null ? renewUser.getRole() : null;
+        operationLogService.log(userId, bookWithUser.getNickName(), renewUserRole, "RENEW", logDetail);
     }
 }

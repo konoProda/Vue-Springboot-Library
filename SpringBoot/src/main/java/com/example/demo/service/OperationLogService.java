@@ -27,15 +27,17 @@ public class OperationLogService {
      *
      * @param userId        操作用户 ID
      * @param username      操作用户名
+     * @param userRole      操作人角色 (1=管理员, 2=读者)
      * @param operationType 操作类型 (BORROW / RETURN / RENEW / DELETE_BOOK / DELETE_USER ...)
      * @param detail        操作详情 (Map → JSON)
      */
     @Async
-    public void log(Long userId, String username, String operationType, Map<String, Object> detail) {
+    public void log(Long userId, String username, Integer userRole, String operationType, Map<String, Object> detail) {
         try {
             OperationLog logEntry = new OperationLog();
             logEntry.setUserId(userId);
             logEntry.setUsername(username);
+            logEntry.setUserRole(userRole);
             logEntry.setOperationType(operationType);
             logEntry.setDetail(detail != null ? JSONUtil.toJsonStr(detail) : null);
             logEntry.setCreateTime(new Date());
