@@ -9,8 +9,15 @@
             <el-option label="借书" value="BORROW" />
             <el-option label="还书" value="RETURN" />
             <el-option label="续借" value="RENEW" />
+            <el-option label="新增图书" value="ADD_BOOK" />
+            <el-option label="修改图书" value="EDIT_BOOK" />
             <el-option label="删除图书" value="DELETE_BOOK" />
+            <el-option label="新增用户" value="ADD_USER" />
+            <el-option label="修改用户" value="EDIT_USER" />
             <el-option label="删除用户" value="DELETE_USER" />
+            <el-option label="修改借阅记录" value="EDIT_LEND_RECORD" />
+            <el-option label="删除借阅记录" value="DELETE_LEND_RECORD" />
+            <el-option label="修改借阅状态" value="EDIT_BOOKWITHUSER" />
           </el-select>
         </el-form-item>
         <el-form-item label="操作人">
@@ -39,11 +46,15 @@
     <!-- 表格 -->
     <el-table :data="tableData" stripe border>
       <el-table-column type="index" label="序号" width="60" />
-      <el-table-column prop="username" label="操作人" width="100" />
-      <el-table-column prop="userRole" label="角色" width="80">
+      <el-table-column label="操作人" width="180">
         <template v-slot="scope">
-          <el-tag :type="scope.row.userRole == 1 ? 'danger' : 'success'" size="small">
-            {{ scope.row.userRole == 1 ? '管理员' : '读者' }}
+          {{ scope.row.username }} (ID:{{ scope.row.userId }})
+        </template>
+      </el-table-column>
+      <el-table-column prop="userRole" label="权限" width="80">
+        <template v-slot="scope">
+          <el-tag :type="scope.row.userRole == 1 ? 'danger' : 'info'" size="small">
+            {{ scope.row.userRole == 1 ? '管理员' : '非管理员' }}
           </el-tag>
         </template>
       </el-table-column>
@@ -95,8 +106,15 @@ export default {
         BORROW: '借书',
         RETURN: '还书',
         RENEW: '续借',
+        ADD_BOOK: '新增图书',
+        EDIT_BOOK: '修改图书',
         DELETE_BOOK: '删除图书',
-        DELETE_USER: '删除用户'
+        ADD_USER: '新增用户',
+        EDIT_USER: '修改用户',
+        DELETE_USER: '删除用户',
+        EDIT_LEND_RECORD: '修改借阅记录',
+        DELETE_LEND_RECORD: '删除借阅记录',
+        EDIT_BOOKWITHUSER: '修改借阅状态'
       }
     }
   },
@@ -136,8 +154,15 @@ export default {
         BORROW: 'success',
         RETURN: 'primary',
         RENEW: 'warning',
+        ADD_BOOK: 'success',
+        EDIT_BOOK: '',
         DELETE_BOOK: 'danger',
-        DELETE_USER: 'danger'
+        ADD_USER: 'success',
+        EDIT_USER: '',
+        DELETE_USER: 'danger',
+        EDIT_LEND_RECORD: '',
+        DELETE_LEND_RECORD: 'danger',
+        EDIT_BOOKWITHUSER: ''
       }
       return colors[type] || 'info'
     },
@@ -145,16 +170,21 @@ export default {
       if (!detail) return '-'
       try {
         const obj = typeof detail === 'string' ? JSON.parse(detail) : detail
-        // 返回关键字段，跳过内部 ID
         const parts = []
-        if (obj.isbn) parts.push('ISBN: ' + obj.isbn)
-        if (obj.bookName) parts.push('《' + obj.bookName + '》')
-        if (obj.bookId) parts.push('图书ID: ' + obj.bookId)
-        if (obj.bookIds) parts.push('图书IDs: ' + JSON.stringify(obj.bookIds))
-        if (obj.deletedUserId) parts.push('用户ID: ' + obj.deletedUserId)
-        if (obj.userIds) parts.push('用户IDs: ' + JSON.stringify(obj.userIds))
-        if (obj.count) parts.push('数量: ' + obj.count)
+        if (obj.isbn) parts.push(obj.isbn + (obj.bookName ? ' ' + obj.bookName : ''))
+        else if (obj.bookName) parts.push(obj.bookName)
+        if (obj.book && !obj.isbn) parts.push('' + obj.book)
+        if (obj.newUsername) parts.push('用户: ' + obj.newUsername)
+        if (obj.nickName && !obj.newUsername) parts.push('姓名: ' + obj.nickName)
+        if (obj.deletedUserId) parts.push('被删用户ID: ' + obj.deletedUserId)
+        if (obj.editedUserId) parts.push('被编辑用户ID: ' + obj.editedUserId)
+        if (obj.totalCopies != null) parts.push('馆藏: ' + obj.totalCopies)
+        if (obj.availableCopies != null) parts.push('可借: ' + obj.availableCopies)
         if (obj.borrownum != null) parts.push('借次: ' + obj.borrownum)
+        if (obj.remainingProlong != null) parts.push('剩余续借: ' + obj.remainingProlong)
+        if (obj.beforeStatus) parts.push('状态: ' + obj.beforeStatus + '→' + obj.afterStatus)
+        if (obj.beforeReturnTime) parts.push('归还: ' + (obj.beforeReturnTime || '无') + '→' + (obj.afterReturnTime || '无'))
+        if (obj.count) parts.push('共' + obj.count + '条')
         return parts.join('  ') || JSON.stringify(obj)
       } catch (e) {
         return detail

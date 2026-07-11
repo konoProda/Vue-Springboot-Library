@@ -11,6 +11,7 @@ import com.example.demo.entity.BookWithUser;
 import com.example.demo.mapper.BookMapper;
 import com.example.demo.mapper.BookWithUserMapper;
 import com.example.demo.service.BorrowService;
+import com.example.demo.service.OperationLogService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -31,6 +32,9 @@ public class BookWithUserController {
 
     @Resource
     private BorrowService borrowService;
+
+    @Resource
+    private OperationLogService operationLogService;
 
     /**
      * 借书操作：委托 BorrowService.borrowBook() 统一处理。
@@ -99,6 +103,14 @@ public class BookWithUserController {
         updateWrapper.eq("isbn", bookWithUser.getIsbn())
                      .eq("user_id", bookWithUser.getUserId());
         BookWithUserMapper.update(bookWithUser, updateWrapper);
+        // 操作日志
+        Integer userId = (Integer) request.getAttribute("userId");
+        String username = (String) request.getAttribute("username");
+        Map<String, Object> detail = new HashMap<>();
+        detail.put("isbn", bookWithUser.getIsbn());
+        detail.put("bookName", bookWithUser.getBookName());
+        operationLogService.log(userId != null ? userId.longValue() : null,
+                username != null ? username : "", 1, "EDIT_BOOKWITHUSER", detail);
         return Result.success();
     }
 
@@ -143,6 +155,7 @@ public class BookWithUserController {
         if(StringUtils.isNotBlank(search3)){
             wrappers.like(BookWithUser::getUserId, search3);
         }
+        wrappers.orderByDesc(BookWithUser::getLendtime);
         Page<BookWithUser> BookPage = BookWithUserMapper.selectPage(new Page<>(pageNum, pageSize), wrappers);
         return Result.success(BookPage);
     }

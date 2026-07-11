@@ -82,7 +82,7 @@
               <el-button type="danger" size="mini" >删除</el-button>
             </template>
           </el-popconfirm>
-          <el-button  size="mini" @click ="handlelend(scope.row.id,scope.row.isbn,scope.row.name,scope.row.borrownum)" v-if="user.role == 2" :disabled="scope.row.availableCopies <= 0 || (this.isbnArray.indexOf(scope.row.isbn)) != -1">借阅</el-button>
+          <el-button type="success" size="mini" @click ="handlelend(scope.row.id,scope.row.isbn,scope.row.name,scope.row.borrownum)" v-if="user.role == 2" :disabled="scope.row.availableCopies <= 0 || (this.isbnArray.indexOf(scope.row.isbn)) != -1">借阅</el-button>
           <el-popconfirm title="确认还书?" @confirm="handlereturn(scope.row.id,scope.row.isbn,scope.row.borrownum)" v-if="user.role == 2" :disabled="(this.isbnArray.indexOf(scope.row.isbn)) == -1">
             <template #reference>
               <el-button type="danger" size="mini" :disabled="(this.isbnArray.indexOf(scope.row.isbn)) == -1" >还书</el-button>

@@ -38,6 +38,15 @@ public class BookController {
             return Result.error("403", "无权限操作");
         }
         BookMapper.insert(Book);
+        // 操作日志
+        Integer userId = (Integer) request.getAttribute("userId");
+        String username = (String) request.getAttribute("username");
+        Map<String, Object> detail = new HashMap<>();
+        detail.put("isbn", Book.getIsbn());
+        detail.put("bookName", "《" + Book.getName() + "》");
+        detail.put("totalCopies", Book.getTotalCopies());
+        operationLogService.log(userId != null ? userId.longValue() : null,
+                username != null ? username : "", 1, "ADD_BOOK", detail);
         return Result.success();
     }
 
@@ -57,7 +66,22 @@ public class BookController {
             return Result.success();
         }
         // 管理员编辑图书信息
+        Book oldBook = BookMapper.selectById(Book.getId());
         BookMapper.updateById(Book);
+        // 操作日志 — 含前后对比
+        Integer userId = (Integer) request.getAttribute("userId");
+        String username = (String) request.getAttribute("username");
+        Map<String, Object> detail = new HashMap<>();
+        detail.put("isbn", Book.getIsbn() != null ? Book.getIsbn() : (oldBook != null ? oldBook.getIsbn() : ""));
+        detail.put("bookName", "《" + (Book.getName() != null ? Book.getName() : (oldBook != null ? oldBook.getName() : "")) + "》");
+        if (oldBook != null) {
+            if (Book.getTotalCopies() != null && !Book.getTotalCopies().equals(oldBook.getTotalCopies()))
+                detail.put("totalCopies", oldBook.getTotalCopies() + "→" + Book.getTotalCopies());
+            if (Book.getAvailableCopies() != null && !Book.getAvailableCopies().equals(oldBook.getAvailableCopies()))
+                detail.put("availableCopies", oldBook.getAvailableCopies() + "→" + Book.getAvailableCopies());
+        }
+        operationLogService.log(userId != null ? userId.longValue() : null,
+                username != null ? username : "", 1, "EDIT_BOOK", detail);
         return Result.success();
     }
 
@@ -67,13 +91,17 @@ public class BookController {
         if (role == null || role != 1) {
             return Result.error("403", "无权限操作");
         }
+        // 删前查询，用于日志
+        List<Book> books = BookMapper.selectBatchIds(ids);
         BookMapper.deleteBatchIds(ids);
         // 记录操作日志
         Integer userId = (Integer) request.getAttribute("userId");
         String username = (String) request.getAttribute("username");
         Map<String, Object> detail = new HashMap<>();
-        detail.put("bookIds", ids);
         detail.put("count", ids.size());
+        for (Book b : books) {
+            detail.put("book", (b.getIsbn() != null ? b.getIsbn() + " " : "") + "《" + b.getName() + "》");
+        }
         operationLogService.log(userId != null ? userId.longValue() : null,
                 username != null ? username : "", 1, "DELETE_BOOK", detail);
         return Result.success();
@@ -85,12 +113,18 @@ public class BookController {
         if (role == null || role != 1) {
             return Result.error("403", "无权限操作");
         }
+        Book book = BookMapper.selectById(id.intValue());
         BookMapper.deleteById(id);
         // 记录操作日志
         Integer userId = (Integer) request.getAttribute("userId");
         String username = (String) request.getAttribute("username");
         Map<String, Object> detail = new HashMap<>();
-        detail.put("bookId", id);
+        if (book != null) {
+            detail.put("isbn", book.getIsbn());
+            detail.put("bookName", "《" + book.getName() + "》");
+        } else {
+            detail.put("bookId", id);
+        }
         operationLogService.log(userId != null ? userId.longValue() : null,
                 username != null ? username : "", 1, "DELETE_BOOK", detail);
         return Result.success();
@@ -114,6 +148,7 @@ public class BookController {
         if(StringUtils.isNotBlank(search3)){
             wrappers.like(Book::getAuthor,search3);
         }
+        wrappers.orderByDesc(Book::getId);
         Page<Book> BookPage =BookMapper.selectPage(new Page<>(pageNum,pageSize), wrappers);
         return Result.success(BookPage);
     }

@@ -86,6 +86,15 @@ public class UserController {
             user.setPassword("abc123456");
         }
         userMapper.insert(user);
+        // 操作日志
+        Integer userId = (Integer) request.getAttribute("userId");
+        String username = (String) request.getAttribute("username");
+        Map<String, Object> detail = new HashMap<>();
+        detail.put("newUserId", user.getId());
+        detail.put("newUsername", user.getUsername());
+        detail.put("nickName", user.getNickName());
+        operationLogService.log(userId != null ? userId.longValue() : null,
+                username != null ? username : "", 1, "ADD_USER", detail);
         return Result.success();
     }
 
@@ -97,6 +106,14 @@ public class UserController {
             return Result.error("403", "无权限操作");
         }
         userMapper.updateById(user);
+        // 操作日志
+        Integer userId = (Integer) request.getAttribute("userId");
+        String username = (String) request.getAttribute("username");
+        Map<String, Object> detail = new HashMap<>();
+        detail.put("editedUserId", user.getId());
+        detail.put("nickName", user.getNickName());
+        operationLogService.log(userId != null ? userId.longValue() : null,
+                username != null ? username : "", 1, "EDIT_USER", detail);
         return Result.success();
     }
 

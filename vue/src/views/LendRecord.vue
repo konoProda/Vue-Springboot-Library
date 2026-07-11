@@ -82,6 +82,15 @@
 
       <el-dialog v-model="dialogVisible" title="修改借阅记录" width="30%">
         <el-form :model="form" label-width="120px">
+          <el-form-item label="记录 ID">
+            <el-input v-model="form.id" disabled />
+          </el-form-item>
+          <el-form-item label="读者 ID">
+            <el-input v-model="form.readerId" disabled />
+          </el-form-item>
+          <el-form-item label="图书">
+            <el-input :value="form.isbn + ' ' + form.bookname" disabled />
+          </el-form-item>
           <el-form-item label="借阅时间" >
             <el-date-picker
                 v-model="form.lendTime"
@@ -101,14 +110,14 @@
 
           </el-form-item>
           <el-form-item label="是否归还" prop="status">
-            <el-radio v-model="form.status" label="0">未归还</el-radio>
-            <el-radio v-model="form.status" label="1">已归还</el-radio>
+            <el-radio v-model="form.status" label="0" @change="onStatusChange('0')">未归还</el-radio>
+            <el-radio v-model="form.status" label="1" @change="onStatusChange('1')">已归还</el-radio>
           </el-form-item>
         </el-form>
         <template #footer>
       <span class="dialog-footer">
         <el-button type="danger" @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="save(form.isbn)">确 定</el-button>
+        <el-button type="primary" @click="save(form.id)">确 定</el-button>
       </span>
         </template>
       </el-dialog>
@@ -121,6 +130,7 @@
 
 import request from "../utils/request";
 import {ElMessage} from "element-plus";
+import moment from "moment";
 import { defineComponent, reactive, toRefs } from 'vue'
 
 export default defineComponent({
@@ -165,43 +175,22 @@ export default defineComponent({
         this.total = res.data.total
       })
     },
-    save(isbn){
-      //ES6语法
-      //地址,但是？IP与端口？+请求参数
-      // this.form?这是自动保存在form中的，虽然显示时没有使用，但是这个对象中是有它的
-      if(this.form.isbn){
-        request.post("/LendRecord" + isbn, this.form).then(res => {
-          console.log(res)
-          if (res.code == 0) {
-            ElMessage({
-              message: '新增成功',
-              type: 'success',
-            })
-          } else {
-            ElMessage.error(res.msg)
-          }
-
-          this.load() //不知道为啥，更新必须要放在这里面
-          this.dialogVisible = false
-        })
-      }
-      else {
-        request.put("/LendRecord/" + isbn, this.form).then(res => {
-          console.log(res)
-          if (res.code == 0) {
-            ElMessage({
-              message: '更新成功',
-              type: 'success',
-            })
-          } else {
-            ElMessage.error(res.msg)
-          }
-
-          this.load() //不知道为啥，更新必须要放在这里面
-          this.dialogVisible2 = false
-        })
-      }
-
+    save(id){
+      // 修改借阅记录：使用记录 ID 精确定位
+      request.put("/LendRecord/" + id, this.form).then(res => {
+        console.log(res)
+        if (res.code == 0) {
+          ElMessage({ message: '修改成功', type: 'success' })
+        } else {
+          ElMessage.error(res.msg)
+        }
+      }).catch(err => {
+        console.error(err)
+        ElMessage.error('修改失败，请稍后重试')
+      }).finally(() => {
+        this.load()
+        this.dialogVisible = false
+      })
     },
     clear(){
       this.search1 = ""
@@ -212,6 +201,13 @@ export default defineComponent({
     handleEdit(row){
       this.form = JSON.parse(JSON.stringify(row))
       this.dialogVisible = true
+    },
+    onStatusChange(newStatus) {
+      if (newStatus === '0') {
+        this.form.returnTime = null   // 未归还 → 清空（null 才能被后端 Jackson 正确解析）
+      } else {
+        this.form.returnTime = moment().format('YYYY-MM-DD HH:mm:ss')  // 已归还 → 当前时间
+      }
     },
     handleSizeChange(pageSize){
       this.pageSize = pageSize

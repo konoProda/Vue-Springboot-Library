@@ -140,7 +140,7 @@ public class BorrowService {
         // 记录操作日志
         Map<String, Object> logDetail = new HashMap<>();
         logDetail.put("isbn", book.getIsbn());
-        logDetail.put("bookName", book.getName());
+        logDetail.put("bookName", "《" + book.getName() + "》");
         logDetail.put("borrownum", book.getBorrownum());
         operationLogService.log(userId, nickName, user != null ? user.getRole() : null, "BORROW", logDetail);
     }
@@ -190,7 +190,7 @@ public class BorrowService {
         String returnUsername = (returnUser != null && returnUser.getNickName() != null) ? returnUser.getNickName() : "";
         Map<String, Object> logDetail = new HashMap<>();
         logDetail.put("isbn", book.getIsbn());
-        logDetail.put("bookName", book.getName());
+        logDetail.put("bookName", "《" + book.getName() + "》");
         operationLogService.log(userId, returnUsername, returnUser != null ? returnUser.getRole() : null, "RETURN", logDetail);
     }
 
@@ -243,7 +243,7 @@ public class BorrowService {
         // 记录操作日志
         Map<String, Object> logDetail = new HashMap<>();
         logDetail.put("isbn", book.getIsbn());
-        logDetail.put("bookName", book.getName());
+        logDetail.put("bookName", "《" + book.getName() + "》");
         logDetail.put("newDeadtime", bookWithUser.getDeadtime());
         logDetail.put("remainingProlong", bookWithUser.getProlong());
         User renewUser = userMapper.selectById(userId.intValue());
