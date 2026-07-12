@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div style="padding: 20px 20px 0 20px;">
     <!-- 数字卡片 -->
-    <el-row :gutter="20">
+    <el-row :gutter="20" justify="center">
       <el-col :span="6" v-for="item in cards" :key="item.title">
         <el-card class="box-card">
           <div slot="header" class="clearfix">{{ item.title }}</div>

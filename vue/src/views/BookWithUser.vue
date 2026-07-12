@@ -57,7 +57,12 @@
           </el-popconfirm>
           <el-popconfirm title="确认续借(续借一次延长30天)?" @confirm="handlereProlong(scope.row)" v-if="user.role == 2" :disabled="scope.row.prolong == 0">
             <template #reference>
-              <el-button type="danger" size="mini" :disabled="scope.row.prolong == 0" >续借</el-button>
+              <el-button type="success" size="mini" :disabled="scope.row.prolong == 0" >续借</el-button>
+            </template>
+          </el-popconfirm>
+          <el-popconfirm title="确认还书?" @confirm="handleReturn(scope.row)" v-if="user.role == 2">
+            <template #reference>
+              <el-button type="danger" size="mini" >还书</el-button>
             </template>
           </el-popconfirm>
         </template>
@@ -205,6 +210,23 @@ export default {
         }
         this.load()
         this.dialogVisible2 = false
+      })
+    },
+    handleReturn(row){
+      const form = {
+        isbn: row.isbn,
+        readerId: row.id,  // BookWithUser.id = userId
+        returnTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+        status: '1'
+      }
+      request.put("/LendRecord1/", form).then(res => {
+        console.log(res)
+        if (res.code == 0) {
+          ElMessage({ message: '还书成功', type: 'success' })
+        } else {
+          ElMessage.error(res.msg)
+        }
+        this.load()
       })
     },
     save(){
