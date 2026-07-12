@@ -41,6 +41,10 @@ export default {
   components:{
     ValidCode
   },
+  mounted() {
+    // 登录页始终浅色模式
+    document.documentElement.classList.remove('dark')
+  },
   data() {
     return {
       validCode: '',//通过valicode获取的验证码

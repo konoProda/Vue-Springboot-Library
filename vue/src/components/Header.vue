@@ -32,7 +32,7 @@
 <script>
 import { ElMessage } from "element-plus";
 
-const THEME_KEY = 'theme'
+const THEME_PREFIX = 'theme_'
 
 export default {
   name: "Header",
@@ -44,17 +44,22 @@ export default {
       isDark: false
     }
   },
+  computed: {
+    themeKey() {
+      return THEME_PREFIX + (this.user.id || 'anon')
+    }
+  },
   created() {
     let userStr = sessionStorage.getItem("user") || "{}"
     this.user = JSON.parse(userStr)
-    // 初始化主题
-    this.isDark = localStorage.getItem(THEME_KEY) === 'dark'
+    // 按用户 ID 读取主题偏好
+    this.isDark = localStorage.getItem(this.themeKey) === 'dark'
     this.applyTheme()
   },
   methods: {
     toggleDark() {
       this.isDark = !this.isDark
-      localStorage.setItem(THEME_KEY, this.isDark ? 'dark' : 'light')
+      localStorage.setItem(this.themeKey, this.isDark ? 'dark' : 'light')
       this.applyTheme()
     },
     applyTheme() {
@@ -65,6 +70,8 @@ export default {
       }
     },
     exit() {
+      // 退出时恢复浅色模式
+      document.documentElement.classList.remove('dark')
       sessionStorage.removeItem("user")
       this.$router.push("/login")
       ElMessage.success("退出系统成功")
