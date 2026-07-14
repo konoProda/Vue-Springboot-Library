@@ -1,11 +1,15 @@
 package com.example.demo;
+
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class LoginUser {
-    private static int visitCount = 0;
+    private static AtomicInteger visitCount = new AtomicInteger(0);
+
     public static void addVisitCount() {
-        LoginUser.visitCount++;
+        visitCount.incrementAndGet();
     }
 
     public static int getVisitCount() {
-        return LoginUser.visitCount;
+        return visitCount.get();
     }
 }
