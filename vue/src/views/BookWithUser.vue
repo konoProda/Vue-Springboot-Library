@@ -181,10 +181,9 @@ export default {
       this.load()
     },
     handleDelete(row){
-      const form3 = JSON.parse(JSON.stringify(row))
-      request.post("bookwithuser/deleteRecord",form3).then(res =>{
+      request.post("bookwithuser/deleteRecords",[row]).then(res =>{
         console.log(res)
-        if(res.code == 0 ){
+        if(res.code === '0'){
           ElMessage.success("删除成功")
         }
         else

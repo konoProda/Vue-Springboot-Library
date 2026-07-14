@@ -152,24 +152,6 @@ public class UserController {
         return Result.success();
     }
 
-    @GetMapping
-    public Result<?> findPage(@RequestParam(defaultValue = "1") Integer pageNum,
-                              @RequestParam(defaultValue = "10") Integer pageSize,
-                              @RequestParam(defaultValue = "") String search,
-                              HttpServletRequest request){
-        Integer role = (Integer) request.getAttribute("role");
-        if (role == null || role != 1) {
-            return Result.error("403", "无权限操作");
-        }
-        LambdaQueryWrapper<User> wrappers = Wrappers.<User>lambdaQuery();
-        if(StringUtils.isNotBlank(search)){
-            wrappers.like(User::getNickName,search);
-        }
-        wrappers.eq(User::getRole,2);
-        Page<User> userPage =userMapper.selectPage(new Page<>(pageNum,pageSize), wrappers);
-        return Result.success(userPage);
-    }
-
     @GetMapping("/usersearch")
     public Result<?> findPage2(@RequestParam(defaultValue = "1") Integer pageNum,
                               @RequestParam(defaultValue = "10") Integer pageSize,

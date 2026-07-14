@@ -6,8 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.commom.Result;
 import com.example.demo.entity.Book;
-import com.example.demo.mapper.BookMapper;
-import com.example.demo.service.BorrowService;
+import com.example.demo.service.BookService;
 import com.example.demo.service.OperationLogService;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,10 +20,7 @@ import java.util.Map;
 @RequestMapping("/book")
 public class BookController {
     @Resource
-    BookMapper BookMapper;
-
-    @Resource
-    BorrowService borrowService;
+    BookService bookService;
 
     @Resource
     OperationLogService operationLogService;
@@ -37,7 +33,7 @@ public class BookController {
         if (role == null || role != 1) {
             return Result.error("403", "无权限操作");
         }
-        BookMapper.insert(Book);
+        bookService.save(Book);
         // 操作日志
         Integer userId = (Integer) request.getAttribute("userId");
         String username = (String) request.getAttribute("username");
@@ -66,8 +62,8 @@ public class BookController {
             return Result.success();
         }
         // 管理员编辑图书信息
-        Book oldBook = BookMapper.selectById(Book.getId());
-        BookMapper.updateById(Book);
+        Book oldBook = bookService.getById(Book.getId());
+        bookService.updateById(Book);
         // 操作日志 — 含前后对比
         Integer userId = (Integer) request.getAttribute("userId");
         String username = (String) request.getAttribute("username");
@@ -92,8 +88,8 @@ public class BookController {
             return Result.error("403", "无权限操作");
         }
         // 删前查询，用于日志
-        List<Book> books = BookMapper.selectBatchIds(ids);
-        BookMapper.deleteBatchIds(ids);
+        List<Book> books = bookService.listByIds(ids);
+        bookService.removeByIds(ids);
         // 记录操作日志
         Integer userId = (Integer) request.getAttribute("userId");
         String username = (String) request.getAttribute("username");
@@ -113,8 +109,8 @@ public class BookController {
         if (role == null || role != 1) {
             return Result.error("403", "无权限操作");
         }
-        Book book = BookMapper.selectById(id.intValue());
-        BookMapper.deleteById(id);
+        Book book = bookService.getById(id.intValue());
+        bookService.removeById(id);
         // 记录操作日志
         Integer userId = (Integer) request.getAttribute("userId");
         String username = (String) request.getAttribute("username");
@@ -149,7 +145,7 @@ public class BookController {
             wrappers.like(Book::getAuthor,search3);
         }
         wrappers.orderByDesc(Book::getId);
-        Page<Book> BookPage =BookMapper.selectPage(new Page<>(pageNum,pageSize), wrappers);
+        Page<Book> BookPage = bookService.page(new Page<>(pageNum,pageSize), wrappers);
         return Result.success(BookPage);
     }
 }

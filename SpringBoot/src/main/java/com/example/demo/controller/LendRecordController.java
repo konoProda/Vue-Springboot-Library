@@ -230,22 +230,6 @@ public class LendRecordController {
         return Result.success();
     }
 
-    @PutMapping("/byTime/{lendTime}")
-    public  Result<?> update2(@PathVariable Date lendTime, @RequestBody LendRecord lendRecord, HttpServletRequest request){
-        Integer role = (Integer) request.getAttribute("role");
-        if (role == null || role != 1) {
-            return Result.error("403", "无权限操作");
-        }
-        UpdateWrapper<LendRecord> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("lendTime",lendTime);
-        LendRecord lendrecord = new LendRecord();
-        lendrecord.setReturnTime(lendRecord.getReturnTime());
-        lendrecord.setStatus(lendRecord.getStatus());
-        LendRecordMapper.update(lendrecord, updateWrapper);
-        logOperation(request, "EDIT_LEND_RECORD", lendRecord.getIsbn(), lendRecord.getBookname(), null);
-        return Result.success();
-    }
-
     // ==================== 辅助方法 ====================
 
     private void logEditLendRecord(HttpServletRequest request, LendRecord before, LendRecord after) {

@@ -336,19 +336,7 @@ export default {
         this.form3.borrownum = bn
         request.put("/LendRecord1/",this.form3).then(res =>{
           console.log(res)
-          let form3 ={};
-          form3.isbn = isbn;
-          form3.bookName = name;
-          form3.nickName = this.user.username;
-          form3.id = this.user.id;
-          form3.lendtime = endDate;
-          form3.deadtime = endDate;
-          form3.prolong  = 1;
-          request.post("/bookwithuser/deleteRecord",form3).then(res =>{
-            console.log(res)
-            this.load()
-          })
-
+          this.load()
         })
       //
       })
@@ -411,11 +399,6 @@ export default {
       let startDate = moment(new Date()).format("yyyy-MM-DD HH:mm:ss");
       this.form2.lendTime = startDate
       console.log(this.user)
-      request.post("/LendRecord",this.form2).then(res =>{
-        console.log(res)
-        this.load();
-
-      })
       let form3 ={};
       form3.isbn = isbn;
       form3.bookName = name;
