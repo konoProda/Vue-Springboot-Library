@@ -165,7 +165,7 @@ public class UserController {
         if(StringUtils.isNotBlank(search)){
             wrappers.like(User::getNickName,search);
         }
-        wrappers.like(User::getRole,2);
+        wrappers.eq(User::getRole,2);
         Page<User> userPage =userMapper.selectPage(new Page<>(pageNum,pageSize), wrappers);
         return Result.success(userPage);
     }
@@ -184,7 +184,7 @@ public class UserController {
         }
         LambdaQueryWrapper<User> wrappers = Wrappers.<User>lambdaQuery();
         if(StringUtils.isNotBlank(search1)){
-            wrappers.like(User::getId,search1);
+            wrappers.eq(User::getId,search1);
         }
         if(StringUtils.isNotBlank(search2)){
             wrappers.like(User::getNickName,search2);
@@ -195,7 +195,7 @@ public class UserController {
         if(StringUtils.isNotBlank(search4)){
             wrappers.like(User::getAddress,search4);
         }
-        wrappers.like(User::getRole,2);
+        wrappers.eq(User::getRole,2);
         Page<User> userPage =userMapper.selectPage(new Page<>(pageNum,pageSize), wrappers);
         return Result.success(userPage);
     }
