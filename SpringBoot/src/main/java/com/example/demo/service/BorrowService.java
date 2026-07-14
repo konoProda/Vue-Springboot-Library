@@ -21,11 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 借书/还书/续借 核心业务逻辑
- *
- * 将原本分散在 BookController、BookWithUserController、LendRecordController、
- * LendRecordController1 中的借阅相关操作收敛到本 Service，并通过 @Transactional
- * 保证多表操作的数据一致性。
+ * 借书/还书/续借 核心业务逻辑。
  */
 @Service
 public class BorrowService {
@@ -45,39 +41,32 @@ public class BorrowService {
     @Resource
     private OperationLogService operationLogService;
 
-    /** 最大借阅数量 (从 application.properties 读取) */
     @Value("${borrow.max-count:5}")
     private int maxBorrowCount;
 
-    /** 借阅期限（天） */
     @Value("${borrow.duration-days:30}")
     private int borrowDurationDays;
 
-    /** 续借延长期限（天） */
     @Value("${borrow.renew-duration-days:30}")
     private int renewDurationDays;
 
-    /** 最大续借次数 */
     @Value("${borrow.max-renew-count:1}")
     private int maxRenewCount;
 
-    /**
-     * 借书操作（多副本支持）。
-     * 在一个事务中完成:
-     *   1. 校验图书是否有可借副本 (availableCopies > 0)
-     *   2. 校验用户当前借阅数量是否 < maxBorrowCount (默认5)
-     *   3. 校验用户是否已借阅该书（防重复借阅）
-     *   4. availableCopies -= 1, book.borrownum + 1
-     *   5. 插入 lend_record 记录
-     *   6. 插入 bookwithuser 记录
-     *
-     * @param userId 读者 ID
-     * @param bookId 图书 ID (对应 book 表主键)
-     * @throws RuntimeException 图书不存在 / 库存不足 / 借阅数量超限 / 重复借阅
-     */
+    // ==================== 借书 ====================
+
     @Transactional(rollbackFor = Exception.class)
     public void borrowBook(Long userId, Long bookId) {
-        // ========== 1. 校验图书是否存在且可借 ==========
+        Book book = validateBorrowPreconditions(userId, bookId);
+        executeBorrow(book, userId);
+    }
+
+    /**
+     * 校验借书前置条件：图书存在/有库存、用户未超借阅上限、未重复借阅。
+     * @return 校验通过后的 Book 对象（已包含最新字段值）
+     */
+    private Book validateBorrowPreconditions(Long userId, Long bookId) {
+        // 1. 校验图书是否存在且可借
         Book book = bookMapper.selectById(bookId.intValue());
         if (book == null) {
             throw new RuntimeException("图书不存在");
@@ -86,7 +75,7 @@ public class BorrowService {
             throw new RuntimeException("库存不足，暂无可用副本");
         }
 
-        // ========== 2. 校验用户借阅数量 < maxBorrowCount ==========
+        // 2. 校验用户借阅数量 < maxBorrowCount
         LambdaQueryWrapper<BookWithUser> countWrapper = new LambdaQueryWrapper<>();
         countWrapper.eq(BookWithUser::getUserId, userId.intValue());
         Integer borrowCount = bookWithUserMapper.selectCount(countWrapper);
@@ -94,16 +83,22 @@ public class BorrowService {
             throw new RuntimeException("借阅数量已达上限(" + maxBorrowCount + "本)，请先归还部分图书");
         }
 
-        // ========== 3. 校验用户是否已借阅该书（防重复借阅） ==========
+        // 3. 校验用户是否已借阅该书（防重复借阅）
         LambdaQueryWrapper<BookWithUser> duplicateWrapper = new LambdaQueryWrapper<>();
         duplicateWrapper.eq(BookWithUser::getUserId, userId.intValue())
                         .eq(BookWithUser::getIsbn, book.getIsbn());
-        Integer duplicateCount = bookWithUserMapper.selectCount(duplicateWrapper);
-        if (duplicateCount != null && duplicateCount > 0) {
+        if (bookWithUserMapper.selectCount(duplicateWrapper) > 0) {
             throw new RuntimeException("不可重复借阅同一本书");
         }
 
-        // ========== 4. 更新库存和借阅次数（乐观锁防并发） ==========
+        return book;
+    }
+
+    /**
+     * 执行借书：更新库存 → 插入 lend_record → 插入 bookwithuser → 记录日志。
+     */
+    private void executeBorrow(Book book, Long userId) {
+        // 1. 更新库存和借阅次数（乐观锁）
         book.setAvailableCopies(book.getAvailableCopies() - 1);
         book.setBorrownum(book.getBorrownum() != null ? book.getBorrownum() + 1 : 1);
         int updated = bookMapper.updateById(book);
@@ -111,22 +106,36 @@ public class BorrowService {
             throw new RuntimeException("借书失败：图书信息已被其他操作修改，请刷新后重试");
         }
 
-        // ========== 5. 插入借阅历史记录 ==========
+        // 2. 插入借阅历史记录
+        insertLendRecord(book, userId);
+
+        // 3. 插入活跃借阅记录
+        String nickName = insertBookWithUser(book, userId);
+
+        // 4. 记录操作日志
+        Map<String, Object> logDetail = new HashMap<>();
+        logDetail.put("isbn", book.getIsbn());
+        logDetail.put("bookName", "《" + book.getName() + "》");
+        logDetail.put("borrownum", book.getBorrownum());
+        operationLogService.log(userId, nickName,
+                getRole(userId), "BORROW", logDetail);
+    }
+
+    private void insertLendRecord(Book book, Long userId) {
         LendRecord lendRecord = new LendRecord();
         lendRecord.setReaderId(userId.intValue());
         lendRecord.setIsbn(book.getIsbn());
         lendRecord.setBookname(book.getName());
         lendRecord.setLendTime(new Date());
-        lendRecord.setStatus("0");       // "0" = 借阅中
+        lendRecord.setStatus("0");
         lendRecord.setBorrownum(book.getBorrownum());
         lendRecordMapper.insert(lendRecord);
+    }
 
-        // ========== 6. 插入活跃借阅记录 ==========
-        // 获取用户昵称
+    private String insertBookWithUser(Book book, Long userId) {
         User user = userMapper.selectById(userId.intValue());
         String nickName = (user != null && user.getNickName() != null) ? user.getNickName() : "";
 
-        // 计算应还日期: 当前时间 + borrowDurationDays 天
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_MONTH, borrowDurationDays);
 
@@ -137,37 +146,22 @@ public class BorrowService {
         bookWithUser.setNickName(nickName);
         bookWithUser.setLendtime(new Date());
         bookWithUser.setDeadtime(cal.getTime());
-        bookWithUser.setProlong(maxRenewCount);      // 初始可续借次数
+        bookWithUser.setProlong(maxRenewCount);
         bookWithUserMapper.insert(bookWithUser);
 
-        // 记录操作日志
-        Map<String, Object> logDetail = new HashMap<>();
-        logDetail.put("isbn", book.getIsbn());
-        logDetail.put("bookName", "《" + book.getName() + "》");
-        logDetail.put("borrownum", book.getBorrownum());
-        operationLogService.log(userId, nickName, user != null ? user.getRole() : null, "BORROW", logDetail);
+        return nickName;
     }
 
-    /**
-     * 还书操作（多副本支持）。
-     * 在一个事务中完成:
-     *   1. availableCopies += 1（归还一个副本）
-     *   2. 更新 lend_record 的 return_time 和 status = "1"
-     *   3. 删除 bookwithuser 中对应的记录
-     *
-     * @param userId 读者 ID
-     * @param bookId 图书 ID (对应 book 表主键)
-     * @throws RuntimeException 图书不存在 / 未找到借阅记录
-     */
+    // ==================== 还书 ====================
+
     @Transactional(rollbackFor = Exception.class)
     public void returnBook(Long userId, Long bookId) {
-        // ========== 0. 查询图书 ==========
         Book book = bookMapper.selectById(bookId.intValue());
         if (book == null) {
             throw new RuntimeException("图书不存在");
         }
 
-        // ========== 1. 归还副本（乐观锁防并发） ==========
+        // 归还副本（乐观锁）
         book.setAvailableCopies(book.getAvailableCopies() != null
                 ? book.getAvailableCopies() + 1 : 1);
         int updated = bookMapper.updateById(book);
@@ -175,51 +169,41 @@ public class BorrowService {
             throw new RuntimeException("还书失败：图书信息已被其他操作修改，请刷新后重试");
         }
 
-        // ========== 2. 更新借阅历史: 设置归还时间 + 状态 ==========
+        // 更新借阅历史
         UpdateWrapper<LendRecord> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("isbn", book.getIsbn())
                      .eq("reader_id", userId.intValue())
-                     .eq("status", "0");   // 找到尚未归还的那条记录
+                     .eq("status", "0");
         LendRecord lendRecord = new LendRecord();
         lendRecord.setReturnTime(new Date());
-        lendRecord.setStatus("1");         // "1" = 已归还
+        lendRecord.setStatus("1");
         lendRecordMapper.update(lendRecord, updateWrapper);
 
-        // ========== 3. 删除活跃借阅记录 ==========
+        // 删除活跃借阅记录
         Map<String, Object> deleteMap = new HashMap<>();
         deleteMap.put("isbn", book.getIsbn());
         deleteMap.put("user_id", userId.intValue());
         bookWithUserMapper.deleteByMap(deleteMap);
 
-        // 记录操作日志
+        // 日志
         User returnUser = userMapper.selectById(userId.intValue());
-        String returnUsername = (returnUser != null && returnUser.getNickName() != null) ? returnUser.getNickName() : "";
+        String nickName = (returnUser != null && returnUser.getNickName() != null) ? returnUser.getNickName() : "";
         Map<String, Object> logDetail = new HashMap<>();
         logDetail.put("isbn", book.getIsbn());
         logDetail.put("bookName", "《" + book.getName() + "》");
-        operationLogService.log(userId, returnUsername, returnUser != null ? returnUser.getRole() : null, "RETURN", logDetail);
+        operationLogService.log(userId, nickName,
+                returnUser != null ? returnUser.getRole() : null, "RETURN", logDetail);
     }
 
-    /**
-     * 续借操作。
-     * 在一个事务中完成:
-     *   1. 校验 bookwithuser 中该记录的 prolong > 0
-     *   2. 将 deadtime 增加 renewDurationDays 天
-     *   3. prolong 减 1
-     *
-     * @param userId 读者 ID
-     * @param bookId 图书 ID (对应 book 表主键)
-     * @throws RuntimeException 图书不存在 / 未找到借阅记录 / 续借次数已用完
-     */
+    // ==================== 续借 ====================
+
     @Transactional(rollbackFor = Exception.class)
     public void renewBook(Long userId, Long bookId) {
-        // ========== 0. 查询图书 ==========
         Book book = bookMapper.selectById(bookId.intValue());
         if (book == null) {
             throw new RuntimeException("图书不存在");
         }
 
-        // ========== 1. 查找活跃借阅记录 ==========
         LambdaQueryWrapper<BookWithUser> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(BookWithUser::getIsbn, book.getIsbn())
                     .eq(BookWithUser::getUserId, userId.intValue());
@@ -228,12 +212,10 @@ public class BorrowService {
             throw new RuntimeException("未找到借阅记录，无法续借");
         }
 
-        // ========== 2. 校验续借次数 ==========
         if (bookWithUser.getProlong() == null || bookWithUser.getProlong() <= 0) {
             throw new RuntimeException("续借次数已用完");
         }
 
-        // ========== 3. 更新 deadtime (+renewDurationDays天) 和 prolong (-1) ==========
         Calendar cal = Calendar.getInstance();
         cal.setTime(bookWithUser.getDeadtime());
         cal.add(Calendar.DAY_OF_MONTH, renewDurationDays);
@@ -246,14 +228,20 @@ public class BorrowService {
                      .eq("user_id", userId.intValue());
         bookWithUserMapper.update(bookWithUser, updateWrapper);
 
-        // 记录操作日志
         Map<String, Object> logDetail = new HashMap<>();
         logDetail.put("isbn", book.getIsbn());
         logDetail.put("bookName", "《" + book.getName() + "》");
         logDetail.put("newDeadtime", bookWithUser.getDeadtime());
         logDetail.put("remainingProlong", bookWithUser.getProlong());
         User renewUser = userMapper.selectById(userId.intValue());
-        Integer renewUserRole = renewUser != null ? renewUser.getRole() : null;
-        operationLogService.log(userId, bookWithUser.getNickName(), renewUserRole, "RENEW", logDetail);
+        operationLogService.log(userId, bookWithUser.getNickName(),
+                renewUser != null ? renewUser.getRole() : null, "RENEW", logDetail);
+    }
+
+    // ==================== 辅助方法 ====================
+
+    private Integer getRole(Long userId) {
+        User user = userMapper.selectById(userId.intValue());
+        return user != null ? user.getRole() : null;
     }
 }

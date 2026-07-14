@@ -2,28 +2,23 @@ package com.example.demo.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Constants;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.LoginUser;
 import com.example.demo.commom.Result;
-import com.example.demo.entity.BookWithUser;
 import com.example.demo.entity.User;
+import com.example.demo.interceptor.JwtInterceptor;
 import com.example.demo.mapper.UserMapper;
 import com.example.demo.service.OperationLogService;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.jdbc.Null;
-import org.springframework.web.bind.annotation.*;
+import com.example.demo.utils.QueryUtils;
 import com.example.demo.utils.TokenUtils;
-
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 @RestController
 @RequestMapping("/user")
@@ -39,8 +34,7 @@ public class UserController {
     @PostMapping("/register")
     public Result<?> register(@RequestBody User user){
         User res = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUsername,user.getUsername()));
-        if(res != null)
-        {
+        if(res != null) {
             return Result.error("-1","用户名已重复");
         }
         userMapper.insert(user);
@@ -50,9 +44,10 @@ public class UserController {
     @CrossOrigin
     @PostMapping("/login")
     public Result<?> login(@RequestBody User user){
-        User res = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUsername,user.getUsername()).eq(User::getPassword,user.getPassword()));
-        if(res == null)
-        {
+        User res = userMapper.selectOne(Wrappers.<User>lambdaQuery()
+                .eq(User::getUsername,user.getUsername())
+                .eq(User::getPassword,user.getPassword()));
+        if(res == null) {
             return Result.error("-1","用户名或密码错误");
         }
         String token = TokenUtils.genToken(res);
@@ -62,9 +57,8 @@ public class UserController {
         return Result.success(res);
     }
 
-    /** 修改自己的密码（任何已登录用户均可操作） */
     @PutMapping("/password")
-    public  Result<?> update( @RequestParam Integer id,
+    public Result<?> update(@RequestParam Integer id,
                               @RequestParam String password2){
         UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("id",id);
@@ -78,15 +72,13 @@ public class UserController {
 
     @PostMapping
     public Result<?> save(@RequestBody User user, HttpServletRequest request){
-        Integer role = (Integer) request.getAttribute("role");
-        if (role == null || role != 1) {
-            return Result.error("403", "无权限操作");
-        }
+        Result<?> perm = JwtInterceptor.requireAdmin(request);
+        if (perm != null) return perm;
+
         if(user.getPassword() == null){
             user.setPassword("abc123456");
         }
         userMapper.insert(user);
-        // 操作日志
         Integer userId = (Integer) request.getAttribute("userId");
         String username = (String) request.getAttribute("username");
         Map<String, Object> detail = new HashMap<>();
@@ -98,15 +90,12 @@ public class UserController {
         return Result.success();
     }
 
-    /** 管理员修改用户信息 */
     @PutMapping
-    public  Result<?> password(@RequestBody User user, HttpServletRequest request){
-        Integer role = (Integer) request.getAttribute("role");
-        if (role == null || role != 1) {
-            return Result.error("403", "无权限操作");
-        }
+    public Result<?> password(@RequestBody User user, HttpServletRequest request){
+        Result<?> perm = JwtInterceptor.requireAdmin(request);
+        if (perm != null) return perm;
+
         userMapper.updateById(user);
-        // 操作日志
         Integer userId = (Integer) request.getAttribute("userId");
         String username = (String) request.getAttribute("username");
         Map<String, Object> detail = new HashMap<>();
@@ -118,13 +107,11 @@ public class UserController {
     }
 
     @PostMapping("/deleteBatch")
-    public  Result<?> deleteBatch(@RequestBody List<Integer> ids, HttpServletRequest request){
-        Integer role = (Integer) request.getAttribute("role");
-        if (role == null || role != 1) {
-            return Result.error("403", "无权限操作");
-        }
+    public Result<?> deleteBatch(@RequestBody List<Integer> ids, HttpServletRequest request){
+        Result<?> perm = JwtInterceptor.requireAdmin(request);
+        if (perm != null) return perm;
+
         userMapper.deleteBatchIds(ids);
-        // 记录操作日志
         Integer userId = (Integer) request.getAttribute("userId");
         String username = (String) request.getAttribute("username");
         Map<String, Object> detail = new HashMap<>();
@@ -137,12 +124,10 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public Result<?> delete(@PathVariable Long id, HttpServletRequest request){
-        Integer role = (Integer) request.getAttribute("role");
-        if (role == null || role != 1) {
-            return Result.error("403", "无权限操作");
-        }
+        Result<?> perm = JwtInterceptor.requireAdmin(request);
+        if (perm != null) return perm;
+
         userMapper.deleteById(id);
-        // 记录操作日志
         Integer userId = (Integer) request.getAttribute("userId");
         String username = (String) request.getAttribute("username");
         Map<String, Object> detail = new HashMap<>();
@@ -160,25 +145,16 @@ public class UserController {
                                @RequestParam(defaultValue = "") String search3,
                                @RequestParam(defaultValue = "") String search4,
                                HttpServletRequest request){
-        Integer role = (Integer) request.getAttribute("role");
-        if (role == null || role != 1) {
-            return Result.error("403", "无权限操作");
-        }
+        Result<?> perm = JwtInterceptor.requireAdmin(request);
+        if (perm != null) return perm;
+
         LambdaQueryWrapper<User> wrappers = Wrappers.<User>lambdaQuery();
-        if(StringUtils.isNotBlank(search1)){
-            wrappers.eq(User::getId,search1);
-        }
-        if(StringUtils.isNotBlank(search2)){
-            wrappers.like(User::getNickName,search2);
-        }
-        if(StringUtils.isNotBlank(search3)){
-            wrappers.like(User::getPhone,search3);
-        }
-        if(StringUtils.isNotBlank(search4)){
-            wrappers.like(User::getAddress,search4);
-        }
+        QueryUtils.eqIfNotBlank(wrappers, User::getId, search1);
+        QueryUtils.likeIfNotBlank(wrappers, User::getNickName, search2);
+        QueryUtils.likeIfNotBlank(wrappers, User::getPhone, search3);
+        QueryUtils.likeIfNotBlank(wrappers, User::getAddress, search4);
         wrappers.eq(User::getRole,2);
-        Page<User> userPage =userMapper.selectPage(new Page<>(pageNum,pageSize), wrappers);
+        Page<User> userPage = userMapper.selectPage(new Page<>(pageNum, pageSize), wrappers);
         return Result.success(userPage);
     }
 }

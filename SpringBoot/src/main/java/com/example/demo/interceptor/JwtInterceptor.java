@@ -1,5 +1,6 @@
 package com.example.demo.interceptor;
 
+import com.example.demo.commom.Result;
 import com.example.demo.entity.User;
 import com.example.demo.utils.TokenUtils;
 import org.springframework.stereotype.Component;
@@ -104,5 +105,20 @@ public class JwtInterceptor implements HandlerInterceptor {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json;charset=UTF-8");
         response.getWriter().write("{\"code\":\"401\",\"msg\":\"" + message + "\"}");
+    }
+
+    /**
+     * 权限检查：要求当前用户为管理员（role=1）。
+     * 返回 null 表示检查通过；返回 Result.error 表示无权限，调用方应直接返回该 Result。
+     *
+     * @param request HTTP 请求（需已通过 Token 拦截器设置 role 属性）
+     * @return null 表示有权限，非 null 表示无权限（含错误信息）
+     */
+    public static Result<?> requireAdmin(HttpServletRequest request) {
+        Integer role = (Integer) request.getAttribute(REQUEST_ATTR_ROLE);
+        if (role == null || role != 1) {
+            return Result.error("403", "无权限操作");
+        }
+        return null;
     }
 }
