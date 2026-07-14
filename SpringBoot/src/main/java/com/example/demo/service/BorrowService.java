@@ -103,10 +103,13 @@ public class BorrowService {
             throw new RuntimeException("不可重复借阅同一本书");
         }
 
-        // ========== 4. 更新库存和借阅次数 ==========
+        // ========== 4. 更新库存和借阅次数（乐观锁防并发） ==========
         book.setAvailableCopies(book.getAvailableCopies() - 1);
         book.setBorrownum(book.getBorrownum() != null ? book.getBorrownum() + 1 : 1);
-        bookMapper.updateById(book);
+        int updated = bookMapper.updateById(book);
+        if (updated == 0) {
+            throw new RuntimeException("借书失败：图书信息已被其他操作修改，请刷新后重试");
+        }
 
         // ========== 5. 插入借阅历史记录 ==========
         LendRecord lendRecord = new LendRecord();
@@ -164,10 +167,13 @@ public class BorrowService {
             throw new RuntimeException("图书不存在");
         }
 
-        // ========== 1. 归还副本 ==========
+        // ========== 1. 归还副本（乐观锁防并发） ==========
         book.setAvailableCopies(book.getAvailableCopies() != null
                 ? book.getAvailableCopies() + 1 : 1);
-        bookMapper.updateById(book);
+        int updated = bookMapper.updateById(book);
+        if (updated == 0) {
+            throw new RuntimeException("还书失败：图书信息已被其他操作修改，请刷新后重试");
+        }
 
         // ========== 2. 更新借阅历史: 设置归还时间 + 状态 ==========
         UpdateWrapper<LendRecord> updateWrapper = new UpdateWrapper<>();

@@ -55,10 +55,14 @@ public class BookWithUserController {
             return Result.error("1", "图书不存在");
         }
 
-        borrowService.borrowBook(
-                (long) bookWithUser.getUserId(),   // userId (原 BookWithUser.id 存储的是用户ID)
-                (long) book.getId()                 // bookId
-        );
+        try {
+            borrowService.borrowBook(
+                    (long) bookWithUser.getUserId(),   // userId (原 BookWithUser.id 存储的是用户ID)
+                    (long) book.getId()                 // bookId
+            );
+        } catch (RuntimeException e) {
+            return Result.error("1", e.getMessage());
+        }
         return Result.success();
     }
 
@@ -87,10 +91,14 @@ public class BookWithUserController {
                 return Result.error("1", "图书不存在");
             }
 
-            borrowService.renewBook(
-                    (long) bookWithUser.getUserId(),
-                    (long) book.getId()
-            );
+            try {
+                borrowService.renewBook(
+                        (long) bookWithUser.getUserId(),
+                        (long) book.getId()
+                );
+            } catch (RuntimeException e) {
+                return Result.error("1", e.getMessage());
+            }
             return Result.success();
         }
 

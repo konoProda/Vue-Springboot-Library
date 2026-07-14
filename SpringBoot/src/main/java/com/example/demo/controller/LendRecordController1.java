@@ -42,10 +42,14 @@ public class LendRecordController1 {
             return Result.error("1", "图书不存在");
         }
 
-        borrowService.returnBook(
-                (long) lendRecord.getReaderId(),
-                (long) book.getId()
-        );
+        try {
+            borrowService.returnBook(
+                    (long) lendRecord.getReaderId(),
+                    (long) book.getId()
+            );
+        } catch (RuntimeException e) {
+            return Result.error("1", e.getMessage());
+        }
         return Result.success();
     }
 

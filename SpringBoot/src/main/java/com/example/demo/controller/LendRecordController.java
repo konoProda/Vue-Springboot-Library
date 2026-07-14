@@ -118,7 +118,10 @@ public class LendRecordController {
             if (book != null) {
                 book.setAvailableCopies(book.getAvailableCopies() != null
                         ? book.getAvailableCopies() + 1 : 1);
-                bookMapper.updateById(book);
+                int updated = bookMapper.updateById(book);
+                if (updated == 0) {
+                    throw new RuntimeException("操作失败：图书信息已被其他操作修改，请刷新后重试");
+                }
             }
         }
 
@@ -170,7 +173,10 @@ public class LendRecordController {
             if (book != null) {
                 book.setAvailableCopies(book.getAvailableCopies() != null
                         ? book.getAvailableCopies() + 1 : 1);
-                bookMapper.updateById(book);
+                int updated = bookMapper.updateById(book);
+                if (updated == 0) {
+                    throw new RuntimeException("操作失败：图书信息已被其他操作修改，请刷新后重试");
+                }
             }
         }
         // ---- 逆向：已归还 → 未归还 ----
@@ -188,7 +194,10 @@ public class LendRecordController {
                 throw new RuntimeException("库存不足，无法恢复为未归还状态");
             }
             book.setAvailableCopies(book.getAvailableCopies() - 1);
-            bookMapper.updateById(book);
+            int updatedBook = bookMapper.updateById(book);
+            if (updatedBook == 0) {
+                throw new RuntimeException("操作失败：图书信息已被其他操作修改，请刷新后重试");
+            }
 
             // 创建 bookwithuser 活跃记录（避免重复）
             LambdaQueryWrapper<BookWithUser> existCheck = new LambdaQueryWrapper<>();
