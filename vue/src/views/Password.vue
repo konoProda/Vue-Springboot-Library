@@ -103,7 +103,7 @@ export default {
       this.$refs['form'].validate((valid) => {
         if (valid) {
 
-          request.put("/user", this.form2).then(res => {
+          request.put("/user/password", null, { params: { id: this.form2.id, password2: this.form2.password } }).then(res => {
             if (res.code == 0) {
               ElMessage.success("密码修改成功,请重新登录")
               sessionStorage.removeItem("user")//清空缓存的用户信息
