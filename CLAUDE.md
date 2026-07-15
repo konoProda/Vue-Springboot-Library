@@ -191,7 +191,7 @@ All admin write operations are asynchronously logged to `operation_log` via `Ope
 
 1. **重构/清理/简化代码** → 优先调用 `code-simplifier` 插件（Refactor Cleaner）
 2. **派发子任务/后台执行/批量修改** → 启动 `GKD` 插件
-3. **分析代码库/查重复/死代码/架构违规** → 加载 `codebase-analysis` 技能
+3. **分析代码库/查重复/死代码/架构违规** → 加载 `codebase-analysis` 插件
 4. **如果上述工具未安装或不可用** → 回退到常规对话式代码分析
 5. **所有工具执行前** → 需向用户确认操作范围和目标文件
 
@@ -200,3 +200,10 @@ All admin write operations are asynchronously logged to `operation_log` via `Ope
 - 已配置 Playwright MCP Server，Claude 可通过 `browser_navigate`、`browser_click` 等工具控制浏览器
 - 测试目标：`http://localhost:9876`
 - 使用 `browser_snapshot` 获取页面结构，`browser_take_screenshot` 截图
+
+## 优先规则(自动加载)
+
+当用户提出以下意图时,请自动调用对应的技能:
+
+1. **用户给出的需求分析/需求解构前** -> 优先加载 `requirement-analyzer` 技能
+2. **所有测试用例/测试脚本的生成/执行前** -> 优先加载 `test-automation` 技能

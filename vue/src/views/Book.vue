@@ -305,63 +305,17 @@ export default {
       })
     },
     handlereturn(id,isbn,bn){
-      // (this.isbnArray.indexOf(scope.row.isbn)) == -1
-      // for(let i=0; i<this.numOfOutDataBook; i++){
-      //   if(this.outDateBook[i].isbn == isbn){
-      //     this.numOfOutDataBook = this.numOfOutDataBook -1;
-      //     console.log("in handlereturn: " + this.numOfOutDataBook);
-      //     break;
-      //   }
-      // }
-      this.form.id = id
-      // PUT /book 在还书流程中为 no-op（实际还书由 LendRecordController1 → BorrowService 处理）
-      request.put("/book",this.form).then(res =>{
+      // 单一业务请求：只提交 isbn，后端统一完成所有校验和计算
+      request.post("/return", { isbn: isbn }).then(res =>{
         console.log(res)
         if(res.code == 0){
-          ElMessage({
-            message: '还书成功',
-            type: 'success',
-          })
+          ElMessage({ message: '还书成功', type: 'success' })
         }
         else {
           ElMessage.error(res.msg)
         }
-      //
-        this.form3.isbn = isbn
-        this.form3.readerId = this.user.id
-        let endDate = moment(new Date()).format("yyyy-MM-DD HH:mm:ss")
-        this.form3.returnTime = endDate
-        this.form3.status = "1"
-        console.log(bn)
-        this.form3.borrownum = bn
-        request.put("/LendRecord1/",this.form3).then(res =>{
-          console.log(res)
-          this.load()
-        })
-      //
+        this.load()
       })
-      // this.form3.isbn = isbn
-      // this.form3.readerId = this.user.id
-      // let endDate = moment(new Date()).format("yyyy-MM-DD HH:mm:ss")
-      // this.form3.returnTime = endDate
-      // this.form3.status = "1"
-      // console.log(bn)
-      // this.form3.borrownum = bn
-      // request.put("/LendRecord1/",this.form3).then(res =>{
-      //   console.log(res)
-      // })
-      // let form3 ={};
-      // form3.isbn = isbn;
-      // form3.bookName = name;
-      // form3.nickName = this.user.username;
-      // form3.id = this.user.id;
-      // form3.lendtime = endDate;
-      // form3.deadtime = endDate;
-      // form3.prolong  = 1;
-      // request.post("/bookwithuser/deleteRecord",form3).then(res =>{
-      //   console.log(res)
-      //   this.load()
-      // })
     },
     handlelend(id,isbn,name,bn,row){
       if (row && this.isbnArray.indexOf(row.isbn) !== -1) {
@@ -380,45 +334,15 @@ export default {
         ElMessage.warning("在您归还逾期书籍前不能再借阅书籍")
         return;
       }
-      this.form.id = id
-      this.form.borrownum = bn+1
-      // PUT /book 在借书流程中为 no-op（实际借书由 BookWithUserController → BorrowService 处理）
-      console.log(bn)
-      request.put("/book",this.form).then(res =>{
+      // 单一业务请求：只提交 isbn，后端统一完成所有校验和计算
+      request.post("/borrow", { isbn: isbn }).then(res =>{
         console.log(res)
         if(res.code == 0){
-          ElMessage({
-            message: '借阅成功',
-            type: 'success',
-          })
+          ElMessage({ message: '借阅成功', type: 'success' })
         }
         else {
           ElMessage.error(res.msg)
         }
-      })
-
-      this.form2.status = "0"
-      this.form2.isbn = isbn
-      this.form2.bookname = name
-      this.form2.readerId = this.user.id
-      this.form2.borrownum = bn+1
-      console.log(this.form2.borrownum)
-      console.log(this.user)
-      let startDate = moment(new Date()).format("yyyy-MM-DD HH:mm:ss");
-      this.form2.lendTime = startDate
-      console.log(this.user)
-      let form3 ={};
-      form3.isbn = isbn;
-      form3.bookName = name;
-      form3.nickName = this.user.username;
-      form3.id = this.user.id;
-      form3.lendtime = startDate;
-      let nowDate = new Date(startDate);
-      nowDate.setDate(nowDate.getDate()+30);
-      form3.deadtime = moment(nowDate).format("yyyy-MM-DD HH:mm:ss");
-      form3.prolong  = 1;
-      request.post("/bookwithuser/insertNew",form3).then(res =>{
-        console.log(res)
         this.load()
       })
     },

@@ -209,17 +209,11 @@ export default {
       })
     },
     handlereProlong(row){
-      var nowDate = new Date(row.deadtime);
-      nowDate.setDate(nowDate.getDate()+30);
-      row.deadtime = moment(nowDate).format("yyyy-MM-DD HH:mm:ss");
-      row.prolong = row.prolong -1;
-      request.post("/bookwithuser",row).then(res =>{
+      // 单一业务请求：只提交 isbn，后端统一完成校验和日期计算
+      request.post("/renew", { isbn: row.isbn }).then(res =>{
         console.log(res)
         if(res.code == 0){
-          ElMessage({
-            message: '续借成功',
-            type: 'success',
-          })
+          ElMessage({ message: '续借成功', type: 'success' })
         }
         else {
           ElMessage.error(res.msg)
@@ -229,13 +223,8 @@ export default {
       })
     },
     handleReturn(row){
-      const form = {
-        isbn: row.isbn,
-        readerId: row.id,  // BookWithUser.id = userId
-        returnTime: moment().format('YYYY-MM-DD HH:mm:ss'),
-        status: '1'
-      }
-      request.put("/LendRecord1/", form).then(res => {
+      // 单一业务请求：只提交 isbn，后端统一完成所有校验和计算
+      request.post("/return", { isbn: row.isbn }).then(res => {
         console.log(res)
         if (res.code == 0) {
           ElMessage({ message: '还书成功', type: 'success' })

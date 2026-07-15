@@ -4,12 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.commom.Result;
-import com.example.demo.entity.Book;
 import com.example.demo.entity.BookWithUser;
 import com.example.demo.interceptor.JwtInterceptor;
-import com.example.demo.mapper.BookMapper;
 import com.example.demo.mapper.BookWithUserMapper;
-import com.example.demo.service.BorrowService;
 import com.example.demo.service.OperationLogService;
 import com.example.demo.utils.QueryUtils;
 import org.springframework.web.bind.annotation.*;
@@ -29,63 +26,10 @@ public class BookWithUserController {
     BookWithUserMapper BookWithUserMapper;
 
     @Resource
-    private BookMapper bookMapper;
-
-    @Resource
-    private BorrowService borrowService;
-
-    @Resource
     private OperationLogService operationLogService;
-
-    @PostMapping("/insertNew")
-    public Result<?> insertNew(@RequestBody BookWithUser bookWithUser){
-        LambdaQueryWrapper<Book> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Book::getIsbn, bookWithUser.getIsbn());
-        Book book = bookMapper.selectOne(queryWrapper);
-        if (book == null) {
-            return Result.error("1", "图书不存在");
-        }
-
-        try {
-            borrowService.borrowBook(
-                    (long) bookWithUser.getUserId(),
-                    (long) book.getId()
-            );
-        } catch (RuntimeException e) {
-            return Result.error("1", e.getMessage());
-        }
-        return Result.success();
-    }
 
     @PostMapping
     public Result<?> update(@RequestBody BookWithUser bookWithUser, HttpServletRequest request){
-        LambdaQueryWrapper<BookWithUser> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(BookWithUser::getIsbn, bookWithUser.getIsbn())
-                    .eq(BookWithUser::getUserId, bookWithUser.getUserId());
-        BookWithUser existing = BookWithUserMapper.selectOne(queryWrapper);
-
-        if (existing != null
-                && bookWithUser.getProlong() != null
-                && existing.getProlong() != null
-                && bookWithUser.getProlong() < existing.getProlong()) {
-            LambdaQueryWrapper<Book> bookQuery = new LambdaQueryWrapper<>();
-            bookQuery.eq(Book::getIsbn, bookWithUser.getIsbn());
-            Book book = bookMapper.selectOne(bookQuery);
-            if (book == null) {
-                return Result.error("1", "图书不存在");
-            }
-
-            try {
-                borrowService.renewBook(
-                        (long) bookWithUser.getUserId(),
-                        (long) book.getId()
-                );
-            } catch (RuntimeException e) {
-                return Result.error("1", e.getMessage());
-            }
-            return Result.success();
-        }
-
         // 管理员编辑
         Result<?> perm = JwtInterceptor.requireAdmin(request);
         if (perm != null) return perm;

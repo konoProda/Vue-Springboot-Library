@@ -1,0 +1,13 @@
+- generic [ref=f3e2]:
+  - heading "系统登陆" [level=2] [ref=f3e3]
+  - textbox [ref=f3e7]
+  - textbox [ref=f3e16]
+  - generic [ref=f3e25]:
+    - textbox "请输入验证码" [ref=f3e27]
+    - generic [ref=f3e28] [cursor=pointer]:
+      - generic [ref=f3e29]: H
+      - generic [ref=f3e30]: W
+      - generic [ref=f3e31]: P
+      - generic [ref=f3e32]: j
+  - button "登 录" [ref=f3e35] [cursor=pointer]
+  - button "前往注册 >>" [ref=f3e39] [cursor=pointer]

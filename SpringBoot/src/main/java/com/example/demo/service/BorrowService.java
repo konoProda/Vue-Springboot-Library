@@ -169,6 +169,14 @@ public class BorrowService {
             throw new RuntimeException("图书不存在");
         }
 
+        // 校验：用户是否确实借了这本书
+        LambdaQueryWrapper<BookWithUser> bwQuery = new LambdaQueryWrapper<>();
+        bwQuery.eq(BookWithUser::getUserId, userId.intValue())
+               .eq(BookWithUser::getIsbn, book.getIsbn());
+        if (bookWithUserMapper.selectCount(bwQuery) == 0) {
+            throw new RuntimeException("未找到该书的借阅记录，无法归还");
+        }
+
         // 归还副本（乐观锁）
         book.setAvailableCopies(book.getAvailableCopies() != null
                 ? book.getAvailableCopies() + 1 : 1);
