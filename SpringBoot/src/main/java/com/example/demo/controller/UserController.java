@@ -6,8 +6,10 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.LoginUser;
 import com.example.demo.commom.Result;
+import com.example.demo.entity.BookWithUser;
 import com.example.demo.entity.User;
 import com.example.demo.interceptor.JwtInterceptor;
+import com.example.demo.mapper.BookWithUserMapper;
 import com.example.demo.mapper.UserMapper;
 import com.example.demo.service.OperationLogService;
 import com.example.demo.utils.QueryUtils;
@@ -25,6 +27,9 @@ import java.util.Map;
 public class UserController {
     @Resource
     UserMapper userMapper;
+
+    @Resource
+    private BookWithUserMapper bookWithUserMapper;
 
     @Resource
     OperationLogService operationLogService;
@@ -75,9 +80,17 @@ public class UserController {
         Result<?> perm = JwtInterceptor.requireAdmin(request);
         if (perm != null) return perm;
 
+        // 用户名重复校验
+        User dup = userMapper.selectOne(Wrappers.<User>lambdaQuery()
+                .eq(User::getUsername, user.getUsername()));
+        if (dup != null) {
+            return Result.error("1", "用户名已存在，请更换");
+        }
+
         if(user.getPassword() == null){
             user.setPassword("abc123456");
         }
+        user.setRole(2);  // 管理员只能新增普通读者
         userMapper.insert(user);
         Integer userId = (Integer) request.getAttribute("userId");
         String username = (String) request.getAttribute("username");
@@ -126,6 +139,13 @@ public class UserController {
     public Result<?> delete(@PathVariable Long id, HttpServletRequest request){
         Result<?> perm = JwtInterceptor.requireAdmin(request);
         if (perm != null) return perm;
+
+        // 校验：有未归还图书的用户禁止删除
+        LambdaQueryWrapper<BookWithUser> bwQuery = new LambdaQueryWrapper<>();
+        bwQuery.eq(BookWithUser::getUserId, id.intValue());
+        if (bookWithUserMapper.selectCount(bwQuery) > 0) {
+            return Result.error("1", "该读者有未归还图书，请先归还后再删除");
+        }
 
         userMapper.deleteById(id);
         Integer userId = (Integer) request.getAttribute("userId");

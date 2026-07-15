@@ -1,0 +1,34 @@
+- generic [active] [ref=f5e45]:
+  - generic [ref=f5e47]:
+    - generic [ref=f5e48]:
+      - generic [ref=f5e49]: 图书馆管理系统
+      - generic [ref=f5e52] [cursor=pointer]:
+        - generic [ref=f5e53]: ☀️
+        - generic [ref=f5e54]: 当前浅色
+      - button "管理员" [ref=f5e58]
+    - generic [ref=f5e62]:
+      - menubar [ref=f5e64]:
+        - menuitem "展示板" [ref=f5e65] [cursor=pointer]
+        - menuitem "个人信息" [ref=f5e69]
+        - menuitem "读者管理" [ref=f5e77] [cursor=pointer]
+        - menuitem "书籍管理" [ref=f5e81] [cursor=pointer]
+        - menuitem "借阅管理" [ref=f5e85] [cursor=pointer]
+        - menuitem "借阅状态" [ref=f5e89] [cursor=pointer]
+        - menuitem "操作日志" [ref=f5e94] [cursor=pointer]
+      - generic [ref=f5e98]:
+        - generic [ref=f5e99]:
+          - generic [ref=f5e102]:
+            - generic [ref=f5e103]: 已借阅
+            - generic [ref=f5e104]: "88"
+          - generic [ref=f5e109]:
+            - generic [ref=f5e110]: 总访问
+            - generic [ref=f5e111]: "4"
+          - generic [ref=f5e116]:
+            - generic [ref=f5e117]: 图书数
+            - generic [ref=f5e118]: "11"
+          - generic [ref=f5e123]:
+            - generic [ref=f5e124]: 用户数
+            - generic [ref=f5e125]: "3"
+        - generic [ref=f5e128]: 2026/7/15 21:38:46
+  - alert [ref=f5e135]:
+    - paragraph [ref=f5e139]: 登录成功

@@ -34,6 +34,7 @@
     </div>
     <!-- 按钮-->
     <div style="margin: 10px 0;" >
+      <el-button type="primary" @click="add" v-if="user.role == 1">新增读者</el-button>
       <el-popconfirm title="确认删除?" @confirm="deleteBatch" v-if="user.role == 1">
         <template #reference>
           <el-button type="danger" size="mini" >批量删除</el-button>
@@ -76,10 +77,13 @@
       >
       </el-pagination>
 
-      <el-dialog v-model="dialogVisible" title="编辑读者信息" width="30%">
+      <el-dialog v-model="dialogVisible" :title="form.id ? '编辑读者信息' : '新增读者'" width="30%">
         <el-form :model="form" label-width="120px">
           <el-form-item label="用户名">
-            <el-input style="width: 80%" v-model="form.username"></el-input>
+            <el-input style="width: 80%" v-model="form.username" :disabled="!!form.id"></el-input>
+          </el-form-item>
+          <el-form-item label="初始密码" v-if="!form.id">
+            <el-input style="width: 80%" v-model="form.password" type="password" placeholder="请输入初始密码"></el-input>
           </el-form-item>
           <el-form-item label="昵称">
             <el-input style="width: 80%" v-model="form.nickName"></el-input>
@@ -178,7 +182,7 @@ export default {
 
     add(){
       this.dialogVisible= true
-      this.form ={}
+      this.form = { role: 2 }  // 新增时默认角色为普通读者
     },
     save(){
       if(this.form.id){

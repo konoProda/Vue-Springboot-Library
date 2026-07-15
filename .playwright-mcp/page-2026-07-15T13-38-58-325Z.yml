@@ -1,0 +1,153 @@
+- generic [ref=f5e47]:
+  - generic [ref=f5e48]:
+    - generic [ref=f5e49]: 图书馆管理系统
+    - generic [ref=f5e52] [cursor=pointer]:
+      - generic [ref=f5e53]: ☀️
+      - generic [ref=f5e54]: 当前浅色
+    - button "管理员" [ref=f5e58]
+  - generic [ref=f5e62]:
+    - menubar [ref=f5e64]:
+      - menuitem "展示板" [ref=f5e65] [cursor=pointer]
+      - menuitem "个人信息" [ref=f5e69]
+      - menuitem "读者管理" [ref=f5e77] [cursor=pointer]
+      - menuitem "书籍管理" [ref=f5e81] [cursor=pointer]
+      - menuitem "借阅管理" [ref=f5e85] [cursor=pointer]
+      - menuitem "借阅状态" [ref=f5e89] [cursor=pointer]
+      - menuitem "操作日志" [ref=f5e94] [cursor=pointer]
+    - generic [ref=f5e140]:
+      - generic [ref=f5e142]:
+        - generic [ref=f5e143]:
+          - generic [ref=f5e144]: 读者编号
+          - textbox "请输入读者编号" [ref=f5e147]
+        - generic [ref=f5e153]:
+          - generic [ref=f5e154]: 姓名
+          - textbox "请输入姓名" [ref=f5e157]
+        - generic [ref=f5e163]:
+          - generic [ref=f5e164]: 电话号码
+          - textbox "请输入电话号码" [ref=f5e167]
+        - generic [ref=f5e173]:
+          - generic [ref=f5e174]: 地址
+          - textbox "请输入地址" [ref=f5e177]
+        - button "查询" [ref=f5e185] [cursor=pointer]
+        - button "重置" [ref=f5e189] [cursor=pointer]
+      - generic [ref=f5e191]:
+        - button "新增读者" [active] [ref=f5e192] [cursor=pointer]
+        - button "批量删除" [ref=f5e194] [cursor=pointer]
+      - generic [ref=f5e196]:
+        - table [ref=f5e198]:
+          - rowgroup [ref=f5e209]:
+            - row "读者编号 用户名 姓名 电话号码 性别 地址" [ref=f5e210]:
+              - columnheader [ref=f5e211]:
+                - generic [ref=f5e214] [cursor=pointer]:
+                  - checkbox
+              - columnheader [ref=f5e216] [cursor=pointer]
+              - columnheader "用户名" [ref=f5e221]
+              - columnheader "姓名" [ref=f5e223]
+              - columnheader "电话号码" [ref=f5e225]
+              - columnheader "性别" [ref=f5e227]
+              - columnheader "地址" [ref=f5e229]
+              - columnheader [ref=f5e231]
+        - table [ref=f5e233]:
+          - rowgroup [ref=f5e243]:
+            - row "18 reader 读者 13900000000 女 学校" [ref=f5e244]:
+              - cell [ref=f5e245]:
+                - generic [ref=f5e248] [cursor=pointer]:
+                  - checkbox
+              - cell "18" [ref=f5e250]
+              - cell "reader" [ref=f5e252]
+              - cell "读者" [ref=f5e254]
+              - cell "13900000000" [ref=f5e256]
+              - cell "女" [ref=f5e258]
+              - cell "学校" [ref=f5e260]
+              - cell [ref=f5e262]
+            - row "24 reader2 读者B" [ref=f5e263]:
+              - cell [ref=f5e264]:
+                - generic [ref=f5e267] [cursor=pointer]:
+                  - checkbox
+              - cell "24" [ref=f5e269]
+              - cell "reader2" [ref=f5e271]
+              - cell "读者B" [ref=f5e273]
+              - cell [ref=f5e275]
+              - cell [ref=f5e276]
+              - cell [ref=f5e277]
+              - cell [ref=f5e278]
+        - generic [ref=f5e279]:
+          - table [ref=f5e281]:
+            - rowgroup [ref=f5e291]:
+              - row [ref=f5e292]:
+                - columnheader [ref=f5e293]
+                - columnheader [ref=f5e294] [cursor=pointer]
+                - columnheader [ref=f5e295]
+                - columnheader [ref=f5e296]
+                - columnheader [ref=f5e297]
+                - columnheader [ref=f5e298]
+                - columnheader [ref=f5e299]
+                - columnheader "操作" [ref=f5e300]
+          - table [ref=f5e303]:
+            - rowgroup [ref=f5e313]:
+              - row [ref=f5e314]:
+                - cell [ref=f5e315]
+                - cell [ref=f5e316]
+                - cell [ref=f5e317]
+                - cell [ref=f5e318]
+                - cell [ref=f5e319]
+                - cell [ref=f5e320]
+                - cell [ref=f5e321]
+                - cell [ref=f5e322]:
+                  - generic [ref=f5e323]:
+                    - button "编辑" [ref=f5e324] [cursor=pointer]
+                    - button "删除" [ref=f5e326] [cursor=pointer]
+              - row [ref=f5e328]:
+                - cell [ref=f5e329]
+                - cell [ref=f5e330]
+                - cell [ref=f5e331]
+                - cell [ref=f5e332]
+                - cell [ref=f5e333]
+                - cell [ref=f5e334]
+                - cell [ref=f5e335]
+                - cell [ref=f5e336]:
+                  - generic [ref=f5e337]:
+                    - button "编辑" [ref=f5e338] [cursor=pointer]
+                    - button "删除" [ref=f5e340] [cursor=pointer]
+      - generic [ref=f5e343]:
+        - generic "pagination" [ref=f5e344]:
+          - generic [ref=f5e345]: 共 2 条
+          - textbox "请选择" [ref=f5e350] [cursor=pointer]: 10条/页
+          - button [disabled] [ref=f5e355]
+          - list [ref=f5e359]:
+            - listitem [ref=f5e360]: "1"
+          - button [disabled] [ref=f5e361]
+          - generic [ref=f5e365]:
+            - text: 前往
+            - spinbutton [ref=f5e367]: "1"
+            - text: 页
+        - dialog "新增读者" [ref=f5e370]:
+          - generic [ref=f5e371]:
+            - text: 新增读者
+            - button "close" [ref=f5e372] [cursor=pointer]
+          - generic [ref=f5e377]:
+            - generic [ref=f5e378]:
+              - generic [ref=f5e379]: 用户名
+              - textbox [ref=f5e382]
+            - generic [ref=f5e383]:
+              - generic [ref=f5e384]: 初始密码
+              - textbox "请输入初始密码" [ref=f5e387]
+            - generic [ref=f5e388]:
+              - generic [ref=f5e389]: 昵称
+              - textbox [ref=f5e392]
+            - generic [ref=f5e393]:
+              - generic [ref=f5e394]: 电话号码
+              - textbox [ref=f5e397]
+            - generic [ref=f5e398]:
+              - generic [ref=f5e399]: 性别
+              - generic [ref=f5e401]:
+                - radio "男" [ref=f5e402] [cursor=pointer]:
+                  - radio [ref=f5e405]
+                - radio "女" [ref=f5e407] [cursor=pointer]:
+                  - radio [ref=f5e410]
+            - generic [ref=f5e412]:
+              - generic [ref=f5e413]: 地址
+              - textbox [ref=f5e416]
+          - generic [ref=f5e418]:
+            - button "取 消" [ref=f5e419] [cursor=pointer]
+            - button "确 定" [ref=f5e421] [cursor=pointer]
