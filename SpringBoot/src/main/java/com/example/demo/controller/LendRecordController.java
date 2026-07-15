@@ -191,13 +191,45 @@ public class LendRecordController {
                               @RequestParam(defaultValue = "10") Integer pageSize,
                               @RequestParam(defaultValue = "") String search1,
                               @RequestParam(defaultValue = "") String search2,
-                              @RequestParam(defaultValue = "") String search3){
+                              @RequestParam(defaultValue = "") String search3,
+                              @RequestParam(defaultValue = "") String overdueFilter){
         LambdaQueryWrapper<LendRecord> wrappers = Wrappers.<LendRecord>lambdaQuery();
         QueryUtils.likeIfNotBlank(wrappers, LendRecord::getIsbn, search1);
         QueryUtils.likeIfNotBlank(wrappers, LendRecord::getBookname, search2);
         QueryUtils.eqIfNotBlank(wrappers, LendRecord::getReaderId, search3);
+        // 逾期筛选：仅显示未归还且已逾期 (借出30天后未还)
+        if ("1".equals(overdueFilter)) {
+            wrappers.eq(LendRecord::getStatus, "0");
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DAY_OF_MONTH, -30);
+            wrappers.lt(LendRecord::getLendTime, cal.getTime());
+        }
         wrappers.orderByDesc(LendRecord::getLendTime);
-        Page<LendRecord> LendRecordPage =LendRecordMapper.selectPage(new Page<>(pageNum,pageSize), wrappers);
+        Page<LendRecord> LendRecordPage = LendRecordMapper.selectPage(new Page<>(pageNum, pageSize), wrappers);
+
+        // 计算逾期状态 (仅对未归还记录)
+        Date now = new Date();
+        for (LendRecord lr : LendRecordPage.getRecords()) {
+            if ("0".equals(lr.getStatus()) && lr.getLendTime() != null) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(lr.getLendTime());
+                cal.add(Calendar.DAY_OF_MONTH, 30);
+                Date dueDate = cal.getTime();
+                long diffMs = now.getTime() - dueDate.getTime();
+                long diffDays = diffMs / (1000 * 60 * 60 * 24);
+                if (diffDays > 0) {
+                    lr.setOverdueStatus("已逾期");
+                    lr.setOverdueDays((int) diffDays);
+                } else if (diffDays >= -3) {
+                    lr.setOverdueStatus("即将到期");
+                    lr.setOverdueDays(0);
+                } else {
+                    lr.setOverdueStatus("正常");
+                    lr.setOverdueDays(0);
+                }
+            }
+        }
+
         return Result.success(LendRecordPage);
     }
 

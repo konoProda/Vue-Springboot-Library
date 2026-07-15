@@ -75,7 +75,15 @@ public class BorrowService {
             throw new RuntimeException("库存不足，暂无可用副本");
         }
 
-        // 2. 校验用户借阅数量 < maxBorrowCount
+        // 2. 校验是否有逾期未还图书
+        LambdaQueryWrapper<BookWithUser> overdueWrapper = new LambdaQueryWrapper<>();
+        overdueWrapper.eq(BookWithUser::getUserId, userId.intValue())
+                      .lt(BookWithUser::getDeadtime, new Date());
+        if (bookWithUserMapper.selectCount(overdueWrapper) > 0) {
+            throw new RuntimeException("存在逾期未还图书，请先归还后再借阅");
+        }
+
+        // 3. 校验用户借阅数量 < maxBorrowCount
         LambdaQueryWrapper<BookWithUser> countWrapper = new LambdaQueryWrapper<>();
         countWrapper.eq(BookWithUser::getUserId, userId.intValue());
         Integer borrowCount = bookWithUserMapper.selectCount(countWrapper);
@@ -210,6 +218,10 @@ public class BorrowService {
         BookWithUser bookWithUser = bookWithUserMapper.selectOne(queryWrapper);
         if (bookWithUser == null) {
             throw new RuntimeException("未找到借阅记录，无法续借");
+        }
+
+        if (bookWithUser.getDeadtime() != null && bookWithUser.getDeadtime().before(new Date())) {
+            throw new RuntimeException("该图书已逾期，无法续借，请先归还");
         }
 
         if (bookWithUser.getProlong() == null || bookWithUser.getProlong() <= 0) {

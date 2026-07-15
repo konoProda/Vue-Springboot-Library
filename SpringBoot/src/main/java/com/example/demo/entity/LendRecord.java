@@ -25,4 +25,9 @@ public class LendRecord {
     private String status;
     private Integer borrownum;
 
+    @com.baomidou.mybatisplus.annotation.TableField(exist = false)
+    private String overdueStatus;   // 借阅状态: "正常" / "即将到期" / "已逾期" (仅status='0'时计算)
+
+    @com.baomidou.mybatisplus.annotation.TableField(exist = false)
+    private Integer overdueDays;    // 逾期天数 (已逾期时 > 0)
 }

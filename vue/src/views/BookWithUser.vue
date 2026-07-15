@@ -19,6 +19,11 @@
             <template #prefix><el-icon class="el-input__icon"><search /></el-icon></template>
           </el-input>
         </el-form-item >
+        <el-form-item label="借阅状态" v-if="user.role == 1">
+          <el-select v-model="overdueFilter" clearable placeholder="全部" @change="load" style="width:130px">
+            <el-option label="逾期未还" value="1" />
+          </el-select>
+        </el-form-item >
         <el-form-item>
           <el-button type="primary" style="margin-left: 1%" @click="load" size="mini">查询</el-button>
         </el-form-item>
@@ -46,6 +51,13 @@
       <el-table-column prop="nickName" label="借阅者" />
       <el-table-column prop="lendtime" label="借阅时间" />
       <el-table-column prop="deadtime" label="最迟归还日期" />
+      <el-table-column label="借阅状态" width="140">
+        <template v-slot="scope">
+          <el-tag v-if="scope.row.status === '已逾期'" type="danger">已逾期 {{ scope.row.overdueDays }}天</el-tag>
+          <el-tag v-else-if="scope.row.status === '即将到期'" type="warning">即将到期</el-tag>
+          <el-tag v-else type="success">正常</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column prop="prolong" label="可续借次数" />
       <el-table-column fixed="right" label="操作" >
         <template v-slot="scope">
@@ -95,6 +107,9 @@
           </el-form-item>
           <el-form-item label="续借次数">
             <el-input style="width: 80%" v-model="form.prolong"></el-input>
+          </el-form-item>
+          <el-form-item label="应还日期">
+            <el-date-picker style="width: 80%" v-model="form.deadtime" type="datetime" value-format="YYYY-MM-DD HH:mm:ss" placeholder="选择应还日期" />
           </el-form-item>
         </el-form>
         <template #footer>
@@ -151,6 +166,7 @@ export default {
             search1: this.search1,
             search2: this.search2,
             search3: this.search3,
+            overdueFilter: this.overdueFilter,
           }
         }).then(res =>{
           console.log(res)
@@ -178,6 +194,7 @@ export default {
       this.search1 = ""
       this.search2 = ""
       this.search3 = ""
+      this.overdueFilter = ""
       this.load()
     },
     handleDelete(row){
@@ -272,6 +289,7 @@ export default {
       search1:'',
       search2:'',
       search3:'',
+      overdueFilter:'',
       total:10,
       currentPage:1,
       pageSize: 10,

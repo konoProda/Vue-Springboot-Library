@@ -32,4 +32,10 @@ public class BookWithUser {
     private Date deadtime;
 
     private Integer prolong;
+
+    @com.baomidou.mybatisplus.annotation.TableField(exist = false)
+    private String status;          // 借阅状态: "正常" / "即将到期" / "已逾期"
+
+    @com.baomidou.mybatisplus.annotation.TableField(exist = false)
+    private Integer overdueDays;    // 逾期天数 (已逾期时 > 0)
 }

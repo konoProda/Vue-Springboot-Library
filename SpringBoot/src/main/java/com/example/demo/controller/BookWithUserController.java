@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -127,13 +128,46 @@ public class BookWithUserController {
                               @RequestParam(defaultValue = "10") Integer pageSize,
                               @RequestParam(defaultValue = "") String search1,
                               @RequestParam(defaultValue = "") String search2,
-                              @RequestParam(defaultValue = "") String search3){
+                              @RequestParam(defaultValue = "") String search3,
+                              @RequestParam(defaultValue = "") String overdueFilter){
         LambdaQueryWrapper<BookWithUser> wrappers = new LambdaQueryWrapper<>();
         QueryUtils.likeIfNotBlank(wrappers, BookWithUser::getIsbn, search1);
         QueryUtils.likeIfNotBlank(wrappers, BookWithUser::getBookName, search2);
         QueryUtils.likeIfNotBlank(wrappers, BookWithUser::getUserId, search3);
+        // 逾期筛选：仅显示已逾期且未归还
+        if ("1".equals(overdueFilter)) {
+            wrappers.lt(BookWithUser::getDeadtime, new Date());
+        }
         wrappers.orderByDesc(BookWithUser::getLendtime);
         Page<BookWithUser> BookPage = BookWithUserMapper.selectPage(new Page<>(pageNum, pageSize), wrappers);
+
+        // 计算借阅状态和逾期天数
+        Date now = new Date();
+        for (BookWithUser bw : BookPage.getRecords()) {
+            computeStatus(bw, now);
+        }
+
         return Result.success(BookPage);
+    }
+
+    /** 根据当前时间计算借阅状态和逾期天数 */
+    private void computeStatus(BookWithUser bw, Date now) {
+        if (bw.getDeadtime() == null) {
+            bw.setStatus("正常");
+            bw.setOverdueDays(0);
+            return;
+        }
+        long diffMs = now.getTime() - bw.getDeadtime().getTime();
+        long diffDays = diffMs / (1000 * 60 * 60 * 24);
+        if (diffDays > 0) {
+            bw.setStatus("已逾期");
+            bw.setOverdueDays((int) diffDays);
+        } else if (diffDays >= -3) {
+            bw.setStatus("即将到期");
+            bw.setOverdueDays(0);
+        } else {
+            bw.setStatus("正常");
+            bw.setOverdueDays(0);
+        }
     }
 }

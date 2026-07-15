@@ -19,6 +19,11 @@
             <template #prefix><el-icon class="el-input__icon"><search /></el-icon></template>
           </el-input>
         </el-form-item >
+        <el-form-item label="借阅状态">
+          <el-select v-model="overdueFilter" clearable placeholder="全部" @change="load" style="width:130px">
+            <el-option label="逾期未还" value="1" />
+          </el-select>
+        </el-form-item >
         <el-form-item>
           <el-button type="primary" style="margin-left: 1%" @click="load" size="mini">查询</el-button>
         </el-form-item>
@@ -167,7 +172,8 @@ export default defineComponent({
           pageSize: this.pageSize,
           search1: this.search1,
           search2: this.search2,
-          search3: this.search3
+          search3: this.search3,
+          overdueFilter: this.overdueFilter,
         }
       }).then(res =>{
         console.log(res)
@@ -196,6 +202,7 @@ export default defineComponent({
       this.search1 = ""
       this.search2 = ""
       this.search3 = ""
+      this.overdueFilter = ""
       this.load()
     },
     handleEdit(row){
@@ -273,6 +280,7 @@ export default defineComponent({
       search1:'',
       search2:'',
       search3:'',
+      overdueFilter:'',
       total:10,
       currentPage:1,
       pageSize: 10,
