@@ -1,0 +1,333 @@
+- generic [ref=e47]:
+  - generic [ref=e48]:
+    - generic [ref=e49]: 图书馆管理系统
+    - generic [ref=e52] [cursor=pointer]:
+      - generic [ref=e53]: ☀️
+      - generic [ref=e54]: 当前浅色
+    - button "管理员" [ref=e58]
+  - generic [ref=e62]:
+    - menubar [ref=e64]:
+      - menuitem "展示板" [ref=e65] [cursor=pointer]
+      - menuitem "个人信息" [ref=e69]
+      - menuitem "读者管理" [ref=e77] [cursor=pointer]
+      - menuitem "书籍管理" [ref=e81] [cursor=pointer]
+      - menuitem "借阅管理" [ref=e85] [cursor=pointer]
+      - menuitem "借阅状态" [ref=e89] [cursor=pointer]
+      - menuitem "操作日志" [ref=e94] [cursor=pointer]
+    - generic [ref=e140]:
+      - generic [ref=e142]:
+        - generic [ref=e143]:
+          - generic [ref=e144]: 图书编号
+          - textbox "请输入图书编号" [ref=e147]
+        - generic [ref=e153]:
+          - generic [ref=e154]: 图书名称
+          - textbox "请输入图书名称" [ref=e157]
+        - generic [ref=e163]:
+          - generic [ref=e164]: 作者
+          - textbox "请输入作者" [ref=e167]
+        - button [ref=e175] [cursor=pointer]
+        - button "重置" [ref=e179] [cursor=pointer]
+      - generic [ref=e181]:
+        - button "上架" [active] [ref=e182] [cursor=pointer]
+        - button "批量删除" [ref=e184] [cursor=pointer]
+      - generic [ref=e186]:
+        - table [ref=e188]:
+          - rowgroup [ref=e199]:
+            - row "图书编号 图书名称 价格 作者 出版社 出版时间 库存" [ref=e200]:
+              - columnheader [ref=e201]:
+                - generic [ref=e204] [cursor=pointer]:
+                  - checkbox
+              - columnheader [ref=e206] [cursor=pointer]
+              - columnheader "图书名称" [ref=e211]
+              - columnheader [ref=e213] [cursor=pointer]
+              - columnheader "作者" [ref=e218]
+              - columnheader "出版社" [ref=e220]
+              - columnheader [ref=e222] [cursor=pointer]
+              - columnheader [ref=e227] [cursor=pointer]
+              - columnheader [ref=e232]
+        - table [ref=e234]:
+          - rowgroup [ref=e245]:
+            - row "999-9-99-999999-9 回归测试专用书 99.9 测试作者 测试出版社 可借 2 / 馆藏 2" [ref=e246]:
+              - cell [ref=e247]:
+                - generic [ref=e250] [cursor=pointer]:
+                  - checkbox
+              - cell "999-9-99-999999-9" [ref=e252]
+              - cell "回归测试专用书" [ref=e254]
+              - cell "99.9" [ref=e256]
+              - cell "测试作者" [ref=e258]
+              - cell "测试出版社" [ref=e260]
+              - cell [ref=e262]
+              - cell "可借 2 / 馆藏 2" [ref=e263]
+              - cell [ref=e265]
+            - row "000003 三体 33 刘慈欣 西电出版社 2026-07-08 可借 3 / 馆藏 3" [ref=e266]:
+              - cell [ref=e267]:
+                - generic [ref=e270] [cursor=pointer]:
+                  - checkbox
+              - cell "000003" [ref=e272]
+              - cell "三体" [ref=e274]
+              - cell "33" [ref=e276]
+              - cell "刘慈欣" [ref=e278]
+              - cell "西电出版社" [ref=e280]
+              - cell "2026-07-08" [ref=e282]
+              - cell "可借 3 / 馆藏 3" [ref=e284]
+              - cell [ref=e286]
+            - row "00114514 野兽先辈的一生 11.4 田所浩二 你是一个一个一个出版社 2026-07-01 可借 2 / 馆藏 2" [ref=e287]:
+              - cell [ref=e288]:
+                - generic [ref=e291] [cursor=pointer]:
+                  - checkbox
+              - cell "00114514" [ref=e293]
+              - cell "野兽先辈的一生" [ref=e295]
+              - cell "11.4" [ref=e297]
+              - cell "田所浩二" [ref=e299]
+              - cell "你是一个一个一个出版社" [ref=e301]
+              - cell "2026-07-01" [ref=e303]
+              - cell "可借 2 / 馆藏 2" [ref=e305]
+              - cell [ref=e307]
+            - row "54112312321 格林童话 可借 1 / 馆藏 1" [ref=e308]:
+              - cell [ref=e309]:
+                - generic [ref=e312] [cursor=pointer]:
+                  - checkbox
+              - cell "54112312321" [ref=e314]
+              - cell "格林童话" [ref=e316]
+              - cell [ref=e318]
+              - cell [ref=e319]
+              - cell [ref=e320]
+              - cell [ref=e321]
+              - cell "可借 1 / 馆藏 1" [ref=e322]
+              - cell [ref=e324]
+            - row "345621212321 伊索寓言 已借完 / 馆藏 1" [ref=e325]:
+              - cell [ref=e326]:
+                - generic [ref=e329] [cursor=pointer]:
+                  - checkbox
+              - cell "345621212321" [ref=e331]
+              - cell "伊索寓言" [ref=e333]
+              - cell [ref=e335]
+              - cell [ref=e336]
+              - cell [ref=e337]
+              - cell [ref=e338]
+              - cell "已借完 / 馆藏 1" [ref=e339]
+              - cell [ref=e341]
+            - row "3213123123 操作系统 已借完 / 馆藏 1" [ref=e342]:
+              - cell [ref=e343]:
+                - generic [ref=e346] [cursor=pointer]:
+                  - checkbox
+              - cell "3213123123" [ref=e348]
+              - cell "操作系统" [ref=e350]
+              - cell [ref=e352]
+              - cell [ref=e353]
+              - cell [ref=e354]
+              - cell [ref=e355]
+              - cell "已借完 / 馆藏 1" [ref=e356]
+              - cell [ref=e358]
+            - row "25213121232 一万个为什么 可借 1 / 馆藏 1" [ref=e359]:
+              - cell [ref=e360]:
+                - generic [ref=e363] [cursor=pointer]:
+                  - checkbox
+              - cell "25213121232" [ref=e365]
+              - cell "一万个为什么" [ref=e367]
+              - cell [ref=e369]
+              - cell [ref=e370]
+              - cell [ref=e371]
+              - cell [ref=e372]
+              - cell "可借 1 / 馆藏 1" [ref=e373]
+              - cell [ref=e375]
+            - row "2312315132131 五万个为什么 可借 1 / 馆藏 1" [ref=e376]:
+              - cell [ref=e377]:
+                - generic [ref=e380] [cursor=pointer]:
+                  - checkbox
+              - cell "2312315132131" [ref=e382]
+              - cell "五万个为什么" [ref=e384]
+              - cell [ref=e386]
+              - cell [ref=e387]
+              - cell [ref=e388]
+              - cell [ref=e389]
+              - cell "可借 1 / 馆藏 1" [ref=e390]
+              - cell [ref=e392]
+            - row "12341541321 十万个为什么 15 小王 宁波大学出版社 2014-12-16 可借 1 / 馆藏 1" [ref=e393]:
+              - cell [ref=e394]:
+                - generic [ref=e397] [cursor=pointer]:
+                  - checkbox
+              - cell "12341541321" [ref=e399]
+              - cell "十万个为什么" [ref=e401]
+              - cell "15" [ref=e403]
+              - cell "小王" [ref=e405]
+              - cell "宁波大学出版社" [ref=e407]
+              - cell "2014-12-16" [ref=e409]
+              - cell "可借 1 / 馆藏 1" [ref=e411]
+              - cell [ref=e413]
+        - generic [ref=e414]:
+          - table [ref=e416]:
+            - rowgroup [ref=e427]:
+              - row [ref=e428]:
+                - columnheader [ref=e429]
+                - columnheader [ref=e430] [cursor=pointer]
+                - columnheader [ref=e431]
+                - columnheader [ref=e432] [cursor=pointer]
+                - columnheader [ref=e433]
+                - columnheader [ref=e434]
+                - columnheader [ref=e435] [cursor=pointer]
+                - columnheader [ref=e436] [cursor=pointer]
+                - columnheader "操作" [ref=e437]
+          - table [ref=e440]:
+            - rowgroup [ref=e451]:
+              - row [ref=e452]:
+                - cell [ref=e453]
+                - cell [ref=e454]
+                - cell [ref=e455]
+                - cell [ref=e456]
+                - cell [ref=e457]
+                - cell [ref=e458]
+                - cell [ref=e459]
+                - cell [ref=e460]
+                - cell [ref=e461]:
+                  - generic [ref=e462]:
+                    - button "编辑" [ref=e463] [cursor=pointer]
+                    - button "删除" [ref=e465] [cursor=pointer]
+              - row [ref=e467]:
+                - cell [ref=e468]
+                - cell [ref=e469]
+                - cell [ref=e470]
+                - cell [ref=e471]
+                - cell [ref=e472]
+                - cell [ref=e473]
+                - cell [ref=e474]
+                - cell [ref=e475]
+                - cell [ref=e476]:
+                  - generic [ref=e477]:
+                    - button "编辑" [ref=e478] [cursor=pointer]
+                    - button "删除" [ref=e480] [cursor=pointer]
+              - row [ref=e482]:
+                - cell [ref=e483]
+                - cell [ref=e484]
+                - cell [ref=e485]
+                - cell [ref=e486]
+                - cell [ref=e487]
+                - cell [ref=e488]
+                - cell [ref=e489]
+                - cell [ref=e490]
+                - cell [ref=e491]:
+                  - generic [ref=e492]:
+                    - button "编辑" [ref=e493] [cursor=pointer]
+                    - button "删除" [ref=e495] [cursor=pointer]
+              - row [ref=e497]:
+                - cell [ref=e498]
+                - cell [ref=e499]
+                - cell [ref=e500]
+                - cell [ref=e501]
+                - cell [ref=e502]
+                - cell [ref=e503]
+                - cell [ref=e504]
+                - cell [ref=e505]
+                - cell [ref=e506]:
+                  - generic [ref=e507]:
+                    - button "编辑" [ref=e508] [cursor=pointer]
+                    - button "删除" [ref=e510] [cursor=pointer]
+              - row [ref=e512]:
+                - cell [ref=e513]
+                - cell [ref=e514]
+                - cell [ref=e515]
+                - cell [ref=e516]
+                - cell [ref=e517]
+                - cell [ref=e518]
+                - cell [ref=e519]
+                - cell [ref=e520]
+                - cell [ref=e521]:
+                  - generic [ref=e522]:
+                    - button "编辑" [ref=e523] [cursor=pointer]
+                    - button "删除" [ref=e525] [cursor=pointer]
+              - row [ref=e527]:
+                - cell [ref=e528]
+                - cell [ref=e529]
+                - cell [ref=e530]
+                - cell [ref=e531]
+                - cell [ref=e532]
+                - cell [ref=e533]
+                - cell [ref=e534]
+                - cell [ref=e535]
+                - cell [ref=e536]:
+                  - generic [ref=e537]:
+                    - button "编辑" [ref=e538] [cursor=pointer]
+                    - button "删除" [ref=e540] [cursor=pointer]
+              - row [ref=e542]:
+                - cell [ref=e543]
+                - cell [ref=e544]
+                - cell [ref=e545]
+                - cell [ref=e546]
+                - cell [ref=e547]
+                - cell [ref=e548]
+                - cell [ref=e549]
+                - cell [ref=e550]
+                - cell [ref=e551]:
+                  - generic [ref=e552]:
+                    - button "编辑" [ref=e553] [cursor=pointer]
+                    - button "删除" [ref=e555] [cursor=pointer]
+              - row [ref=e557]:
+                - cell [ref=e558]
+                - cell [ref=e559]
+                - cell [ref=e560]
+                - cell [ref=e561]
+                - cell [ref=e562]
+                - cell [ref=e563]
+                - cell [ref=e564]
+                - cell [ref=e565]
+                - cell [ref=e566]:
+                  - generic [ref=e567]:
+                    - button "编辑" [ref=e568] [cursor=pointer]
+                    - button "删除" [ref=e570] [cursor=pointer]
+              - row [ref=e572]:
+                - cell [ref=e573]
+                - cell [ref=e574]
+                - cell [ref=e575]
+                - cell [ref=e576]
+                - cell [ref=e577]
+                - cell [ref=e578]
+                - cell [ref=e579]
+                - cell [ref=e580]
+                - cell [ref=e581]:
+                  - generic [ref=e582]:
+                    - button "编辑" [ref=e583] [cursor=pointer]
+                    - button "删除" [ref=e585] [cursor=pointer]
+      - generic [ref=e587]:
+        - generic "pagination" [ref=e588]:
+          - generic [ref=e589]: 共 9 条
+          - textbox "请选择" [ref=e594] [cursor=pointer]: 10条/页
+          - button [disabled] [ref=e599]
+          - list [ref=e603]:
+            - listitem [ref=e604]: "1"
+          - button [disabled] [ref=e605]
+          - generic [ref=e609]:
+            - text: 前往
+            - spinbutton [ref=e611]: "1"
+            - text: 页
+        - dialog "上架书籍" [ref=e614]:
+          - generic [ref=e615]:
+            - text: 上架书籍
+            - button "close" [ref=e616] [cursor=pointer]
+          - generic [ref=e621]:
+            - generic [ref=e622]:
+              - generic [ref=e623]: 图书编号
+              - textbox [ref=e626]
+            - generic [ref=e627]:
+              - generic [ref=e628]: 图书名称
+              - textbox [ref=e631]
+            - generic [ref=e632]:
+              - generic [ref=e633]: 价格
+              - textbox [ref=e636]
+            - generic [ref=e637]:
+              - generic [ref=e638]: 作者
+              - textbox [ref=e641]
+            - generic [ref=e642]:
+              - generic [ref=e643]: 出版社
+              - textbox [ref=e646]
+            - generic [ref=e647]:
+              - generic [ref=e648]: 出版时间
+              - textbox [ref=e652]
+            - generic [ref=e658]:
+              - generic [ref=e659]: 馆藏数量
+              - generic [ref=e661]:
+                - button [ref=e662]
+                - button [ref=e666] [cursor=pointer]
+                - spinbutton [ref=e671]: "1"
+          - generic [ref=e673]:
+            - button "取 消" [ref=e674] [cursor=pointer]
+            - button "确 定" [ref=e676] [cursor=pointer]

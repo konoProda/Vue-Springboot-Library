@@ -53,6 +53,15 @@ public class BookController {
             return Result.success();
         }
         Book oldBook = bookService.getById(Book.getId());
+        // 校验：馆藏总数不得小于当前已借出数量
+        if (Book.getTotalCopies() != null && oldBook != null) {
+            int oldTotal = oldBook.getTotalCopies() != null ? oldBook.getTotalCopies() : 0;
+            int oldAvailable = oldBook.getAvailableCopies() != null ? oldBook.getAvailableCopies() : 0;
+            int borrowed = oldTotal - oldAvailable;
+            if (Book.getTotalCopies() < borrowed) {
+                return Result.error("1", "馆藏总数不得小于当前已借出数量(" + borrowed + "本)");
+            }
+        }
         bookService.updateById(Book);
         Integer userId = (Integer) request.getAttribute("userId");
         String username = (String) request.getAttribute("username");

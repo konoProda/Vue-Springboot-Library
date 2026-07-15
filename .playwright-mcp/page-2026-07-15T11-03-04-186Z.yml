@@ -1,0 +1,69 @@
+- generic [ref=f5e3]:
+  - generic [ref=f5e4]:
+    - generic [ref=f5e5]: 图书馆管理系统
+    - generic [ref=f5e8] [cursor=pointer]:
+      - generic [ref=f5e9]: ☀️
+      - generic [ref=f5e10]: 当前浅色
+    - button "读者B" [ref=f5e14]
+  - generic [ref=f5e18]:
+    - menubar [ref=f5e20]:
+      - menuitem "展示板" [ref=f5e21] [cursor=pointer]
+      - menuitem "个人信息" [ref=f5e25]
+      - menuitem "图书查询" [ref=f5e33] [cursor=pointer]
+      - menuitem "借阅信息" [ref=f5e37] [cursor=pointer]
+      - menuitem "借阅状态" [ref=f5e41] [cursor=pointer]
+    - generic [ref=f5e46]:
+      - generic [ref=f5e48]:
+        - generic [ref=f5e49]:
+          - generic [ref=f5e50]: 图书编号
+          - textbox "请输入图书编号" [ref=f5e53]
+        - generic [ref=f5e59]:
+          - generic [ref=f5e60]: 图书名称
+          - textbox "请输入图书名称" [ref=f5e63]
+        - generic [ref=f5e69]:
+          - generic [ref=f5e70]: 作者
+          - textbox "请输入作者" [ref=f5e73]
+        - button [ref=f5e81] [cursor=pointer]
+        - button "重置" [ref=f5e85] [cursor=pointer]
+      - generic [ref=f5e87]:
+        - table [ref=f5e89]:
+          - rowgroup [ref=f5e99]:
+            - row [ref=f5e100]:
+              - columnheader [ref=f5e101] [cursor=pointer]
+              - columnheader "图书名称" [ref=f5e106]
+              - columnheader [ref=f5e108] [cursor=pointer]
+              - columnheader "作者" [ref=f5e113]
+              - columnheader "出版社" [ref=f5e115]
+              - columnheader [ref=f5e117] [cursor=pointer]
+              - columnheader [ref=f5e122] [cursor=pointer]
+              - columnheader [ref=f5e127]
+        - generic [ref=f5e128]:
+          - table:
+            - rowgroup
+          - generic [ref=f5e129]: 暂无数据
+        - generic [ref=f5e131]:
+          - table [ref=f5e133]:
+            - rowgroup [ref=f5e143]:
+              - row [ref=f5e144]:
+                - columnheader [ref=f5e145] [cursor=pointer]
+                - columnheader [ref=f5e146]
+                - columnheader [ref=f5e147] [cursor=pointer]
+                - columnheader [ref=f5e148]
+                - columnheader [ref=f5e149]
+                - columnheader [ref=f5e150] [cursor=pointer]
+                - columnheader [ref=f5e151] [cursor=pointer]
+                - columnheader "操作" [ref=f5e152]
+          - generic:
+            - table:
+              - rowgroup
+      - generic "pagination" [ref=f5e155]:
+        - generic [ref=f5e156]: 共 10 条
+        - textbox "请选择" [ref=f5e161] [cursor=pointer]: 10条/页
+        - button [disabled] [ref=f5e166]
+        - list [ref=f5e170]:
+          - listitem [ref=f5e171]: "1"
+        - button [disabled] [ref=f5e172]
+        - generic [ref=f5e176]:
+          - text: 前往
+          - spinbutton [ref=f5e178]: "1"
+          - text: 页

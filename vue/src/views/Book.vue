@@ -82,7 +82,7 @@
               <el-button type="danger" size="mini" >删除</el-button>
             </template>
           </el-popconfirm>
-          <el-button type="success" size="mini" @click ="handlelend(scope.row.id,scope.row.isbn,scope.row.name,scope.row.borrownum)" v-if="user.role == 2" :disabled="scope.row.availableCopies <= 0 || (this.isbnArray.indexOf(scope.row.isbn)) != -1">借阅</el-button>
+          <el-button type="success" size="mini" @click="handlelend(scope.row.id,scope.row.isbn,scope.row.name,scope.row.borrownum,scope.row)" v-if="user.role == 2" :class="{ 'borrow-btn--disabled': scope.row.availableCopies <= 0 || (this.isbnArray.indexOf(scope.row.isbn)) != -1 }">借阅</el-button>
           <el-popconfirm title="确认还书?" @confirm="handlereturn(scope.row.id,scope.row.isbn,scope.row.borrownum)" v-if="user.role == 2" :disabled="(this.isbnArray.indexOf(scope.row.isbn)) == -1">
             <template #reference>
               <el-button type="danger" size="mini" :disabled="(this.isbnArray.indexOf(scope.row.isbn)) == -1" >还书</el-button>
@@ -363,7 +363,15 @@ export default {
       //   this.load()
       // })
     },
-    handlelend(id,isbn,name,bn){
+    handlelend(id,isbn,name,bn,row){
+      if (row && this.isbnArray.indexOf(row.isbn) !== -1) {
+        ElMessage.error("不可重复借阅同一本书")
+        return
+      }
+      if (row && row.availableCopies <= 0) {
+        ElMessage.error("该图书库存不足，无法借阅")
+        return
+      }
       if(this.number ==5){
         ElMessage.warning("您不能再借阅更多的书籍了")
         return;
@@ -427,7 +435,14 @@ export default {
         const oldBook = this.tableData.find(b => b.id === this.form.id)
         const oldAvailable = oldBook ? oldBook.availableCopies : 0
         const oldTotal = oldBook ? oldBook.totalCopies : 1
-        const delta = (this.form.totalCopies || 1) - oldTotal
+        // 校验：馆藏总数不得小于当前已借出数量
+        const newTotal = this.form.totalCopies != null ? this.form.totalCopies : 1
+        const borrowed = oldTotal - oldAvailable
+        if (newTotal < borrowed) {
+          ElMessage.error(`馆藏总数不得小于当前已借出数量(${borrowed}本)`)
+          return
+        }
+        const delta = newTotal - oldTotal
         this.form.availableCopies = Math.max(0, oldAvailable + delta)
         request.put("/book",this.form).then(res =>{
           console.log(res)
@@ -509,3 +524,13 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.borrow-btn--disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.borrow-btn--disabled .el-button {
+  pointer-events: none;
+}
+</style>

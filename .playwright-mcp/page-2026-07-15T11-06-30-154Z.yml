@@ -1,0 +1,328 @@
+- generic [ref=f7e45]:
+  - generic [ref=f7e47]:
+    - generic [ref=f7e48]:
+      - generic [ref=f7e49]: 图书馆管理系统
+      - generic [ref=f7e52] [cursor=pointer]:
+        - generic [ref=f7e53]: ☀️
+        - generic [ref=f7e54]: 当前浅色
+      - button "管理员" [ref=f7e58]
+    - generic [ref=f7e62]:
+      - menubar [ref=f7e64]:
+        - menuitem "展示板" [ref=f7e65] [cursor=pointer]
+        - menuitem "个人信息" [ref=f7e69]
+        - menuitem "读者管理" [ref=f7e77] [cursor=pointer]
+        - menuitem "书籍管理" [ref=f7e81] [cursor=pointer]
+        - menuitem "借阅管理" [ref=f7e85] [cursor=pointer]
+        - menuitem "借阅状态" [ref=f7e89] [cursor=pointer]
+        - menuitem "操作日志" [ref=f7e94] [cursor=pointer]
+      - generic [ref=f7e140]:
+        - generic [ref=f7e142]:
+          - generic [ref=f7e143]:
+            - generic [ref=f7e144]: 图书编号
+            - textbox "请输入图书编号" [ref=f7e147]
+          - generic [ref=f7e153]:
+            - generic [ref=f7e154]: 图书名称
+            - textbox "请输入图书名称" [ref=f7e157]
+          - generic [ref=f7e163]:
+            - generic [ref=f7e164]: 作者
+            - textbox "请输入作者" [ref=f7e167]
+          - button [ref=f7e175] [cursor=pointer]
+          - button "重置" [ref=f7e179] [cursor=pointer]
+        - generic [ref=f7e181]:
+          - button "上架" [ref=f7e182] [cursor=pointer]
+          - button "批量删除" [ref=f7e184] [cursor=pointer]
+        - generic [ref=f7e186]:
+          - table [ref=f7e188]:
+            - rowgroup [ref=f7e199]:
+              - row "图书编号 图书名称 价格 作者 出版社 出版时间 库存" [ref=f7e200]:
+                - columnheader [ref=f7e201]:
+                  - generic [ref=f7e204] [cursor=pointer]:
+                    - checkbox
+                - columnheader [ref=f7e206] [cursor=pointer]
+                - columnheader "图书名称" [ref=f7e211]
+                - columnheader [ref=f7e213] [cursor=pointer]
+                - columnheader "作者" [ref=f7e218]
+                - columnheader "出版社" [ref=f7e220]
+                - columnheader [ref=f7e222] [cursor=pointer]
+                - columnheader [ref=f7e227] [cursor=pointer]
+                - columnheader [ref=f7e232]
+          - table [ref=f7e234]:
+            - rowgroup [ref=f7e245]:
+              - row "TEST-INV-001 测试库存图书 29.9 测试作者 测试出版社 已借完 / 馆藏 1" [ref=f7e246]:
+                - cell [ref=f7e247]:
+                  - generic [ref=f7e250] [cursor=pointer]:
+                    - checkbox
+                - cell "TEST-INV-001" [ref=f7e252]
+                - cell "测试库存图书" [ref=f7e254]
+                - cell "29.9" [ref=f7e256]
+                - cell "测试作者" [ref=f7e258]
+                - cell "测试出版社" [ref=f7e260]
+                - cell [ref=f7e262]
+                - cell "已借完 / 馆藏 1" [ref=f7e263]
+                - cell [ref=f7e265]
+              - row "999-9-99-999999-9 回归测试专用书 99.9 测试作者 测试出版社 可借 2 / 馆藏 2" [ref=f7e266]:
+                - cell [ref=f7e267]:
+                  - generic [ref=f7e270] [cursor=pointer]:
+                    - checkbox
+                - cell "999-9-99-999999-9" [ref=f7e272]
+                - cell "回归测试专用书" [ref=f7e274]
+                - cell "99.9" [ref=f7e276]
+                - cell "测试作者" [ref=f7e278]
+                - cell "测试出版社" [ref=f7e280]
+                - cell [ref=f7e282]
+                - cell "可借 2 / 馆藏 2" [ref=f7e283]
+                - cell [ref=f7e285]
+              - row "000003 三体 33 刘慈欣 西电出版社 2026-07-08 可借 3 / 馆藏 3" [ref=f7e286]:
+                - cell [ref=f7e287]:
+                  - generic [ref=f7e290] [cursor=pointer]:
+                    - checkbox
+                - cell "000003" [ref=f7e292]
+                - cell "三体" [ref=f7e294]
+                - cell "33" [ref=f7e296]
+                - cell "刘慈欣" [ref=f7e298]
+                - cell "西电出版社" [ref=f7e300]
+                - cell "2026-07-08" [ref=f7e302]
+                - cell "可借 3 / 馆藏 3" [ref=f7e304]
+                - cell [ref=f7e306]
+              - row "00114514 野兽先辈的一生 11.4 田所浩二 你是一个一个一个出版社 2026-07-01 可借 2 / 馆藏 2" [ref=f7e307]:
+                - cell [ref=f7e308]:
+                  - generic [ref=f7e311] [cursor=pointer]:
+                    - checkbox
+                - cell "00114514" [ref=f7e313]
+                - cell "野兽先辈的一生" [ref=f7e315]
+                - cell "11.4" [ref=f7e317]
+                - cell "田所浩二" [ref=f7e319]
+                - cell "你是一个一个一个出版社" [ref=f7e321]
+                - cell "2026-07-01" [ref=f7e323]
+                - cell "可借 2 / 馆藏 2" [ref=f7e325]
+                - cell [ref=f7e327]
+              - row "54112312321 格林童话 可借 1 / 馆藏 1" [ref=f7e328]:
+                - cell [ref=f7e329]:
+                  - generic [ref=f7e332] [cursor=pointer]:
+                    - checkbox
+                - cell "54112312321" [ref=f7e334]
+                - cell "格林童话" [ref=f7e336]
+                - cell [ref=f7e338]
+                - cell [ref=f7e339]
+                - cell [ref=f7e340]
+                - cell [ref=f7e341]
+                - cell "可借 1 / 馆藏 1" [ref=f7e342]
+                - cell [ref=f7e344]
+              - row "345621212321 伊索寓言 已借完 / 馆藏 1" [ref=f7e345]:
+                - cell [ref=f7e346]:
+                  - generic [ref=f7e349] [cursor=pointer]:
+                    - checkbox
+                - cell "345621212321" [ref=f7e351]
+                - cell "伊索寓言" [ref=f7e353]
+                - cell [ref=f7e355]
+                - cell [ref=f7e356]
+                - cell [ref=f7e357]
+                - cell [ref=f7e358]
+                - cell "已借完 / 馆藏 1" [ref=f7e359]
+                - cell [ref=f7e361]
+              - row "3213123123 操作系统 已借完 / 馆藏 1" [ref=f7e362]:
+                - cell [ref=f7e363]:
+                  - generic [ref=f7e366] [cursor=pointer]:
+                    - checkbox
+                - cell "3213123123" [ref=f7e368]
+                - cell "操作系统" [ref=f7e370]
+                - cell [ref=f7e372]
+                - cell [ref=f7e373]
+                - cell [ref=f7e374]
+                - cell [ref=f7e375]
+                - cell "已借完 / 馆藏 1" [ref=f7e376]
+                - cell [ref=f7e378]
+              - row "25213121232 一万个为什么 可借 1 / 馆藏 1" [ref=f7e379]:
+                - cell [ref=f7e380]:
+                  - generic [ref=f7e383] [cursor=pointer]:
+                    - checkbox
+                - cell "25213121232" [ref=f7e385]
+                - cell "一万个为什么" [ref=f7e387]
+                - cell [ref=f7e389]
+                - cell [ref=f7e390]
+                - cell [ref=f7e391]
+                - cell [ref=f7e392]
+                - cell "可借 1 / 馆藏 1" [ref=f7e393]
+                - cell [ref=f7e395]
+              - row "2312315132131 五万个为什么 可借 1 / 馆藏 1" [ref=f7e396]:
+                - cell [ref=f7e397]:
+                  - generic [ref=f7e400] [cursor=pointer]:
+                    - checkbox
+                - cell "2312315132131" [ref=f7e402]
+                - cell "五万个为什么" [ref=f7e404]
+                - cell [ref=f7e406]
+                - cell [ref=f7e407]
+                - cell [ref=f7e408]
+                - cell [ref=f7e409]
+                - cell "可借 1 / 馆藏 1" [ref=f7e410]
+                - cell [ref=f7e412]
+              - row "12341541321 十万个为什么 15 小王 宁波大学出版社 2014-12-16 可借 1 / 馆藏 1" [ref=f7e413]:
+                - cell [ref=f7e414]:
+                  - generic [ref=f7e417] [cursor=pointer]:
+                    - checkbox
+                - cell "12341541321" [ref=f7e419]
+                - cell "十万个为什么" [ref=f7e421]
+                - cell "15" [ref=f7e423]
+                - cell "小王" [ref=f7e425]
+                - cell "宁波大学出版社" [ref=f7e427]
+                - cell "2014-12-16" [ref=f7e429]
+                - cell "可借 1 / 馆藏 1" [ref=f7e431]
+                - cell [ref=f7e433]
+          - generic [ref=f7e434]:
+            - table [ref=f7e436]:
+              - rowgroup [ref=f7e447]:
+                - row [ref=f7e448]:
+                  - columnheader [ref=f7e449]
+                  - columnheader [ref=f7e450] [cursor=pointer]
+                  - columnheader [ref=f7e451]
+                  - columnheader [ref=f7e452] [cursor=pointer]
+                  - columnheader [ref=f7e453]
+                  - columnheader [ref=f7e454]
+                  - columnheader [ref=f7e455] [cursor=pointer]
+                  - columnheader [ref=f7e456] [cursor=pointer]
+                  - columnheader "操作" [ref=f7e457]
+            - table [ref=f7e460]:
+              - rowgroup [ref=f7e471]:
+                - row [ref=f7e472]:
+                  - cell [ref=f7e473]
+                  - cell [ref=f7e474]
+                  - cell [ref=f7e475]
+                  - cell [ref=f7e476]
+                  - cell [ref=f7e477]
+                  - cell [ref=f7e478]
+                  - cell [ref=f7e479]
+                  - cell [ref=f7e480]
+                  - cell [ref=f7e481]:
+                    - generic [ref=f7e482]:
+                      - button "编辑" [active] [ref=f7e483] [cursor=pointer]
+                      - button "删除" [ref=f7e485] [cursor=pointer]
+                - row [ref=f7e487]:
+                  - cell [ref=f7e488]
+                  - cell [ref=f7e489]
+                  - cell [ref=f7e490]
+                  - cell [ref=f7e491]
+                  - cell [ref=f7e492]
+                  - cell [ref=f7e493]
+                  - cell [ref=f7e494]
+                  - cell [ref=f7e495]
+                  - cell [ref=f7e496]:
+                    - generic [ref=f7e497]:
+                      - button "编辑" [ref=f7e498] [cursor=pointer]
+                      - button "删除" [ref=f7e500] [cursor=pointer]
+                - row [ref=f7e502]:
+                  - cell [ref=f7e503]
+                  - cell [ref=f7e504]
+                  - cell [ref=f7e505]
+                  - cell [ref=f7e506]
+                  - cell [ref=f7e507]
+                  - cell [ref=f7e508]
+                  - cell [ref=f7e509]
+                  - cell [ref=f7e510]
+                  - cell [ref=f7e511]:
+                    - generic [ref=f7e512]:
+                      - button "编辑" [ref=f7e513] [cursor=pointer]
+                      - button "删除" [ref=f7e515] [cursor=pointer]
+                - row [ref=f7e517]:
+                  - cell [ref=f7e518]
+                  - cell [ref=f7e519]
+                  - cell [ref=f7e520]
+                  - cell [ref=f7e521]
+                  - cell [ref=f7e522]
+                  - cell [ref=f7e523]
+                  - cell [ref=f7e524]
+                  - cell [ref=f7e525]
+                  - cell [ref=f7e526]:
+                    - generic [ref=f7e527]:
+                      - button "编辑" [ref=f7e528] [cursor=pointer]
+                      - button "删除" [ref=f7e530] [cursor=pointer]
+                - row [ref=f7e532]:
+                  - cell [ref=f7e533]
+                  - cell [ref=f7e534]
+                  - cell [ref=f7e535]
+                  - cell [ref=f7e536]
+                  - cell [ref=f7e537]
+                  - cell [ref=f7e538]
+                  - cell [ref=f7e539]
+                  - cell [ref=f7e540]
+                  - cell [ref=f7e541]:
+                    - generic [ref=f7e542]:
+                      - button "编辑" [ref=f7e543] [cursor=pointer]
+                      - button "删除" [ref=f7e545] [cursor=pointer]
+                - row [ref=f7e547]:
+                  - cell [ref=f7e548]
+                  - cell [ref=f7e549]
+                  - cell [ref=f7e550]
+                  - cell [ref=f7e551]
+                  - cell [ref=f7e552]
+                  - cell [ref=f7e553]
+                  - cell [ref=f7e554]
+                  - cell [ref=f7e555]
+                  - cell [ref=f7e556]:
+                    - generic [ref=f7e557]:
+                      - button "编辑" [ref=f7e558] [cursor=pointer]
+                      - button "删除" [ref=f7e560] [cursor=pointer]
+                - row [ref=f7e562]:
+                  - cell [ref=f7e563]
+                  - cell [ref=f7e564]
+                  - cell [ref=f7e565]
+                  - cell [ref=f7e566]
+                  - cell [ref=f7e567]
+                  - cell [ref=f7e568]
+                  - cell [ref=f7e569]
+                  - cell [ref=f7e570]
+                  - cell [ref=f7e571]:
+                    - generic [ref=f7e572]:
+                      - button "编辑" [ref=f7e573] [cursor=pointer]
+                      - button "删除" [ref=f7e575] [cursor=pointer]
+                - row [ref=f7e577]:
+                  - cell [ref=f7e578]
+                  - cell [ref=f7e579]
+                  - cell [ref=f7e580]
+                  - cell [ref=f7e581]
+                  - cell [ref=f7e582]
+                  - cell [ref=f7e583]
+                  - cell [ref=f7e584]
+                  - cell [ref=f7e585]
+                  - cell [ref=f7e586]:
+                    - generic [ref=f7e587]:
+                      - button "编辑" [ref=f7e588] [cursor=pointer]
+                      - button "删除" [ref=f7e590] [cursor=pointer]
+                - row [ref=f7e592]:
+                  - cell [ref=f7e593]
+                  - cell [ref=f7e594]
+                  - cell [ref=f7e595]
+                  - cell [ref=f7e596]
+                  - cell [ref=f7e597]
+                  - cell [ref=f7e598]
+                  - cell [ref=f7e599]
+                  - cell [ref=f7e600]
+                  - cell [ref=f7e601]:
+                    - generic [ref=f7e602]:
+                      - button "编辑" [ref=f7e603] [cursor=pointer]
+                      - button "删除" [ref=f7e605] [cursor=pointer]
+                - row [ref=f7e607]:
+                  - cell [ref=f7e608]
+                  - cell [ref=f7e609]
+                  - cell [ref=f7e610]
+                  - cell [ref=f7e611]
+                  - cell [ref=f7e612]
+                  - cell [ref=f7e613]
+                  - cell [ref=f7e614]
+                  - cell [ref=f7e615]
+                  - cell [ref=f7e616]:
+                    - generic [ref=f7e617]:
+                      - button "编辑" [ref=f7e618] [cursor=pointer]
+                      - button "删除" [ref=f7e620] [cursor=pointer]
+        - generic "pagination" [ref=f7e623]:
+          - generic [ref=f7e624]: 共 10 条
+          - textbox "请选择" [ref=f7e629] [cursor=pointer]: 10条/页
+          - button [disabled] [ref=f7e634]
+          - list [ref=f7e638]:
+            - listitem [ref=f7e639]: "1"
+          - button [disabled] [ref=f7e640]
+          - generic [ref=f7e644]:
+            - text: 前往
+            - spinbutton [ref=f7e646]: "1"
+            - text: 页
+  - alert [ref=f7e713]:
+    - paragraph [ref=f7e717]: 修改书籍信息成功
