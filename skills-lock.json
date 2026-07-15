@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "codebase-analysis": {
+      "source": "robbyt/claude-skills",
+      "sourceType": "github",
+      "skillPath": "plugins/gemini/skills/codebase-analysis/SKILL.md",
+      "computedHash": "145c585b96f942a104b80f02eed49b30085322e735256de2a6abe1163fd653a7"
+    }
+  }
+}
