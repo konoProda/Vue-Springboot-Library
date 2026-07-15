@@ -1,0 +1,14 @@
+{
+  "login": {
+    "title": "System Login",
+    "username": "Username",
+    "password": "Password",
+    "captcha": "Enter captcha",
+    "loginBtn": "Login",
+    "register": "Register >>",
+    "rules": {
+      "usernameRequired": "Please enter username",
+      "passwordRequired": "Please enter password"
+    }
+  }
+}

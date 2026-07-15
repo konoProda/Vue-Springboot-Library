@@ -1,0 +1,16 @@
+- generic [ref=f7e5]:
+  - generic [ref=f7e6]:
+    - generic [ref=f7e7] [cursor=pointer]: 图书馆管理系统
+    - generic [ref=f7e10] [cursor=pointer]:
+      - generic [ref=f7e11]: ☀️
+      - generic [ref=f7e12]: 当前浅色
+    - generic [ref=f7e13] [cursor=pointer]: EN
+    - button "管理员" [ref=f7e18]
+  - menubar [ref=f7e23]:
+    - menuitem "展示板" [ref=f7e24] [cursor=pointer]
+    - menuitem "个人信息" [ref=f7e28]
+    - menuitem "读者管理" [ref=f7e36] [cursor=pointer]
+    - menuitem "书籍管理" [ref=f7e38] [cursor=pointer]
+    - menuitem "借阅管理" [ref=f7e40] [cursor=pointer]
+    - menuitem "借阅状态" [ref=f7e42] [cursor=pointer]
+    - menuitem "操作日志" [ref=f7e44] [cursor=pointer]

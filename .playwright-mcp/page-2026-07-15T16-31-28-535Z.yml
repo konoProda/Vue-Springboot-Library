@@ -1,0 +1,15 @@
+- generic [ref=f10e1]:
+  - generic [ref=f10e2] [cursor=pointer]: 简中/EN
+  - generic [ref=f10e3]:
+    - heading "System Login" [level=2] [ref=f10e4]
+    - textbox "Username" [ref=f10e8]
+    - textbox "Password" [ref=f10e17]
+    - generic [ref=f10e26]:
+      - textbox "Enter captcha" [ref=f10e28]
+      - generic [ref=f10e29] [cursor=pointer]:
+        - generic [ref=f10e30]: W
+        - generic [ref=f10e31]: G
+        - generic [ref=f10e32]: Q
+        - generic [ref=f10e33]: "N"
+    - button "Login" [ref=f10e36] [cursor=pointer]
+    - button "Register >>" [ref=f10e40] [cursor=pointer]

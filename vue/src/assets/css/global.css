@@ -5,6 +5,19 @@
     box-sizing: border-box;
 }
 
+/* ==================== 全局字体与字号 ==================== */
+html {
+    font-size: 16px;  /* 基准字号，后续使用 rem 相对单位 */
+}
+body {
+    font-family: "Inter", "Segoe UI", "SimHei", "Microsoft YaHei", sans-serif;
+}
+
+/* 顶部栏文字加粗 */
+.header-bar {
+    font-weight: 600;
+}
+
 /* ==================== 深色模式 (Element Plus CSS 变量覆盖) ==================== */
 html.dark {
   /* 背景色系 */

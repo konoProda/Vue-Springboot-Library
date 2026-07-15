@@ -1,0 +1,23 @@
+- generic [active] [ref=f3e1]:
+  - generic [ref=f3e2]:
+    - generic [ref=f3e3]:
+      - generic [ref=f3e4] [cursor=pointer]: 图书馆管理系统
+      - generic [ref=f3e7] [cursor=pointer]:
+        - generic [ref=f3e8]: ☀️
+        - generic [ref=f3e9]: 当前浅色
+      - generic [ref=f3e10] [cursor=pointer]: EN
+    - generic [ref=f3e13]:
+      - heading "系统登陆" [level=2] [ref=f3e14]
+      - textbox "请输入用户名" [ref=f3e18]
+      - textbox "请输入密码" [ref=f3e27]
+      - generic [ref=f3e36]:
+        - textbox "请输入验证码" [ref=f3e38]
+        - generic [ref=f3e39] [cursor=pointer]:
+          - generic [ref=f3e40]: b
+          - generic [ref=f3e41]: T
+          - generic [ref=f3e42]: Q
+          - generic [ref=f3e43]: "1"
+      - button "登 录" [ref=f3e46] [cursor=pointer]
+      - button "前往注册 >>" [ref=f3e50] [cursor=pointer]
+  - iframe [ref=f3e52]:
+    - generic [ref=f4e1]: "Failed to compile../src/views/Book.vue Module Error (from ./node_modules/vue-loader-v16/dist/index.js): VueCompilerError: Element is missing end tag. at /home/sck/scktest/claude_test/Vue-Springboot-Library/vue/src/views/Book.vue:2:3 1 | <template> 2 | <div class=\"home page-layout\" style =\"padding: 10px\"> | ^ 3 | <!-- 左侧搜索面板 (30%) --> 4 | <div class=\"search-panel\">"

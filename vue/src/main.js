@@ -9,9 +9,29 @@ import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import '@/assets/icon/iconfont.js' // 图标
 import '@/assets/icon/iconfont.css'
-const app =createApp(App)
+
+// ==================== Vue-i18n ====================
+import { createI18n } from 'vue-i18n'
+import zh from '@/locales/zh.json'
+import en from '@/locales/en.json'
+
+const savedLang = localStorage.getItem('lang') || 'zh'
+const i18n = createI18n({
+  legacy: true,
+  locale: savedLang,
+  fallbackLocale: 'zh',
+  messages: { zh, en },
+})
+
+const app = createApp(App)
+
 import * as ElIconModules from '@element-plus/icons'
-for(let iconName in ElIconModules){
-    app.component(iconName,ElIconModules[iconName])
+for (let iconName in ElIconModules) {
+  app.component(iconName, ElIconModules[iconName])
 }
-app.use(store).use(router).use(ElementPlus,{locale: zhCn,size:"small"}).mount('#app')
+
+app.use(store)
+  .use(router)
+  .use(i18n)
+  .use(ElementPlus, { locale: zhCn, size: "small" })
+  .mount('#app')

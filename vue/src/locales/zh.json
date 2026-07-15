@@ -1,0 +1,14 @@
+{
+  "login": {
+    "title": "系统登陆",
+    "username": "用户名",
+    "password": "密码",
+    "captcha": "请输入验证码",
+    "loginBtn": "登 录",
+    "register": "前往注册 >>",
+    "rules": {
+      "usernameRequired": "请输入用户名",
+      "passwordRequired": "请输入密码"
+    }
+  }
+}

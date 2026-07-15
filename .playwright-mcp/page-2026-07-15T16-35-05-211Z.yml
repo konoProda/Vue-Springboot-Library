@@ -1,0 +1,15 @@
+- generic [ref=e1]:
+  - generic [ref=e2] [cursor=pointer]: 简中/EN
+  - generic [ref=e3]:
+    - heading "系统登陆" [level=2] [ref=e4]
+    - textbox "用户名" [ref=e8]
+    - textbox "密码" [ref=e17]
+    - generic [ref=e26]:
+      - textbox "请输入验证码" [ref=e28]
+      - generic [ref=e29] [cursor=pointer]:
+        - generic [ref=e30]: R
+        - generic [ref=e31]: H
+        - generic [ref=e32]: "9"
+        - generic [ref=e33]: "1"
+    - button "登 录" [ref=e36] [cursor=pointer]
+    - button "前往注册 >>" [ref=e40] [cursor=pointer]
