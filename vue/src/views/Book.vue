@@ -208,6 +208,10 @@ export default {
   created(){
     let userStr = sessionStorage.getItem("user") ||"{}"
     this.user = JSON.parse(userStr)
+    // 从 Dashboard 搜索跳转过来时，自动填入关键词
+    if (this.$route.query.q) {
+      this.search2 = this.$route.query.q
+    }
     this.load()
   },
   name: 'Book',
