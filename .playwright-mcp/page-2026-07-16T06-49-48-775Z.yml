@@ -1,0 +1,17 @@
+- generic [ref=e4]:
+  - generic [ref=e5]:
+    - generic [ref=e6]: 图书馆管理系统
+    - generic [ref=e9] [cursor=pointer]: 简中/EN
+  - generic [ref=e11]:
+    - heading "系统登陆" [level=2] [ref=e12]
+    - textbox "用户名" [ref=e16]
+    - textbox "密码" [ref=e25]
+    - generic [ref=e34]:
+      - textbox "请输入验证码" [ref=e36]
+      - generic [ref=e37] [cursor=pointer]:
+        - generic [ref=e38]: j
+        - generic [ref=e39]: b
+        - generic [ref=e40]: F
+        - generic [ref=e41]: "1"
+    - button "登 录" [ref=e44] [cursor=pointer]
+    - button "前往注册 >>" [ref=e48] [cursor=pointer]
