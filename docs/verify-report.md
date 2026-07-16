@@ -1,90 +1,41 @@
 # 重构验证报告
 
-> 生成时间：2026-07-15 17:35  
-> 重构分支：`refactor/test-drill`  
+> 生成时间：2026-07-16 21:40  
+> 重构分支：`refactor/final`  
 > 模型：deepseek-v4-pro[1m]
 
 ---
 
-## 验证步骤
+## 验证流水线
 
-### 1. 编译检查
-
-| 项目 | 结果 |
-|------|:--:|
-| `mvn compile` (SpringBoot/) | ✅ BUILD SUCCESS |
-| 编译源文件数 | 31 |
-| 编译耗时 | 1.3s |
-
-### 2. 后端启动
-
-| 项目 | 结果 |
-|------|:--:|
-| 后端状态 | ✅ 运行中 (PID 5246) |
-| 端口 | 9090 |
-| HTTP 状态 | 401（未认证端点正常拒绝） |
-| 前端 Dev Server | ❌ 未运行（不影响 API 测试） |
-
-### 3. API 冒烟测试
-
-| 端点 | 方法 | 预期 | 实际 | 状态 |
-|------|------|------|------|:--:|
-| `/user/login` | POST | code=0 | code=0 | ✅ |
-| `/dashboard` | GET | code=0 | books=9, users=2, visits=2 | ✅ |
-| `/book` | GET | code=0 | total=9 | ✅ |
-| `/user/usersearch` | GET | code=0 | total=1 (reader) | ✅ |
-| `/LendRecord` | GET | code=0 | total=79 | ✅ |
-| `/operation-logs` | GET | code=0 | total=113 | ✅ |
-| `/book` (reader) | POST | code=403 | code=403 | ✅ |
-
-### 4. 数据库检查
-
-| 检查项 | 结果 |
-|------|:--:|
-| 表数量 | 5 (`book`, `bookwithuser`, `lend_record`, `operation_log`, `user`) |
-| `book.version` 列存在 | ✅ (乐观锁字段) |
-| 操作日志含读者信息 | ✅ (`"reader":"日志读者（ID:23）"`) |
-| 日志含状态变更 | ✅ (`"beforeStatus":"未归还"`) |
-| 数据完整性 | ✅ 所有表行数正常 |
-
----
-
-## 重构质量指标总结
-
-| 维度 | 修复前 | 修复后 | 改善率 |
-|------|--------|--------|--------|
-| 高优先级问题 | 6 | 0 | **100%** |
-| 中优先级问题 | 6 | 0 | **100%** |
-| 权限检查重复代码 | 16 处 | 1 处静态方法 | **93.8%** |
-| Controller 直调 Mapper | 4 个 | 1 个 | **75%** |
-
-## 关键功能验证
-
-| 功能 | 状态 |
-|------|:--:|
-| 管理员登录 + 图书 CRUD | ✅ |
-| 普通读者登录 + 借书/还书 | ✅ |
-| 密码修改（/user/password） | ✅ |
-| 乐观锁并发保护（@Version） | ✅ |
-| 权限边界（读者 → 管理员接口 403） | ✅ |
-| 访问计数（AtomicInteger） | ✅ |
-| 操作日志含借阅者信息 | ✅ |
-| 整数列 EQ 查询（不再 LIKE） | ✅ |
-| 死代码已清理 | ✅ |
-
----
-
-## 遗留低风险项
-
-| 项目 | 影响 | 建议 |
+| 步骤 | 内容 | 结果 |
 |------|------|------|
-| `LendRecordController.findPage` `readerId` 仍用 LIKE（在 BookWithUser 中） | 低 | 后续统一改为 EQ |
-| 前端 Dev Server 未运行 | 无（不影响后端验证） | 运行 `npm run serve` |
-| DTO 层缺失 | 中 | 建议引入 |
-| 单元测试缺失 | 中 | 0 个测试用例 |
+| 1. 编译 | `mvn compile` | ✅ COMPILE OK |
+| 2. 打包 | `mvn clean package -DskipTests` | ✅ PACKAGE OK |
+| 3. 启动 | `java -jar demo-0.0.1-SNAPSHOT.jar` | ✅ HTTP 200 |
+| 4. 冒烟 | `GET /dashboard` | ✅ books=9 users=7 |
+| 5. 黑盒验证 | `verify-borrow-flow.sh` 6 用例 | ✅ 6/6 PASS, 退出码 0 |
 
-## 结论
+## 验证脚本输出
 
-✅ **所有关键功能正常，重构质量达到验收标准。**  
-✅ **高/中优先级问题 100% 修复。**  
-⚠️ **前端 Dev Server 需手动启动才能进行浏览器验证。**
+```
+PASS TC1 库存减少=0, 当前借阅=1, 历史记录=1
+PASS TC2 借阅失败(code=1), 库存/记录未变
+PASS TC3 续借成功, 延长30天, 剩余续借次数=0
+PASS TC4 续借失败(code=1), 应还日期不变
+PASS TC5 库存恢复=1, 借阅清理, 历史status=1
+PASS TC6 还书失败(code=1), 库存不变=1
+
+全部通过: 6/6
+```
+
+## 重构覆盖范围
+
+| 需求 | 内容 | 状态 |
+|------|------|------|
+| 需求1 | 图书库存数量 (totalCopies/availableCopies) | ✅ |
+| 需求2 | 逾期管理 (状态/筛选/限制) | ✅ |
+| 需求3 | 借书/还书/续借后端化 + 黑盒验证脚本 | ✅ |
+| 需求4 | 管理员新增/删除用户 | ✅ |
+| 需求5 | 前端风格 + i18n + 布局 + 深色模式 | ✅ |
+| 额外 | 孤儿数据防护 / 排序优化 / 响应式适配 | ✅ |

@@ -190,7 +190,6 @@
 // @ is an alias to /src
 import request from "../utils/request";
 import {ElMessage} from "element-plus";
-import moment from "moment";
 export default {
   created(){
     let userStr = sessionStorage.getItem("user") ||"{}"
