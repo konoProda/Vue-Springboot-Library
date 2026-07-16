@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.commom.Result;
 import com.example.demo.entity.Book;
+import com.example.demo.entity.BookWithUser;
 import com.example.demo.interceptor.JwtInterceptor;
+import com.example.demo.mapper.BookWithUserMapper;
 import com.example.demo.service.BookService;
 import com.example.demo.service.OperationLogService;
 import com.example.demo.utils.QueryUtils;
@@ -22,6 +24,9 @@ import java.util.Map;
 public class BookController {
     @Resource
     BookService bookService;
+
+    @Resource
+    private BookWithUserMapper bookWithUserMapper;
 
     @Resource
     OperationLogService operationLogService;
@@ -85,6 +90,14 @@ public class BookController {
         if (perm != null) return perm;
 
         List<Book> books = bookService.listByIds(ids);
+        // 检查是否有活跃借阅
+        for (Book b : books) {
+            LambdaQueryWrapper<BookWithUser> bwQuery = new LambdaQueryWrapper<>();
+            bwQuery.eq(BookWithUser::getIsbn, b.getIsbn());
+            if (bookWithUserMapper.selectCount(bwQuery) > 0) {
+                return Result.error("1", "该图书《" + b.getName() + "》正在被借阅中，无法删除，请等待归还后再操作");
+            }
+        }
         bookService.removeByIds(ids);
         Integer userId = (Integer) request.getAttribute("userId");
         String username = (String) request.getAttribute("username");
@@ -104,6 +117,14 @@ public class BookController {
         if (perm != null) return perm;
 
         Book book = bookService.getById(id.intValue());
+        // 检查是否有活跃借阅
+        if (book != null) {
+            LambdaQueryWrapper<BookWithUser> bwQuery = new LambdaQueryWrapper<>();
+            bwQuery.eq(BookWithUser::getIsbn, book.getIsbn());
+            if (bookWithUserMapper.selectCount(bwQuery) > 0) {
+                return Result.error("1", "该图书《" + book.getName() + "》正在被借阅中，无法删除，请等待归还后再操作");
+            }
+        }
         bookService.removeById(id);
         Integer userId = (Integer) request.getAttribute("userId");
         String username = (String) request.getAttribute("username");

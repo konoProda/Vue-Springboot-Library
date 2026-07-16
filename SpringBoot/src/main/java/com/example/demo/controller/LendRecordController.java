@@ -204,7 +204,10 @@ public class LendRecordController {
             cal.add(Calendar.DAY_OF_MONTH, -30);
             wrappers.lt(LendRecord::getLendTime, cal.getTime());
         }
-        wrappers.orderByDesc(LendRecord::getLendTime);
+        // 未归还(status='0')靠前按借阅时间升序; 已归还按还书时间降序(最近归还靠前)
+        wrappers.orderByAsc(LendRecord::getStatus)
+               .orderByDesc(LendRecord::getReturnTime)
+               .orderByAsc(LendRecord::getLendTime);
         Page<LendRecord> LendRecordPage = LendRecordMapper.selectPage(new Page<>(pageNum, pageSize), wrappers);
 
         // 计算逾期状态 (仅对未归还记录)

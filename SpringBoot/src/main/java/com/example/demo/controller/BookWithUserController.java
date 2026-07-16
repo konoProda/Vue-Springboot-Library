@@ -48,23 +48,13 @@ public class BookWithUserController {
         return Result.success();
     }
 
-    @PostMapping("/deleteRecord")
-    public Result<?> deleteRecord(@RequestBody BookWithUser bookWithUser){
-        return Result.success();
-    }
-
     @PostMapping("/deleteRecords")
     public Result<?> deleteRecords(@RequestBody List<BookWithUser> bookWithUsers, HttpServletRequest request){
         Result<?> perm = JwtInterceptor.requireAdmin(request);
         if (perm != null) return perm;
 
-        for (BookWithUser curRecord : bookWithUsers) {
-            Map<String, Object> map = new HashMap<>();
-            map.put("isbn", curRecord.getIsbn());
-            map.put("user_id", curRecord.getUserId());
-            BookWithUserMapper.deleteByMap(map);
-        }
-        return Result.success();
+        // 活跃借阅不能直接删除，需通过还书流程处理
+        return Result.error("1", "活跃借阅记录不能直接删除。请通过还书流程（借阅状态页点击'还书'按钮）或借阅管理页编辑归还状态来处理。");
     }
 
     @GetMapping
