@@ -144,6 +144,14 @@ export default defineComponent({
     this.user = JSON.parse(userStr)
     this.load()
   },
+  mounted() {
+    this._onResize = () => { this.sidebarOpen = window.innerWidth >= 1024 }
+    window.addEventListener('resize', this._onResize)
+    this._onResize()
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this._onResize)
+  },
   name: 'LendRecord',
   methods: {
     handleSelectionChange(val){
@@ -308,7 +316,10 @@ export default defineComponent({
 .content-area { flex:1; display:flex; flex-direction:column; overflow:hidden; padding:12px 16px; }
 .content-header { margin-bottom:10px; display:flex; gap:8px; }
 .content-footer { margin-top:10px; }
-.table-wrap { flex:1; overflow-y:auto; }
+.table-wrap { flex:1; overflow:hidden; }
+.table-wrap :deep(.el-table) { height:100%; display:flex; flex-direction:column; }
+.table-wrap :deep(.el-table__inner-wrapper) { flex:1; overflow:hidden; display:flex; flex-direction:column; }
+.table-wrap :deep(.el-table__body-wrapper) { flex:1; overflow:auto; }
 .action-btns { display:flex; gap:4px; flex-wrap:nowrap; white-space:nowrap; }
 
 @media (max-width: 1024px) {

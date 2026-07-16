@@ -1,0 +1,41 @@
+- generic [active] [ref=f12e1]:
+  - generic [ref=f12e55]:
+    - generic [ref=f12e56]:
+      - generic [ref=f12e57]:
+        - generic [ref=f12e58]: 图书馆管理系统
+        - generic [ref=f12e61]:
+          - generic [ref=f12e62] [cursor=pointer]: ☀️ 浅色
+          - generic [ref=f12e63]: "|"
+          - generic [ref=f12e64]: 简中/EN
+          - generic [ref=f12e65]: "|"
+          - button "管理员" [ref=f12e68] [cursor=pointer]
+      - generic [ref=f12e72]:
+        - generic [ref=f12e73] [cursor=pointer]: 展示板
+        - generic [ref=f12e76] [cursor=pointer]: 个人信息
+        - generic [ref=f12e79] [cursor=pointer]: 读者管理
+        - generic [ref=f12e82] [cursor=pointer]: 书籍管理
+        - generic [ref=f12e85] [cursor=pointer]: 借阅记录
+        - generic [ref=f12e88] [cursor=pointer]: 借阅状态
+        - generic [ref=f12e92] [cursor=pointer]: 操作日志
+    - generic [ref=f12e95]:
+      - generic [ref=f12e97]:
+        - generic [ref=f12e98]: 馆藏书刊
+        - generic [ref=f12e99]:
+          - textbox "请输入你的搜索内容" [ref=f12e103]
+          - generic [ref=f12e104] [cursor=pointer]: 馆藏资源
+      - generic [ref=f12e105]:
+        - generic [ref=f12e108]:
+          - generic [ref=f12e109]: 已借阅
+          - generic [ref=f12e110]: "0"
+        - generic [ref=f12e115]:
+          - generic [ref=f12e116]: 总访问
+          - generic [ref=f12e117]: "0"
+        - generic [ref=f12e122]:
+          - generic [ref=f12e123]: 图书数
+          - generic [ref=f12e124]: "0"
+        - generic [ref=f12e129]:
+          - generic [ref=f12e130]: 用户数
+          - generic [ref=f12e131]: "0"
+      - generic [ref=f12e134]: 2026/7/16 19:02:30
+  - alert [ref=f12e139]:
+    - paragraph [ref=f12e143]: 登录成功

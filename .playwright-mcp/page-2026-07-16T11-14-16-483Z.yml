@@ -1,0 +1,133 @@
+- generic [ref=f2e4]:
+  - generic [ref=f2e5]:
+    - generic [ref=f2e6]:
+      - generic [ref=f2e7]: 图书馆管理系统
+      - generic [ref=f2e10]:
+        - generic [ref=f2e11] [cursor=pointer]: ☀️ 浅色
+        - generic [ref=f2e12]: "|"
+        - generic [ref=f2e13]: 简中/EN
+        - generic [ref=f2e14]: "|"
+        - button "管理员" [ref=f2e17] [cursor=pointer]
+    - generic [ref=f2e21]:
+      - generic [ref=f2e22] [cursor=pointer]: 展示板
+      - generic [ref=f2e25] [cursor=pointer]: 个人信息
+      - generic [ref=f2e28] [cursor=pointer]: 读者管理
+      - generic [ref=f2e31] [cursor=pointer]: 书籍管理
+      - generic [ref=f2e34] [cursor=pointer]: 借阅记录
+      - generic [ref=f2e37] [cursor=pointer]: 借阅状态
+      - generic [ref=f2e41] [cursor=pointer]: 操作日志
+  - generic [ref=f2e49]:
+    - generic [ref=f2e50]:
+      - button "新增读者" [ref=f2e51] [cursor=pointer]
+      - button "批量删除" [ref=f2e53] [cursor=pointer]
+    - generic [ref=f2e56]:
+      - table [ref=f2e58]:
+        - rowgroup [ref=f2e68]:
+          - row "读者编号 用户名 姓名 电话号码 性别 地址 操作" [ref=f2e69]:
+            - columnheader [ref=f2e70]:
+              - generic [ref=f2e73] [cursor=pointer]:
+                - checkbox
+            - columnheader [ref=f2e75] [cursor=pointer]
+            - columnheader "用户名" [ref=f2e80]
+            - columnheader "姓名" [ref=f2e82]
+            - columnheader "电话号码" [ref=f2e84]
+            - columnheader "性别" [ref=f2e86]
+            - columnheader "地址" [ref=f2e88]
+            - columnheader "操作" [ref=f2e90]
+      - table [ref=f2e93]:
+        - rowgroup [ref=f2e103]:
+          - row "18 reader 读者 13900000000 女 学校 编辑 删除" [ref=f2e104]:
+            - cell [ref=f2e105]:
+              - generic [ref=f2e108] [cursor=pointer]:
+                - checkbox
+            - cell "18" [ref=f2e110]
+            - cell "reader" [ref=f2e112]
+            - cell "读者" [ref=f2e114]
+            - cell "13900000000" [ref=f2e116]
+            - cell "女" [ref=f2e118]
+            - cell "学校" [ref=f2e120]
+            - cell [ref=f2e122]:
+              - generic [ref=f2e124]:
+                - button "编辑" [ref=f2e125] [cursor=pointer]
+                - button "删除" [ref=f2e127] [cursor=pointer]
+          - row "24 reader2 读者B 编辑 删除" [ref=f2e129]:
+            - cell [ref=f2e130]:
+              - generic [ref=f2e133] [cursor=pointer]:
+                - checkbox
+            - cell "24" [ref=f2e135]
+            - cell "reader2" [ref=f2e137]
+            - cell "读者B" [ref=f2e139]
+            - cell [ref=f2e141]
+            - cell [ref=f2e142]
+            - cell [ref=f2e143]
+            - cell [ref=f2e144]:
+              - generic [ref=f2e146]:
+                - button "编辑" [ref=f2e147] [cursor=pointer]
+                - button "删除" [ref=f2e149] [cursor=pointer]
+          - row "26 testreader-1784123240 临时读者-1784123240 13800000000 男 编辑 删除" [ref=f2e151]:
+            - cell [ref=f2e152]:
+              - generic [ref=f2e155] [cursor=pointer]:
+                - checkbox
+            - cell "26" [ref=f2e157]
+            - cell "testreader-1784123240" [ref=f2e159]
+            - cell "临时读者-1784123240" [ref=f2e161]
+            - cell "13800000000" [ref=f2e163]
+            - cell "男" [ref=f2e165]
+            - cell [ref=f2e167]
+            - cell [ref=f2e168]:
+              - generic [ref=f2e170]:
+                - button "编辑" [ref=f2e171] [cursor=pointer]
+                - button "删除" [ref=f2e173] [cursor=pointer]
+          - row "27 testreader-1784123261 临时读者-1784123261 13800000000 男 编辑 删除" [ref=f2e175]:
+            - cell [ref=f2e176]:
+              - generic [ref=f2e179] [cursor=pointer]:
+                - checkbox
+            - cell "27" [ref=f2e181]
+            - cell "testreader-1784123261" [ref=f2e183]
+            - cell "临时读者-1784123261" [ref=f2e185]
+            - cell "13800000000" [ref=f2e187]
+            - cell "男" [ref=f2e189]
+            - cell [ref=f2e191]
+            - cell [ref=f2e192]:
+              - generic [ref=f2e194]:
+                - button "编辑" [ref=f2e195] [cursor=pointer]
+                - button "删除" [ref=f2e197] [cursor=pointer]
+          - row "28 testreader-1784123276 临时读者-1784123276 13800000000 男 编辑 删除" [ref=f2e199]:
+            - cell [ref=f2e200]:
+              - generic [ref=f2e203] [cursor=pointer]:
+                - checkbox
+            - cell "28" [ref=f2e205]
+            - cell "testreader-1784123276" [ref=f2e207]
+            - cell "临时读者-1784123276" [ref=f2e209]
+            - cell "13800000000" [ref=f2e211]
+            - cell "男" [ref=f2e213]
+            - cell [ref=f2e215]
+            - cell [ref=f2e216]:
+              - generic [ref=f2e218]:
+                - button "编辑" [ref=f2e219] [cursor=pointer]
+                - button "删除" [ref=f2e221] [cursor=pointer]
+          - row "32 sck 师晨凯 男 编辑 删除" [ref=f2e223]:
+            - cell [ref=f2e224]:
+              - generic [ref=f2e227] [cursor=pointer]:
+                - checkbox
+            - cell "32" [ref=f2e229]
+            - cell "sck" [ref=f2e231]
+            - cell "师晨凯" [ref=f2e233]
+            - cell [ref=f2e235]
+            - cell "男" [ref=f2e236]
+            - cell [ref=f2e238]
+            - cell [ref=f2e239]:
+              - generic [ref=f2e241]:
+                - button "编辑" [ref=f2e242] [cursor=pointer]
+                - button "删除" [ref=f2e244] [cursor=pointer]
+    - generic "pagination" [ref=f2e247]:
+      - generic [ref=f2e248]: 共 6 条
+      - textbox "请选择" [ref=f2e253] [cursor=pointer]: 10条/页
+      - button [disabled] [ref=f2e258]
+      - list [ref=f2e262]:
+        - listitem [ref=f2e263]: "1"
+      - button [disabled] [ref=f2e264]
+      - generic [ref=f2e268]:
+        - text: 前往
+        - spinbutton [ref=f2e270]: "1"
+        - text: 页
