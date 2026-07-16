@@ -105,8 +105,12 @@ public class UserController {
 
     @PutMapping
     public Result<?> password(@RequestBody User user, HttpServletRequest request){
-        Result<?> perm = JwtInterceptor.requireAdmin(request);
-        if (perm != null) return perm;
+        Integer role = (Integer) request.getAttribute("role");
+        Integer requestUserId = (Integer) request.getAttribute("userId");
+        // 管理员可编辑任何人，读者只能编辑自己的信息
+        if (role == null || (role != 1 && !requestUserId.equals(user.getId()))) {
+            return Result.error("403", "无权限操作");
+        }
 
         userMapper.updateById(user);
         Integer userId = (Integer) request.getAttribute("userId");

@@ -1,0 +1,23 @@
+- generic [ref=f4e4]:
+  - generic [ref=f4e5]:
+    - generic [ref=f4e6]: Library Management System
+    - generic [ref=f4e9] [cursor=pointer]: 简中/EN
+  - generic [ref=f4e12]:
+    - heading "User Registration" [level=2] [ref=f4e13]
+    - textbox "Enter username" [ref=f4e17]
+    - textbox "Enter password" [ref=f4e26]
+    - textbox "Confirm password" [ref=f4e36]
+    - generic [ref=f4e44]:
+      - radio "Reader" [checked] [ref=f4e45] [cursor=pointer]:
+        - radio [checked] [ref=f4e48]
+      - radio "Admin" [ref=f4e50] [cursor=pointer]:
+        - radio [ref=f4e53]
+    - generic [ref=f4e57]:
+      - textbox "Enter captcha" [ref=f4e59]
+      - generic [ref=f4e60] [cursor=pointer]:
+        - generic [ref=f4e61]: F
+        - generic [ref=f4e62]: t
+        - generic [ref=f4e63]: f
+        - generic [ref=f4e64]: "4"
+    - button "Register" [ref=f4e67] [cursor=pointer]
+    - button "Go to Login>>" [ref=f4e71] [cursor=pointer]

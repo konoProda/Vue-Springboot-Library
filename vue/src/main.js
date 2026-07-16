@@ -24,9 +24,8 @@ const i18n = createI18n({
   messages: { zh, en },
 })
 
-// Element Plus 分页等组件的语言同步
+// Element Plus 配置
 const elLocales = { zh: zhCn, en: enCn }
-import { locale as elLocale } from 'element-plus'
 
 const app = createApp(App)
 
@@ -40,12 +39,3 @@ app.use(store)
   .use(i18n)
   .use(ElementPlus, { locale: elLocales[savedLang] || zhCn, size: "small" })
   .mount('#app')
-
-// 监听 i18n locale 变化，同步 Element Plus locale
-import { watch } from 'vue'
-watch(
-  () => i18n.global.locale,
-  (lang) => {
-    if (elLocales[lang]) elLocale.value = elLocales[lang]
-  }
-)

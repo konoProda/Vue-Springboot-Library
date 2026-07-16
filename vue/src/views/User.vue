@@ -118,9 +118,9 @@ import {ElMessage} from "element-plus";
 
 export default {
   created(){
-    this.load()
     let userStr = sessionStorage.getItem("user") ||"{}"
     this.user = JSON.parse(userStr)
+    this.load()
   },
   name: 'User',
   methods: {

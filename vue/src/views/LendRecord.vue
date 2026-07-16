@@ -140,9 +140,9 @@ import { defineComponent, reactive, toRefs } from 'vue'
 export default defineComponent({
 
   created(){
-    this.load()
     let userStr = sessionStorage.getItem("user") ||"{}"
     this.user = JSON.parse(userStr)
+    this.load()
   },
   name: 'LendRecord',
   methods: {
@@ -165,13 +165,15 @@ export default defineComponent({
       })
     },
     load(){
+      // 读者只能查看自己的借阅记录
+      const readerFilter = this.user.role == 2 ? this.user.id : this.search3
       request.get("/LendRecord",{
         params:{
           pageNum: this.currentPage,
           pageSize: this.pageSize,
           search1: this.search1,
           search2: this.search2,
-          search3: this.search3,
+          search3: readerFilter,
           overdueFilter: this.overdueFilter,
         }
       }).then(res =>{
