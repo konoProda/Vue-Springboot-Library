@@ -197,12 +197,16 @@ public class LendRecordController {
         QueryUtils.likeIfNotBlank(wrappers, LendRecord::getIsbn, search1);
         QueryUtils.likeIfNotBlank(wrappers, LendRecord::getBookname, search2);
         QueryUtils.eqIfNotBlank(wrappers, LendRecord::getReaderId, search3);
-        // 逾期筛选：仅显示未归还且已逾期 (借出30天后未还)
+        // 借阅状态筛选
         if ("1".equals(overdueFilter)) {
-            wrappers.eq(LendRecord::getStatus, "0");
+            wrappers.eq(LendRecord::getStatus, "0");                    // 逾期未还
             Calendar cal = Calendar.getInstance();
             cal.add(Calendar.DAY_OF_MONTH, -30);
             wrappers.lt(LendRecord::getLendTime, cal.getTime());
+        } else if ("2".equals(overdueFilter)) {
+            wrappers.eq(LendRecord::getStatus, "1");                    // 已归还
+        } else if ("3".equals(overdueFilter)) {
+            wrappers.eq(LendRecord::getStatus, "0");                    // 未归还（含未逾期+已逾期）
         }
         // 未归还(status='0')靠前按借阅时间升序; 已归还按还书时间降序(最近归还靠前)
         wrappers.orderByAsc(LendRecord::getStatus)

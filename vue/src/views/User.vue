@@ -1,71 +1,67 @@
 <template>
-  <div class="home" style ="padding: 10px">
-<!-- 按钮-->
-<!-- 搜索-->
-    <div style="margin: 10px 0;">
-      <el-form inline="true" size="small">
-        <el-form-item label="读者编号" >
-      <el-input v-model="search1" placeholder="请输入读者编号"  clearable>
-        <template #prefix><el-icon class="el-input__icon"><search/></el-icon></template>
-      </el-input>
-          </el-form-item >
-        <el-form-item label="姓名" >
-          <el-input v-model="search2" placeholder="请输入姓名"  clearable>
-            <template #prefix><el-icon class="el-input__icon"><search /></el-icon></template>
-          </el-input>
-        </el-form-item >
-        <el-form-item label="电话号码" >
-          <el-input v-model="search3" placeholder="请输入电话号码"  clearable>
-            <template #prefix><el-icon class="el-input__icon"><search /></el-icon></template>
-          </el-input>
-        </el-form-item >
-        <el-form-item label="地址" >
-          <el-input v-model="search4" placeholder="请输入地址"  clearable>
-            <template #prefix><el-icon class="el-input__icon"><search /></el-icon></template>
-          </el-input>
-        </el-form-item >
-        <el-form-item>
-      <el-button type="primary" style="margin-left: 1%" @click="load" size="mini">查询</el-button>
+  <div class="page-layout">
+    <!-- 折叠按钮 -->
+    <div class="sidebar-toggle" @click="sidebarOpen=!sidebarOpen">
+      <el-icon :size="18"><Menu /></el-icon>
+    </div>
+    <!-- 左侧搜索面板 -->
+    <div class="search-sidebar" :class="{ collapsed: !sidebarOpen }">
+      <div class="sidebar-title">搜索条件</div>
+      <el-form size="small" label-position="top">
+        <el-form-item label="读者编号">
+          <el-input v-model="search1" placeholder="请输入读者编号" clearable />
+        </el-form-item>
+        <el-form-item label="姓名">
+          <el-input v-model="search2" placeholder="请输入姓名" clearable />
+        </el-form-item>
+        <el-form-item label="电话号码">
+          <el-input v-model="search3" placeholder="请输入电话号码" clearable />
+        </el-form-item>
+        <el-form-item label="地址">
+          <el-input v-model="search4" placeholder="请输入地址" clearable />
         </el-form-item>
         <el-form-item>
-          <el-button size="mini"  type="danger" @click="clear">重置</el-button>
+          <el-button type="primary" @click="load" style="width:100%">查询</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="danger" @click="clear" style="width:100%">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
-    <!-- 按钮-->
-    <div style="margin: 10px 0;" >
-      <el-button type="primary" @click="add" v-if="user.role == 1">新增读者</el-button>
-      <el-popconfirm title="确认删除?" @confirm="deleteBatch" v-if="user.role == 1">
-        <template #reference>
-          <el-button type="danger" size="mini" >批量删除</el-button>
-        </template>
-      </el-popconfirm>
-    </div>
-<!-- 数据字段-->
-    <el-table :data="tableData" stripe border="true"  @selection-change="handleSelectionChange" >
-      <el-table-column v-if="user.role ==1 "
-                       type="selection"
-                       width="55">
-      </el-table-column>
-      <el-table-column prop="id" label="读者编号" sortable />
-      <el-table-column prop="username" label="用户名" />
-      <el-table-column prop="nickName" label="姓名" />
-      <el-table-column prop="phone" label="电话号码" />
-      <el-table-column prop="sex" label="性别" />
-      <el-table-column prop="address" label="地址" />
-      <el-table-column fixed="right" label="操作" >
-        <template v-slot="scope">
-          <el-button type="primary" class="btn-edit" size="mini" @click ="handleEdit(scope.row)">编辑</el-button>
-          <el-popconfirm title="确认删除?" @confirm="handleDelete(scope.row.id)">
-            <template #reference>
-              <el-button type="danger" size="mini" >删除</el-button>
+    <!-- 右侧内容区 -->
+    <div class="content-area">
+      <div class="content-header">
+        <el-button type="primary" @click="add" v-if="user.role == 1">新增读者</el-button>
+        <el-popconfirm title="确认删除?" @confirm="deleteBatch" v-if="user.role == 1">
+          <template #reference>
+            <el-button type="danger" size="mini">批量删除</el-button>
+          </template>
+        </el-popconfirm>
+      </div>
+      <div class="table-wrap">
+        <el-table :data="tableData" stripe border @selection-change="handleSelectionChange">
+          <el-table-column v-if="user.role==1" type="selection" width="55" />
+          <el-table-column prop="id" label="读者编号" sortable />
+          <el-table-column prop="username" label="用户名" />
+          <el-table-column prop="nickName" label="姓名" />
+          <el-table-column prop="phone" label="电话号码" />
+          <el-table-column prop="sex" label="性别" />
+          <el-table-column prop="address" label="地址" />
+          <el-table-column label="操作" width="160">
+            <template v-slot="scope">
+              <div class="action-btns">
+                <el-button type="primary" class="btn-edit" size="mini" @click="handleEdit(scope.row)">编辑</el-button>
+                <el-popconfirm title="确认删除?" @confirm="handleDelete(scope.row.id)">
+                  <template #reference>
+                    <el-button type="danger" size="mini">删除</el-button>
+                  </template>
+                </el-popconfirm>
+              </div>
             </template>
-          </el-popconfirm>
-        </template>
-      </el-table-column>
-    </el-table>
-<!--    分页-->
-    <div style="margin: 10px 0">
+          </el-table-column>
+        </el-table>
+      </div>
+      <div class="content-footer">
       <el-pagination
           v-model:currentPage="currentPage"
           :page-sizes="[5, 10, 20]"
@@ -110,6 +106,7 @@
       </el-dialog>
     </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -234,6 +231,7 @@ export default {
   },
   data() {
     return {
+      sidebarOpen: true,
       form: {},
       dialogVisible : false,
       search1:'',
@@ -252,3 +250,28 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.page-layout { display:flex; height:calc(100vh - 96px); position:relative; }
+.sidebar-toggle { display:none; position:absolute; top:8px; left:8px; z-index:20; cursor:pointer;
+  background:#fff; border:1px solid #dcdfe6; border-radius:4px; padding:4px 8px; }
+.search-sidebar { width:22%; min-width:200px; border-right:1px solid #e0e0e0; padding:16px;
+  overflow-y:auto; background:#fafafa; flex-shrink:0; }
+.search-sidebar.collapsed { display:none; }
+.sidebar-title { font-weight:600; font-size:15px; margin-bottom:12px; color:#303133; }
+.content-area { flex:1; display:flex; flex-direction:column; overflow:hidden; padding:12px 16px; }
+.content-header { margin-bottom:10px; display:flex; gap:8px; }
+.content-footer { margin-top:10px; }
+.table-wrap { flex:1; overflow-y:auto; }
+.action-btns { display:flex; gap:4px; flex-wrap:nowrap; white-space:nowrap; }
+
+@media (max-width: 1024px) {
+  .sidebar-toggle { display:block; }
+  .search-sidebar:not(.collapsed) { position:absolute; left:0; top:0; height:100%; z-index:15;
+    box-shadow:2px 0 8px rgba(0,0,0,0.15); width:240px; }
+}
+
+html.dark .search-sidebar { background:#1a1a1b; border-color:#363637; }
+html.dark .sidebar-title { color:#cfd3dc; }
+html.dark .sidebar-toggle { background:#262727; border-color:#363637; color:#cfd3dc; }
+</style>

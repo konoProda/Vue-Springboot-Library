@@ -1,58 +1,46 @@
 <template>
-  <div class="home" style ="padding: 10px">
-
-    <!-- 搜索-->
-    <div style="margin: 10px 0;">
-      <el-form inline="true" size="small">
-        <el-form-item label="图书编号" >
-          <el-input v-model="search1" placeholder="请输入图书编号"  clearable>
-            <template #prefix><el-icon class="el-input__icon"><search/></el-icon></template>
-          </el-input>
-        </el-form-item >
-        <el-form-item label="图书名称" >
-          <el-input v-model="search2" placeholder="请输入图书名称"  clearable>
-            <template #prefix><el-icon class="el-input__icon"><search /></el-icon></template>
-          </el-input>
-        </el-form-item >
-        <el-form-item label="作者" >
-          <el-input v-model="search3" placeholder="请输入作者"  clearable>
-            <template #prefix><el-icon class="el-input__icon"><search /></el-icon></template>
-          </el-input>
-        </el-form-item >
-        <el-form-item>
-          <el-button type="primary" style="margin-left: 1%" @click="load" size="mini" >
-            <svg-icon iconClass="search"/>查询</el-button>
+  <div class="page-layout">
+    <div class="sidebar-toggle" @click="sidebarOpen=!sidebarOpen">
+      <el-icon :size="18"><Menu /></el-icon>
+    </div>
+    <div class="search-sidebar" :class="{ collapsed: !sidebarOpen }">
+      <div class="sidebar-title">搜索条件</div>
+      <el-form size="small" label-position="top">
+        <el-form-item label="图书编号">
+          <el-input v-model="search1" placeholder="请输入图书编号" clearable />
+        </el-form-item>
+        <el-form-item label="图书名称">
+          <el-input v-model="search2" placeholder="请输入图书名称" clearable />
+        </el-form-item>
+        <el-form-item label="作者">
+          <el-input v-model="search3" placeholder="请输入作者" clearable />
         </el-form-item>
         <el-form-item>
-          <el-button size="mini"  type="danger" @click="clear">重置</el-button>
+          <el-button type="primary" @click="load" style="width:100%">查询</el-button>
         </el-form-item>
-        <el-form-item style="float: right" v-if="numOfOutDataBook!=0">
-          <el-popconfirm
-              confirm-button-text="查看"
-              cancel-button-text="取消"
-              :icon="InfoFilled"
-              icon-color="red"
-              title="您有图书已逾期，请尽快归还"
-              @confirm="toLook"
-          >
-            <template #reference>
-              <el-button  type="warning">逾期通知</el-button>
-            </template>
-          </el-popconfirm>
+        <el-form-item>
+          <el-button type="danger" @click="clear" style="width:100%">重置</el-button>
         </el-form-item>
       </el-form>
+      <div v-if="numOfOutDataBook!=0" style="margin-top:8px">
+        <el-popconfirm confirm-button-text="查看" cancel-button-text="取消" title="您有图书已逾期，请尽快归还" @confirm="toLook">
+          <template #reference>
+            <el-button type="warning" style="width:100%">逾期通知</el-button>
+          </template>
+        </el-popconfirm>
+      </div>
     </div>
-    <!-- 按钮-->
-    <div style="margin: 10px 0;" >
-      <el-button type="primary" @click = "add" v-if="user.role == 1">上架</el-button>
-      <el-popconfirm title="确认删除?" @confirm="deleteBatch" v-if="user.role == 1">
-        <template #reference>
-          <el-button type="danger" size="mini" >批量删除</el-button>
-        </template>
-      </el-popconfirm>
-    </div>
-    <!-- 数据字段-->
-    <el-table :data="tableData" stripe border="true" @selection-change="handleSelectionChange">
+    <div class="content-area">
+      <div class="content-header">
+        <el-button type="primary" @click="add" v-if="user.role == 1">上架</el-button>
+        <el-popconfirm title="确认删除?" @confirm="deleteBatch" v-if="user.role == 1">
+          <template #reference>
+            <el-button type="danger" size="mini">批量删除</el-button>
+          </template>
+        </el-popconfirm>
+      </div>
+      <div class="table-wrap">
+        <el-table :data="tableData" stripe border @selection-change="handleSelectionChange">
       <el-table-column v-if="user.role ==1"
                        type="selection"
                        width="55">
@@ -74,23 +62,22 @@
           <span style="color: #909399;"> / 馆藏 {{ scope.row.totalCopies }}</span>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" >
+      <el-table-column label="操作" width="220">
         <template v-slot="scope">
-          <el-button type="primary" class="btn-edit" size="mini" @click ="handleEdit(scope.row)" v-if="user.role == 1">编辑</el-button>
-          <el-popconfirm title="确认删除?" @confirm="handleDelete(scope.row.id)" v-if="user.role == 1">
-            <template #reference>
-              <el-button type="danger" size="mini" >删除</el-button>
-            </template>
-          </el-popconfirm>
-          <el-button type="success" size="mini" @click="handlelend(scope.row.id,scope.row.isbn,scope.row.name,scope.row.borrownum,scope.row)" v-if="user.role == 2" :class="{ 'borrow-btn--disabled': scope.row.availableCopies <= 0 || (this.isbnArray.indexOf(scope.row.isbn)) != -1 }">借阅</el-button>
-          <el-popconfirm title="确认还书?" @confirm="handlereturn(scope.row.id,scope.row.isbn,scope.row.borrownum)" v-if="user.role == 2" :disabled="(this.isbnArray.indexOf(scope.row.isbn)) == -1">
-            <template #reference>
-              <el-button type="danger" size="mini" :disabled="(this.isbnArray.indexOf(scope.row.isbn)) == -1" >还书</el-button>
-            </template>
-          </el-popconfirm>
+          <div class="action-btns">
+            <el-button type="primary" class="btn-edit" size="mini" @click="handleEdit(scope.row)" v-if="user.role == 1">编辑</el-button>
+            <el-popconfirm title="确认删除?" @confirm="handleDelete(scope.row.id)" v-if="user.role == 1">
+              <template #reference><el-button type="danger" size="mini">删除</el-button></template>
+            </el-popconfirm>
+            <el-button type="success" size="mini" @click="handlelend(scope.row.id,scope.row.isbn,scope.row.name,scope.row.borrownum,scope.row)" v-if="user.role == 2" :class="{ 'borrow-btn--disabled': scope.row.availableCopies <= 0 || (this.isbnArray.indexOf(scope.row.isbn)) != -1 }">借阅</el-button>
+            <el-popconfirm title="确认还书?" @confirm="handlereturn(scope.row.id,scope.row.isbn,scope.row.borrownum)" v-if="user.role == 2" :disabled="(this.isbnArray.indexOf(scope.row.isbn)) == -1">
+              <template #reference><el-button type="danger" size="mini" :disabled="(this.isbnArray.indexOf(scope.row.isbn)) == -1">还书</el-button></template>
+            </el-popconfirm>
+          </div>
         </template>
       </el-table-column>
     </el-table>
+      </div>
 <!--测试,通知对话框-->
     <el-dialog
         v-model="dialogVisible3"
@@ -113,8 +100,7 @@
       </span>
       </template>
     </el-dialog>
-    <!--    分页-->
-    <div style="margin: 10px 0">
+    <div class="content-footer">
       <el-pagination
           v-model:currentPage="currentPage"
           :page-sizes="[5, 10, 20]"
@@ -197,6 +183,7 @@
       </el-dialog>
     </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -429,6 +416,7 @@ export default {
   },
   data() {
     return {
+      sidebarOpen: true,
       form: {},
       form2:{},
       form3:{},
@@ -461,4 +449,27 @@ export default {
 .borrow-btn--disabled .el-button {
   pointer-events: none;
 }
+
+.page-layout { display:flex; height:calc(100vh - 96px); position:relative; }
+.sidebar-toggle { display:none; position:absolute; top:8px; left:8px; z-index:20; cursor:pointer;
+  background:#fff; border:1px solid #dcdfe6; border-radius:4px; padding:4px 8px; }
+.search-sidebar { width:22%; min-width:200px; border-right:1px solid #e0e0e0; padding:16px;
+  overflow-y:auto; background:#fafafa; flex-shrink:0; }
+.search-sidebar.collapsed { display:none; }
+.sidebar-title { font-weight:600; font-size:15px; margin-bottom:12px; color:#303133; }
+.content-area { flex:1; display:flex; flex-direction:column; overflow:hidden; padding:12px 16px; }
+.content-header { margin-bottom:10px; display:flex; gap:8px; }
+.content-footer { margin-top:10px; }
+.table-wrap { flex:1; overflow-y:auto; }
+.action-btns { display:flex; gap:4px; flex-wrap:nowrap; white-space:nowrap; }
+
+@media (max-width: 1024px) {
+  .sidebar-toggle { display:block; }
+  .search-sidebar:not(.collapsed) { position:absolute; left:0; top:0; height:100%; z-index:15;
+    box-shadow:2px 0 8px rgba(0,0,0,0.15); width:240px; }
+}
+
+html.dark .search-sidebar { background:#1a1a1b; border-color:#363637; }
+html.dark .sidebar-title { color:#cfd3dc; }
+html.dark .sidebar-toggle { background:#262727; border-color:#363637; color:#cfd3dc; }
 </style>

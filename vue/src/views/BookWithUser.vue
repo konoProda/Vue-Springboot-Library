@@ -1,45 +1,43 @@
 <template>
-  <div class="home" style ="padding: 10px">
-    <!-- 搜索-->
-    <div style="margin: 10px 0;">
-
-      <el-form inline="true" size="small" >
-        <el-form-item label="图书编号" >
-          <el-input v-model="search1" placeholder="请输入图书编号"  clearable>
-            <template #prefix><el-icon class="el-input__icon"><search/></el-icon></template>
-          </el-input>
-        </el-form-item >
-        <el-form-item label="图书名称" >
-          <el-input v-model="search2" placeholder="请输入图书名称"  clearable>
-            <template #prefix><el-icon class="el-input__icon"><search /></el-icon></template>
-          </el-input>
-        </el-form-item >
+  <div class="page-layout">
+    <div class="sidebar-toggle" @click="sidebarOpen=!sidebarOpen">
+      <el-icon :size="18"><Menu /></el-icon>
+    </div>
+    <div class="search-sidebar" :class="{ collapsed: !sidebarOpen }">
+      <div class="sidebar-title">搜索条件</div>
+      <el-form size="small" label-position="top">
+        <el-form-item label="图书编号">
+          <el-input v-model="search1" placeholder="请输入图书编号" clearable />
+        </el-form-item>
+        <el-form-item label="图书名称">
+          <el-input v-model="search2" placeholder="请输入图书名称" clearable />
+        </el-form-item>
         <el-form-item label="借阅者" v-if="user.role == 1">
-          <el-input v-model="search3" placeholder="请输入借阅者昵称"  clearable>
-            <template #prefix><el-icon class="el-input__icon"><search /></el-icon></template>
-          </el-input>
-        </el-form-item >
+          <el-input v-model="search3" placeholder="请输入借阅者昵称" clearable />
+        </el-form-item>
         <el-form-item label="借阅状态" v-if="user.role == 1">
-          <el-select v-model="overdueFilter" clearable placeholder="全部" @change="load" style="width:130px">
+          <el-select v-model="overdueFilter" clearable placeholder="全部" @change="load">
             <el-option label="逾期未还" value="1" />
+            <el-option label="未逾期" value="2" />
           </el-select>
-        </el-form-item >
-        <el-form-item>
-          <el-button type="primary" style="margin-left: 1%" @click="load" size="mini">查询</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button size="mini"  type="danger" @click="clear">重置</el-button>
+          <el-button type="primary" @click="load" style="width:100%">查询</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="danger" @click="clear" style="width:100%">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
-    <!-- 按钮-->
-    <div style="margin: 10px 0;" >
-      <el-popconfirm title="确认删除?" @confirm="deleteBatch" v-if="user.role == 1">
-        <template #reference>
-          <el-button type="danger" size="mini" >批量删除</el-button>
-        </template>
-      </el-popconfirm>
-    </div>
+    <div class="content-area">
+      <div class="content-header">
+        <el-popconfirm title="确认删除?" @confirm="deleteBatch" v-if="user.role == 1">
+          <template #reference>
+            <el-button type="danger" size="mini">批量删除</el-button>
+          </template>
+        </el-popconfirm>
+      </div>
+      <div class="table-wrap">
     <!-- 数据字段-->
     <el-table :data="tableData" stripe border="true" @selection-change="handleSelectionChange">
       <el-table-column v-if="user.role ==1"
@@ -61,27 +59,23 @@
       <el-table-column prop="prolong" label="可续借次数" />
       <el-table-column fixed="right" label="操作" >
         <template v-slot="scope">
-          <el-button type="primary" class="btn-edit" size="mini" @click ="handleEdit(scope.row)" v-if="user.role == 1">编辑</el-button>
-          <el-popconfirm title="确认删除?" @confirm="handleDelete(scope.row) " v-if="user.role == 1">
-            <template #reference>
-              <el-button type="danger" size="mini" >删除</el-button>
-            </template>
-          </el-popconfirm>
-          <el-popconfirm title="确认续借(续借一次延长30天)?" @confirm="handlereProlong(scope.row)" v-if="user.role == 2" :disabled="scope.row.prolong == 0">
-            <template #reference>
-              <el-button type="success" size="mini" :disabled="scope.row.prolong == 0" >续借</el-button>
-            </template>
-          </el-popconfirm>
-          <el-popconfirm title="确认还书?" @confirm="handleReturn(scope.row)" v-if="user.role == 2">
-            <template #reference>
-              <el-button type="danger" size="mini" >还书</el-button>
-            </template>
-          </el-popconfirm>
+          <div class="action-btns">
+            <el-button type="primary" class="btn-edit" size="mini" @click ="handleEdit(scope.row)" v-if="user.role == 1">编辑</el-button>
+            <el-popconfirm title="确认删除?" @confirm="handleDelete(scope.row) " v-if="user.role == 1">
+              <template #reference><el-button type="danger" size="mini">删除</el-button></template>
+            </el-popconfirm>
+            <el-popconfirm title="确认续借(续借一次延长30天)?" @confirm="handlereProlong(scope.row)" v-if="user.role == 2" :disabled="scope.row.prolong == 0">
+              <template #reference><el-button type="success" size="mini" :disabled="scope.row.prolong == 0">续借</el-button></template>
+            </el-popconfirm>
+            <el-popconfirm title="确认还书?" @confirm="handleReturn(scope.row)" v-if="user.role == 2">
+              <template #reference><el-button type="danger" size="mini">还书</el-button></template>
+            </el-popconfirm>
+          </div>
         </template>
       </el-table-column>
     </el-table>
-    <!--    分页-->
-    <div style="margin: 10px 0">
+      </div>
+      <div class="content-footer">
       <el-pagination
           v-model:currentPage="currentPage"
           :page-sizes="[5, 10, 20]"
@@ -119,9 +113,9 @@
       </span>
         </template>
       </el-dialog>
-
     </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -270,6 +264,7 @@ export default {
   },
   data() {
     return {
+      sidebarOpen: true,
       form: {},
       form2:{},
       form3:{},
@@ -289,3 +284,28 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.page-layout { display:flex; height:calc(100vh - 96px); position:relative; }
+.sidebar-toggle { display:none; position:absolute; top:8px; left:8px; z-index:20; cursor:pointer;
+  background:#fff; border:1px solid #dcdfe6; border-radius:4px; padding:4px 8px; }
+.search-sidebar { width:22%; min-width:200px; border-right:1px solid #e0e0e0; padding:16px;
+  overflow-y:auto; background:#fafafa; flex-shrink:0; }
+.search-sidebar.collapsed { display:none; }
+.sidebar-title { font-weight:600; font-size:15px; margin-bottom:12px; color:#303133; }
+.content-area { flex:1; display:flex; flex-direction:column; overflow:hidden; padding:12px 16px; }
+.content-header { margin-bottom:10px; display:flex; gap:8px; }
+.content-footer { margin-top:10px; }
+.table-wrap { flex:1; overflow-y:auto; }
+.action-btns { display:flex; gap:4px; flex-wrap:nowrap; white-space:nowrap; }
+
+@media (max-width: 1024px) {
+  .sidebar-toggle { display:block; }
+  .search-sidebar:not(.collapsed) { position:absolute; left:0; top:0; height:100%; z-index:15;
+    box-shadow:2px 0 8px rgba(0,0,0,0.15); width:240px; }
+}
+
+html.dark .search-sidebar { background:#1a1a1b; border-color:#363637; }
+html.dark .sidebar-title { color:#cfd3dc; }
+html.dark .sidebar-toggle { background:#262727; border-color:#363637; color:#cfd3dc; }
+</style>

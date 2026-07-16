@@ -68,9 +68,11 @@ public class BookWithUserController {
         QueryUtils.likeIfNotBlank(wrappers, BookWithUser::getIsbn, search1);
         QueryUtils.likeIfNotBlank(wrappers, BookWithUser::getBookName, search2);
         QueryUtils.likeIfNotBlank(wrappers, BookWithUser::getUserId, search3);
-        // 逾期筛选：仅显示已逾期且未归还
+        // 借阅状态筛选
         if ("1".equals(overdueFilter)) {
-            wrappers.lt(BookWithUser::getDeadtime, new Date());
+            wrappers.lt(BookWithUser::getDeadtime, new Date());       // 逾期未还
+        } else if ("2".equals(overdueFilter)) {
+            wrappers.ge(BookWithUser::getDeadtime, new Date());       // 未逾期
         }
         wrappers.orderByDesc(BookWithUser::getLendtime);
         Page<BookWithUser> BookPage = BookWithUserMapper.selectPage(new Page<>(pageNum, pageSize), wrappers);

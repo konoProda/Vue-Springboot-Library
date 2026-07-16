@@ -1,0 +1,39 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - generic [ref=e7]: 图书馆管理系统
+        - generic [ref=e10]:
+          - generic [ref=e11] [cursor=pointer]: ☀️ 浅色
+          - generic [ref=e12]: "|"
+          - generic [ref=e13]: 简中/EN
+          - generic [ref=e14]: "|"
+          - button [ref=e17] [cursor=pointer]
+      - generic [ref=e21]:
+        - generic [ref=e22] [cursor=pointer]: 展示板
+        - generic [ref=e25] [cursor=pointer]: 个人信息
+        - generic [ref=e28] [cursor=pointer]: 图书查询
+        - generic [ref=e31] [cursor=pointer]: 借阅信息
+        - generic [ref=e34] [cursor=pointer]: 借阅状态
+    - generic [ref=e38]:
+      - generic [ref=e40]:
+        - generic [ref=e41]: 馆藏书刊
+        - generic [ref=e42]:
+          - textbox "请输入你的搜索内容" [ref=e46]
+          - generic [ref=e47] [cursor=pointer]: 馆藏资源
+      - generic [ref=e48]:
+        - generic [ref=e51]:
+          - generic [ref=e52]: 已借阅
+          - generic [ref=e53]: "95"
+        - generic [ref=e58]:
+          - generic [ref=e59]: 总访问
+          - generic [ref=e60]: "1"
+        - generic [ref=e65]:
+          - generic [ref=e66]: 图书数
+          - generic [ref=e67]: "7"
+        - generic [ref=e72]:
+          - generic [ref=e73]: 用户数
+          - generic [ref=e74]: "6"
+      - generic [ref=e77]: 2026/7/16 16:11:07
+  - iframe [ref=e84]:
+    - generic [ref=f1e1]: "Failed to compile../src/views/User.vue Module Error (from ./node_modules/vue-loader-v16/dist/index.js): VueCompilerError: Element is missing end tag. at /home/sck/scktest/claude_test/Vue-Springboot-Library/vue/src/views/User.vue:2:3 1 | <template> 2 | <div class=\"page-layout\"> | ^ 3 | <!-- 折叠按钮 --> 4 | <div class=\"sidebar-toggle\" @click=\"sidebarOpen=!sidebarOpen\">"

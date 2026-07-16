@@ -53,7 +53,7 @@
     </div>
     <div class="nav-item" :class="{ active: isActive('/lendrecord') }" @click="$router.push('/lendrecord')">
       <svg class="nav-icon"><use xlink:href="#iconlend-record" /></svg>
-      {{ user.role == 1 ? '借阅管理' : '借阅信息' }}
+      {{ user.role == 1 ? '借阅记录' : '借阅信息' }}
     </div>
     <div class="nav-item" :class="{ active: isActive('/bookwithuser') }" @click="$router.push('/bookwithuser')">
       <el-icon><grid /></el-icon>
