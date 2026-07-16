@@ -98,7 +98,7 @@ echo "--- 准备测试数据 ---"
 curl -s -X POST "${BASE_URL}/book" \
     -H 'Content-Type: application/json' \
     -H "Authorization: Bearer ${ADMIN_TOKEN}" \
-    -d "{\"isbn\":\"${TEST_ISBN}\",\"name\":\"${TEST_BOOK_NAME}\",\"price\":9.9,\"author\":\"验证作者\",\"publisher\":\"验证出版社\",\"totalCopies\":1,\"availableCopies\":1}" \
+    -d "{\"isbn\":\"${TEST_ISBN}\",\"name\":\"${TEST_BOOK_NAME}\",\"price\":9.9,\"author\":\"验证作者\",\"publisher\":\"验证出版社\",\"totalCopies\":1,\"availableCopies\":1,\"borrownum\":0}" \
     > /dev/null
 
 # 确认图书已创建
