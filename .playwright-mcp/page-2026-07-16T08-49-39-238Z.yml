@@ -1,0 +1,38 @@
+- generic [ref=f22e4]:
+  - generic [ref=f22e5]:
+    - generic [ref=f22e6]:
+      - generic [ref=f22e7]: Library Management System
+      - generic [ref=f22e10]:
+        - generic [ref=f22e11] [cursor=pointer]: ☀️ Light
+        - generic [ref=f22e12]: "|"
+        - generic [ref=f22e13]: 简中/EN
+        - generic [ref=f22e14]: "|"
+        - button "管理员" [ref=f22e17] [cursor=pointer]
+    - generic [ref=f22e21]:
+      - generic [ref=f22e22] [cursor=pointer]: Dashboard
+      - generic [ref=f22e25] [cursor=pointer]: Profile
+      - generic [ref=f22e28] [cursor=pointer]: Reader Mgmt
+      - generic [ref=f22e31] [cursor=pointer]: Book Management
+      - generic [ref=f22e34] [cursor=pointer]: Lend Records
+      - generic [ref=f22e37] [cursor=pointer]: Borrow Status
+      - generic [ref=f22e41] [cursor=pointer]: Operation Log
+  - generic [ref=f22e44]:
+    - generic [ref=f22e46]:
+      - generic [ref=f22e47]: Library Collection
+      - generic [ref=f22e48]:
+        - textbox "Enter your search terms" [ref=f22e52]
+        - generic [ref=f22e53] [cursor=pointer]: Collection
+    - generic [ref=f22e54]:
+      - generic [ref=f22e57]:
+        - generic [ref=f22e58]: Borrowed
+        - generic [ref=f22e59]: "95"
+      - generic [ref=f22e64]:
+        - generic [ref=f22e65]: Visits
+        - generic [ref=f22e66]: "2"
+      - generic [ref=f22e71]:
+        - generic [ref=f22e72]: Books
+        - generic [ref=f22e73]: "7"
+      - generic [ref=f22e78]:
+        - generic [ref=f22e79]: Users
+        - generic [ref=f22e80]: "6"
+    - generic [ref=f22e83]: 2026/7/16 16:49:39

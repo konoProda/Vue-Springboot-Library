@@ -1,0 +1,36 @@
+- generic [ref=e4]:
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]: Library Management System
+      - generic [ref=e10]:
+        - generic [ref=e11] [cursor=pointer]: ☀️ Light
+        - generic [ref=e12]: "|"
+        - generic [ref=e13]: 简中/EN
+        - generic [ref=e14]: "|"
+        - button [ref=e17] [cursor=pointer]
+    - generic [ref=e21]:
+      - generic [ref=e22] [cursor=pointer]: Dashboard
+      - generic [ref=e25] [cursor=pointer]: Profile
+      - generic [ref=e28] [cursor=pointer]: Book Search
+      - generic [ref=e31] [cursor=pointer]: My Loans
+      - generic [ref=e34] [cursor=pointer]: Borrow Status
+  - generic [ref=e38]:
+    - generic [ref=e40]:
+      - generic [ref=e41]: Library Collection
+      - generic [ref=e42]:
+        - textbox "Enter your search terms" [ref=e46]
+        - generic [ref=e47] [cursor=pointer]: Collection
+    - generic [ref=e48]:
+      - generic [ref=e51]:
+        - generic [ref=e52]: Borrowed
+        - generic [ref=e53]: "95"
+      - generic [ref=e58]:
+        - generic [ref=e59]: Visits
+        - generic [ref=e60]: "3"
+      - generic [ref=e65]:
+        - generic [ref=e66]: Books
+        - generic [ref=e67]: "7"
+      - generic [ref=e72]:
+        - generic [ref=e73]: Users
+        - generic [ref=e74]: "6"
+    - generic [ref=e77]: 2026/7/16 16:58:01

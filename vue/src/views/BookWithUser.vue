@@ -4,36 +4,36 @@
       <el-icon :size="18"><Menu /></el-icon>
     </div>
     <div class="search-sidebar" :class="{ collapsed: !sidebarOpen }">
-      <div class="sidebar-title">搜索条件</div>
+      <div class="sidebar-title">{{ $t('borrow.sidebarTitle') }}</div>
       <el-form size="small" label-position="top">
-        <el-form-item label="图书编号">
-          <el-input v-model="search1" placeholder="请输入图书编号" clearable />
+        <el-form-item :label="$t('borrow.isbn')">
+          <el-input v-model="search1" :placeholder="$t('book.isbn')" clearable />
         </el-form-item>
-        <el-form-item label="图书名称">
-          <el-input v-model="search2" placeholder="请输入图书名称" clearable />
+        <el-form-item :label="$t('borrow.bookName')">
+          <el-input v-model="search2" :placeholder="$t('book.name')" clearable />
         </el-form-item>
-        <el-form-item label="借阅者" v-if="user.role == 1">
-          <el-input v-model="search3" placeholder="请输入借阅者昵称" clearable />
+        <el-form-item :label="$t('borrow.borrower')" v-if="user.role == 1">
+          <el-input v-model="search3" :placeholder="$t('borrow.borrower')" clearable />
         </el-form-item>
-        <el-form-item label="借阅状态" v-if="user.role == 1">
-          <el-select v-model="overdueFilter" clearable placeholder="全部" @change="load">
-            <el-option label="逾期未还" value="1" />
-            <el-option label="未逾期" value="2" />
+        <el-form-item :label="$t('borrow.overdueFilter')" v-if="user.role == 1">
+          <el-select v-model="overdueFilter" clearable :placeholder="$t('common.all')" @change="load">
+            <el-option :label="$t('common.overdueUnreturned')" value="1" />
+            <el-option :label="$t('common.notOverdue')" value="2" />
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="load" style="width:100%">查询</el-button>
+          <el-button type="primary" @click="load" style="width:100%"> {{ $t('borrow.search') }} </el-button>
         </el-form-item>
         <el-form-item>
-          <el-button type="danger" @click="clear" style="width:100%">重置</el-button>
+          <el-button type="danger" @click="clear" style="width:100%"> {{ $t('borrow.reset') }} </el-button>
         </el-form-item>
       </el-form>
     </div>
     <div class="content-area">
       <div class="content-header">
-        <el-popconfirm title="确认删除?" @confirm="deleteBatch" v-if="user.role == 1">
+        <el-popconfirm :title="$t('borrow.confirmDelete')" @confirm="deleteBatch" v-if="user.role == 1">
           <template #reference>
-            <el-button type="danger" size="mini">批量删除</el-button>
+            <el-button type="danger" size="mini"> {{ $t('borrow.deleteBatch') }} </el-button>
           </template>
         </el-popconfirm>
       </div>
@@ -44,31 +44,31 @@
           type="selection"
           width="55">
       </el-table-column>
-      <el-table-column prop="isbn" label="图书编号" sortable />
-      <el-table-column prop="bookName" label="图书名称" />
-      <el-table-column prop="nickName" label="借阅者" />
-      <el-table-column prop="lendtime" label="借阅时间" />
-      <el-table-column prop="deadtime" label="最迟归还日期" />
-      <el-table-column label="借阅状态" width="140">
+      <el-table-column prop="isbn" :label="$t('borrow.isbn')" sortable />
+      <el-table-column prop="bookName" :label="$t('borrow.bookName')" />
+      <el-table-column prop="nickName" :label="$t('borrow.borrower')" />
+      <el-table-column prop="lendtime" :label="$t('borrow.lendTime')" />
+      <el-table-column prop="deadtime" :label="$t('borrow.deadline')" />
+      <el-table-column :label="$t('borrow.overdueFilter')" width="140">
         <template v-slot="scope">
-          <el-tag v-if="scope.row.status === '已逾期'" type="danger">已逾期 {{ scope.row.overdueDays }}天</el-tag>
-          <el-tag v-else-if="scope.row.status === '即将到期'" type="warning">即将到期</el-tag>
-          <el-tag v-else type="success">正常</el-tag>
+          <el-tag v-if="scope.row.status === '已逾期'" type="danger"> {{ $t('borrow.overdue') }} {{ scope.row.overdueDays }}{{ $t('borrow.overdueDays') }} </el-tag>
+          <el-tag v-else-if="scope.row.status === '即将到期'" type="warning"> {{ $t('borrow.dueSoon') }} </el-tag>
+          <el-tag v-else type="success"> {{ $t('borrow.normal') }} </el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="prolong" label="可续借次数" />
-      <el-table-column fixed="right" label="操作" >
+      <el-table-column prop="prolong" :label="$t('borrow.prolong')" />
+      <el-table-column fixed="right" :label="$t('borrow.actions')" >
         <template v-slot="scope">
           <div class="action-btns">
-            <el-button type="primary" class="btn-edit" size="mini" @click ="handleEdit(scope.row)" v-if="user.role == 1">编辑</el-button>
-            <el-popconfirm title="确认删除?" @confirm="handleDelete(scope.row) " v-if="user.role == 1">
-              <template #reference><el-button type="danger" size="mini">删除</el-button></template>
+            <el-button type="primary" class="btn-edit" size="mini" @click ="handleEdit(scope.row)" v-if="user.role == 1"> {{ $t('borrow.edit') }} </el-button>
+            <el-popconfirm :title="$t('borrow.confirmDelete')" @confirm="handleDelete(scope.row) " v-if="user.role == 1">
+              <template #reference><el-button type="danger" size="mini"> {{ $t('borrow.delete') }} </el-button></template>
             </el-popconfirm>
-            <el-popconfirm title="确认续借(续借一次延长30天)?" @confirm="handlereProlong(scope.row)" v-if="user.role == 2" :disabled="scope.row.prolong == 0">
-              <template #reference><el-button type="success" size="mini" :disabled="scope.row.prolong == 0">续借</el-button></template>
+            <el-popconfirm :title="$t('borrow.confirmRenew')" @confirm="handlereProlong(scope.row)" v-if="user.role == 2" :disabled="scope.row.prolong == 0">
+              <template #reference><el-button type="success" size="mini" :disabled="scope.row.prolong == 0"> {{ $t('borrow.renew') }} </el-button></template>
             </el-popconfirm>
-            <el-popconfirm title="确认还书?" @confirm="handleReturn(scope.row)" v-if="user.role == 2">
-              <template #reference><el-button type="danger" size="mini">还书</el-button></template>
+            <el-popconfirm :title="$t('borrow.confirmReturn')" @confirm="handleReturn(scope.row)" v-if="user.role == 2">
+              <template #reference><el-button type="danger" size="mini"> {{ $t('borrow.return') }} </el-button></template>
             </el-popconfirm>
           </div>
         </template>
@@ -87,29 +87,29 @@
       >
       </el-pagination>
 
-      <el-dialog v-model="dialogVisible2" title="修改借阅信息" width="30%">
+      <el-dialog v-model="dialogVisible2" :title="$t('borrow.editDialogTitle')" width="30%">
         <el-form :model="form" label-width="120px">
 
-          <el-form-item label="图书编号">
+          <el-form-item :label="$t('borrow.isbn')">
             <el-input style="width: 80%" v-model="form.isbn"></el-input>
           </el-form-item>
-          <el-form-item label="图书名称">
+          <el-form-item :label="$t('borrow.bookName')">
             <el-input style="width: 80%" v-model="form.bookName"></el-input>
           </el-form-item>
-          <el-form-item label="借阅者">
+          <el-form-item :label="$t('borrow.borrower')">
             <el-input style="width: 80%" v-model="form.nickName"></el-input>
           </el-form-item>
-          <el-form-item label="续借次数">
+          <el-form-item :label="$t('borrow.prolong')">
             <el-input style="width: 80%" v-model="form.prolong"></el-input>
           </el-form-item>
-          <el-form-item label="应还日期">
-            <el-date-picker style="width: 80%" v-model="form.deadtime" type="datetime" value-format="YYYY-MM-DD HH:mm:ss" placeholder="选择应还日期" />
+          <el-form-item :label="$t('borrow.deadlineEdit')">
+            <el-date-picker style="width: 80%" v-model="form.deadtime" type="datetime" value-format="YYYY-MM-DD HH:mm:ss" :placeholder="$t('borrow.deadlineEdit')" />
           </el-form-item>
         </el-form>
         <template #footer>
       <span class="dialog-footer">
-        <el-button type="danger" @click="dialogVisible2 = false">取 消</el-button>
-        <el-button type="primary" @click="save">确 定</el-button>
+        <el-button type="danger" @click="dialogVisible2 = false"> {{ $t('common.cancel') }} </el-button>
+        <el-button type="primary" @click="save"> {{ $t('common.confirm') }} </el-button>
       </span>
         </template>
       </el-dialog>

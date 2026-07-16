@@ -4,38 +4,38 @@
       <el-icon :size="18"><Menu /></el-icon>
     </div>
     <div class="search-sidebar" :class="{ collapsed: !sidebarOpen }">
-      <div class="sidebar-title">搜索条件</div>
+      <div class="sidebar-title">{{ $t('book.sidebarTitle') }}</div>
       <el-form size="small" label-position="top">
-        <el-form-item label="图书编号">
-          <el-input v-model="search1" placeholder="请输入图书编号" clearable />
+        <el-form-item :label="$t('book.isbn')">
+          <el-input v-model="search1" :placeholder="$t('book.isbn')" clearable />
         </el-form-item>
-        <el-form-item label="图书名称">
-          <el-input v-model="search2" placeholder="请输入图书名称" clearable />
+        <el-form-item :label="$t('book.name')">
+          <el-input v-model="search2" :placeholder="$t('book.name')" clearable />
         </el-form-item>
-        <el-form-item label="作者">
-          <el-input v-model="search3" placeholder="请输入作者" clearable />
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="load" style="width:100%">查询</el-button>
+        <el-form-item :label="$t('book.author')">
+          <el-input v-model="search3" :placeholder="$t('book.author')" clearable />
         </el-form-item>
         <el-form-item>
-          <el-button type="danger" @click="clear" style="width:100%">重置</el-button>
+          <el-button type="primary" @click="load" style="width:100%"> {{ $t('book.search') }} </el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="danger" @click="clear" style="width:100%"> {{ $t('book.reset') }} </el-button>
         </el-form-item>
       </el-form>
       <div v-if="numOfOutDataBook!=0" style="margin-top:8px">
         <el-popconfirm confirm-button-text="查看" cancel-button-text="取消" title="您有图书已逾期，请尽快归还" @confirm="toLook">
           <template #reference>
-            <el-button type="warning" style="width:100%">逾期通知</el-button>
+            <el-button type="warning" style="width:100%"> {{ $t('book.overdueNotice') }} </el-button>
           </template>
         </el-popconfirm>
       </div>
     </div>
     <div class="content-area">
       <div class="content-header">
-        <el-button type="primary" @click="add" v-if="user.role == 1">上架</el-button>
-        <el-popconfirm title="确认删除?" @confirm="deleteBatch" v-if="user.role == 1">
+        <el-button type="primary" @click="add" v-if="user.role == 1"> {{ $t('book.addBook') }} </el-button>
+        <el-popconfirm :title="$t('book.confirmDelete')" @confirm="deleteBatch" v-if="user.role == 1">
           <template #reference>
-            <el-button type="danger" size="mini">批量删除</el-button>
+            <el-button type="danger" size="mini"> {{ $t('book.deleteBatch') }} </el-button>
           </template>
         </el-popconfirm>
       </div>
@@ -45,33 +45,33 @@
                        type="selection"
                        width="55">
       </el-table-column>
-      <el-table-column prop="isbn" label="图书编号" sortable />
-      <el-table-column prop="name" label="图书名称" />
-      <el-table-column prop="price" label="价格" sortable/>
-      <el-table-column prop="author" label="作者" />
-      <el-table-column prop="publisher" label="出版社" />
-      <el-table-column prop="createTime" label="出版时间" sortable/>
-      <el-table-column prop="availableCopies" label="库存" sortable width="120">
+      <el-table-column prop="isbn" :label="$t('book.isbn')" sortable />
+      <el-table-column prop="name" :label="$t('book.name')" />
+      <el-table-column prop="price" :label="$t('book.price')" sortable/>
+      <el-table-column prop="author" :label="$t('book.author')" />
+      <el-table-column prop="publisher" :label="$t('book.publisher')" />
+      <el-table-column prop="createTime" :label="$t('book.publishTime')" sortable/>
+      <el-table-column :label="$t('book.inventory')" sortable width="120">
         <template v-slot="scope">
           <span v-if="scope.row.availableCopies > 0" style="color: #67c23a; font-weight: bold;">
-            可借 {{ scope.row.availableCopies }}
+            {{ $t('book.available') }} {{ scope.row.availableCopies }}
           </span>
           <span v-else style="color: #f56c6c; font-weight: bold;">
-            已借完
+            {{ $t('book.outOfStock') }}
           </span>
-          <span style="color: #909399;"> / 馆藏 {{ scope.row.totalCopies }}</span>
+          <span style="color: #909399;"> / {{ $t('book.total') }} {{ scope.row.totalCopies }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="220">
+      <el-table-column :label="$t('book.actions')" width="220">
         <template v-slot="scope">
           <div class="action-btns">
-            <el-button type="primary" class="btn-edit" size="mini" @click="handleEdit(scope.row)" v-if="user.role == 1">编辑</el-button>
-            <el-popconfirm title="确认删除?" @confirm="handleDelete(scope.row.id)" v-if="user.role == 1">
-              <template #reference><el-button type="danger" size="mini">删除</el-button></template>
+            <el-button type="primary" class="btn-edit" size="mini" @click="handleEdit(scope.row)" v-if="user.role == 1">{{ $t('book.edit') }}</el-button>
+            <el-popconfirm :title="$t('book.confirmDelete')" @confirm="handleDelete(scope.row.id)" v-if="user.role == 1">
+              <template #reference><el-button type="danger" size="mini">{{ $t('book.delete') }}</el-button></template>
             </el-popconfirm>
-            <el-button type="success" size="mini" @click="handlelend(scope.row.id,scope.row.isbn,scope.row.name,scope.row.borrownum,scope.row)" v-if="user.role == 2" :class="{ 'borrow-btn--disabled': scope.row.availableCopies <= 0 || (this.isbnArray.indexOf(scope.row.isbn)) != -1 }">借阅</el-button>
-            <el-popconfirm title="确认还书?" @confirm="handlereturn(scope.row.id,scope.row.isbn,scope.row.borrownum)" v-if="user.role == 2" :disabled="(this.isbnArray.indexOf(scope.row.isbn)) == -1">
-              <template #reference><el-button type="danger" size="mini" :disabled="(this.isbnArray.indexOf(scope.row.isbn)) == -1">还书</el-button></template>
+            <el-button type="success" size="mini" @click="handlelend(scope.row.id,scope.row.isbn,scope.row.name,scope.row.borrownum,scope.row)" v-if="user.role == 2" :class="{ 'borrow-btn--disabled': scope.row.availableCopies <= 0 || (this.isbnArray.indexOf(scope.row.isbn)) != -1 }">{{ $t('book.borrow') }}</el-button>
+            <el-popconfirm :title="$t('book.confirmReturn')" @confirm="handlereturn(scope.row.id,scope.row.isbn,scope.row.borrownum)" v-if="user.role == 2" :disabled="(this.isbnArray.indexOf(scope.row.isbn)) == -1">
+              <template #reference><el-button type="danger" size="mini" :disabled="(this.isbnArray.indexOf(scope.row.isbn)) == -1">{{ $t('book.return') }}</el-button></template>
             </el-popconfirm>
           </div>
         </template>
@@ -82,21 +82,21 @@
     <el-dialog
         v-model="dialogVisible3"
         v-if="numOfOutDataBook!=0"
-        title="逾期详情"
+        :title="$t('book.overdueDetailTitle')"
         width="50%"
         :before-close="handleClose"
     >
         <el-table :data="outDateBook" style="width: 100%">
-          <el-table-column prop="isbn" label="图书编号" />
-          <el-table-column prop="bookName" label="书名" />
-          <el-table-column prop="lendtime" label="借阅日期" />
-          <el-table-column prop="deadtime" label="截至日期" />
+          <el-table-column prop="isbn" :label="$t('book.isbn')" />
+          <el-table-column prop="bookName" :label="$t('book.overdueBookName')" />
+          <el-table-column prop="lendtime" :label="$t('book.overdueLendTime')" />
+          <el-table-column prop="deadtime" :label="$t('book.overdueDeadline')" />
         </el-table>
 
       <template #footer>
       <span class="dialog-footer">
         <el-button type="primary" @click="dialogVisible3 = false"
-        >确认</el-button>
+        > {{ $t('book.overdueConfirm') }} </el-button>
       </span>
       </template>
     </el-dialog>
@@ -112,72 +112,72 @@
       >
       </el-pagination>
 
-      <el-dialog v-model="dialogVisible" title="上架书籍" width="30%">
+      <el-dialog v-model="dialogVisible" :title="$t('book.addDialogTitle')" width="30%">
         <el-form :model="form" label-width="120px">
 
-          <el-form-item label="图书编号">
+          <el-form-item :label="$t('book.isbn')">
             <el-input style="width: 80%" v-model="form.isbn"></el-input>
           </el-form-item>
-          <el-form-item label="图书名称">
+          <el-form-item :label="$t('book.name')">
             <el-input style="width: 80%" v-model="form.name"></el-input>
           </el-form-item>
-          <el-form-item label="价格">
+          <el-form-item :label="$t('book.price')">
             <el-input style="width: 80%" v-model="form.price"></el-input>
           </el-form-item>
-          <el-form-item label="作者">
+          <el-form-item :label="$t('book.author')">
             <el-input style="width: 80%" v-model="form.author"></el-input>
           </el-form-item>
-          <el-form-item label="出版社">
+          <el-form-item :label="$t('book.publisher')">
             <el-input style="width: 80%" v-model="form.publisher"></el-input>
           </el-form-item>
-          <el-form-item label="出版时间">
+          <el-form-item :label="$t('book.publishTime')">
             <div>
               <el-date-picker value-format="YYYY-MM-DD" type="date" style="width: 80%" clearable v-model="form.createTime" ></el-date-picker>
             </div>
           </el-form-item>
-          <el-form-item label="馆藏数量">
+          <el-form-item :label="$t('book.totalCopies')">
             <el-input-number style="width: 80%" v-model="form.totalCopies" :min="1" />
           </el-form-item>
         </el-form>
         <template #footer>
       <span class="dialog-footer">
-        <el-button type="danger" @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="save">确 定</el-button>
+        <el-button type="danger" @click="dialogVisible = false"> {{ $t('common.cancel') }} </el-button>
+        <el-button type="primary" @click="save"> {{ $t('common.confirm') }} </el-button>
       </span>
         </template>
       </el-dialog>
 
-      <el-dialog v-model="dialogVisible2" title="修改书籍信息" width="30%">
+      <el-dialog v-model="dialogVisible2" :title="$t('book.editDialogTitle')" width="30%">
         <el-form :model="form" label-width="120px">
 
-          <el-form-item label="图书编号">
+          <el-form-item :label="$t('book.isbn')">
             <el-input style="width: 80%" v-model="form.isbn"></el-input>
           </el-form-item>
-          <el-form-item label="图书名称">
+          <el-form-item :label="$t('book.name')">
             <el-input style="width: 80%" v-model="form.name"></el-input>
           </el-form-item>
-          <el-form-item label="价格">
+          <el-form-item :label="$t('book.price')">
             <el-input style="width: 80%" v-model="form.price"></el-input>
           </el-form-item>
-          <el-form-item label="作者">
+          <el-form-item :label="$t('book.author')">
             <el-input style="width: 80%" v-model="form.author"></el-input>
           </el-form-item>
-          <el-form-item label="出版社">
+          <el-form-item :label="$t('book.publisher')">
             <el-input style="width: 80%" v-model="form.publisher"></el-input>
           </el-form-item>
-          <el-form-item label="出版时间">
+          <el-form-item :label="$t('book.publishTime')">
             <div>
               <el-date-picker value-format="YYYY-MM-DD" type="date" style="width: 80%" clearable v-model="form.createTime" ></el-date-picker>
             </div>
           </el-form-item>
-          <el-form-item label="馆藏数量">
+          <el-form-item :label="$t('book.totalCopies')">
             <el-input-number style="width: 80%" v-model="form.totalCopies" :min="1" />
           </el-form-item>
         </el-form>
         <template #footer>
       <span class="dialog-footer">
-        <el-button type="danger" @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="save">确 定</el-button>
+        <el-button type="danger" @click="dialogVisible = false"> {{ $t('common.cancel') }} </el-button>
+        <el-button type="primary" @click="save"> {{ $t('common.confirm') }} </el-button>
       </span>
         </template>
       </el-dialog>

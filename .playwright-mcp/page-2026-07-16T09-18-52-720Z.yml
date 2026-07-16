@@ -1,0 +1,41 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e55]:
+    - generic [ref=e56]:
+      - generic [ref=e57]:
+        - generic [ref=e58]: Library Management System
+        - generic [ref=e61]:
+          - generic [ref=e62] [cursor=pointer]: ☀️ Light
+          - generic [ref=e63]: "|"
+          - generic [ref=e64]: 简中/EN
+          - generic [ref=e65]: "|"
+          - button "管理员" [ref=e68] [cursor=pointer]
+      - generic [ref=e72]:
+        - generic [ref=e73] [cursor=pointer]: Dashboard
+        - generic [ref=e76] [cursor=pointer]: Profile
+        - generic [ref=e79] [cursor=pointer]: Reader Management
+        - generic [ref=e82] [cursor=pointer]: Book Management
+        - generic [ref=e85] [cursor=pointer]: Lend Records
+        - generic [ref=e88] [cursor=pointer]: Borrow Status
+        - generic [ref=e92] [cursor=pointer]: Operation Log
+    - generic [ref=e95]:
+      - generic [ref=e97]:
+        - generic [ref=e98]: Library Collection
+        - generic [ref=e99]:
+          - textbox "Enter your search terms" [ref=e103]
+          - generic [ref=e104] [cursor=pointer]: Collection
+      - generic [ref=e105]:
+        - generic [ref=e108]:
+          - generic [ref=e109]: Borrowed
+          - generic [ref=e110]: "95"
+        - generic [ref=e115]:
+          - generic [ref=e116]: Visits
+          - generic [ref=e117]: "7"
+        - generic [ref=e122]:
+          - generic [ref=e123]: Books
+          - generic [ref=e124]: "7"
+        - generic [ref=e129]:
+          - generic [ref=e130]: Users
+          - generic [ref=e131]: "6"
+      - generic [ref=e134]: 2026/7/16 17:18:51
+  - alert [ref=e141]:
+    - paragraph [ref=e145]: Login successful

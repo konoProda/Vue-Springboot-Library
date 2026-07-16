@@ -1,0 +1,17 @@
+- generic [ref=f7e4]:
+  - generic [ref=f7e5]:
+    - generic [ref=f7e6]: 图书馆管理系统
+    - generic [ref=f7e9] [cursor=pointer]: 简中/EN
+  - generic [ref=f7e12]:
+    - heading "System Login" [level=2] [ref=f7e13]
+    - textbox "Username" [ref=f7e17]
+    - textbox "Password" [ref=f7e26]
+    - generic [ref=f7e35]:
+      - textbox "Enter captcha" [ref=f7e37]
+      - generic [ref=f7e38] [cursor=pointer]:
+        - generic [ref=f7e39]: J
+        - generic [ref=f7e40]: T
+        - generic [ref=f7e41]: "n"
+        - generic [ref=f7e42]: m
+    - button "Login" [ref=f7e45] [cursor=pointer]
+    - button "Register >>" [ref=f7e49] [cursor=pointer]

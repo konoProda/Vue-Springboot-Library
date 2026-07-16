@@ -3,20 +3,20 @@
     <!-- 搜索栏 -->
     <div class="search-section">
       <div class="search-box">
-        <div class="search-title">馆藏书刊</div>
+        <div class="search-title">{{ $t('dashboard.searchTitle') }}</div>
         <div class="search-row">
           <el-icon class="search-icon"><search /></el-icon>
           <input
             v-model="searchKeyword"
             type="text"
             class="search-input"
-            placeholder="请输入你的搜索内容"
+            :placeholder="$t('dashboard.searchPlaceholder')"
             @keyup.enter="doSearch"
             @input="searchError=''"
           />
-          <span class="search-tag" @click="doSearch">馆藏资源</span>
+          <span class="search-tag" @click="doSearch">{{ $t('dashboard.searchTag') }}</span>
         </div>
-        <div v-if="searchError" class="search-error">{{ searchError }}</div>
+        <div v-if="searchError" class="search-error">{{ $t('dashboard.searchError') }}</div>
       </div>
     </div>
 
@@ -52,16 +52,21 @@ import { ElMessage } from "element-plus";
 import request from "../utils/request";
 
 export default {
+  computed: {
+    cards() {
+      return [
+        { title: this.$t('dashboard.borrowed'), data: this._cardData[0], icon: '#iconlend-record-pro' },
+        { title: this.$t('dashboard.visits'), data: this._cardData[1], icon: '#iconvisit' },
+        { title: this.$t('dashboard.books'), data: this._cardData[2], icon: '#iconbook-pro' },
+        { title: this.$t('dashboard.users'), data: this._cardData[3], icon: '#iconpopulation' }
+      ]
+    }
+  },
   data() {
     return {
       searchKeyword: '',
       searchError: '',
-      cards: [
-        { title: '已借阅', data: 0, icon: '#iconlend-record-pro' },
-        { title: '总访问', data: 0, icon: '#iconvisit'   },
-        { title: '图书数', data: 0, icon: '#iconbook-pro' },
-        { title: '用户数', data: 0, icon: '#iconpopulation' }
-      ],
+      _cardData: [0, 0, 0, 0],
       trendChart: null,
       topBooksChart: null,
       trendData: [],
@@ -74,16 +79,20 @@ export default {
     if (this.$route.query.q) {
       this.searchKeyword = this.$route.query.q
     }
-    // 监听深色模式切换，重新渲染图表
-    this.darkObserver = new MutationObserver(() => {
+    // 监听深色模式 + 语言切换，重新渲染图表
+    this._renderCharts = () => {
       if (this.trendChart) this.renderTrendChart()
       if (this.topBooksChart) this.renderTopBooksChart()
-    })
+    }
+    this.darkObserver = new MutationObserver(this._renderCharts)
     this.darkObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+    // 监听 i18n locale 变化
+    this._localeWatcher = this.$watch('$i18n.locale', this._renderCharts)
   },
   beforeUnmount() {
     window.removeEventListener('resize', this.handleResize)
     if (this.darkObserver) this.darkObserver.disconnect()
+    if (this._localeWatcher) this._localeWatcher()
     if (this.trendChart) this.trendChart.dispose()
     if (this.topBooksChart) this.topBooksChart.dispose()
   },
@@ -116,10 +125,10 @@ export default {
     loadDashboard() {
       request.get("/dashboard").then(res => {
         if (res.code == 0) {
-          this.cards[0].data = res.data.lendRecordCount
-          this.cards[1].data = res.data.visitCount
-          this.cards[2].data = res.data.bookCount
-          this.cards[3].data = res.data.userCount
+          this._cardData[0] = res.data.lendRecordCount
+          this._cardData[1] = res.data.visitCount
+          this._cardData[2] = res.data.bookCount
+          this._cardData[3] = res.data.userCount
         } else {
           ElMessage.error(res.msg)
         }
@@ -147,7 +156,7 @@ export default {
       if (!this.trendChart || !this.trendData.length) return
       const isDark = document.documentElement.classList.contains('dark')
       this.trendChart.setOption({
-        title: { text: '近 7 天借阅趋势', left: 'center', textStyle: { color: isDark ? '#cfd3dc' : '#303133' } },
+        title: { text: this.$t('dashboard.trendTitle'), left: 'center', textStyle: { color: isDark ? '#cfd3dc' : '#303133' } },
         tooltip: { trigger: 'axis' },
         grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
         xAxis: {
@@ -156,7 +165,7 @@ export default {
           axisLabel: { color: isDark ? '#909399' : '#333' }
         },
         yAxis: {
-          type: 'value', minInterval: 1, name: '借阅量',
+          type: 'value', minInterval: 1, name: this.$t('dashboard.trendY'),
           nameTextStyle: { color: isDark ? '#909399' : '#333' },
           axisLabel: { color: isDark ? '#909399' : '#333' },
           splitLine: { lineStyle: { color: isDark ? '#363637' : '#e0e0e0' } }
@@ -169,11 +178,11 @@ export default {
       const isDark = document.documentElement.classList.contains('dark')
       const data = this.topBooksData
       this.topBooksChart.setOption({
-        title: { text: '热门图书 TOP 5', left: 'center', textStyle: { color: isDark ? '#cfd3dc' : '#303133' } },
+        title: { text: this.$t('dashboard.topTitle'), left: 'center', textStyle: { color: isDark ? '#cfd3dc' : '#303133' } },
         tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
         grid: { left: '3%', right: '10%', bottom: '3%', containLabel: true },
         xAxis: {
-          type: 'value', minInterval: 1, name: '借阅次数',
+          type: 'value', minInterval: 1, name: this.$t('dashboard.topX'),
           nameTextStyle: { color: isDark ? '#909399' : '#333' },
           axisLabel: { color: isDark ? '#909399' : '#333' },
           splitLine: { lineStyle: { color: isDark ? '#363637' : '#e0e0e0' } }

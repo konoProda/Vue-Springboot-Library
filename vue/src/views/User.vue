@@ -6,54 +6,56 @@
     </div>
     <!-- 左侧搜索面板 -->
     <div class="search-sidebar" :class="{ collapsed: !sidebarOpen }">
-      <div class="sidebar-title">搜索条件</div>
+      <div class="sidebar-title">{{ $t('user.sidebarTitle') }}</div>
       <el-form size="small" label-position="top">
-        <el-form-item label="读者编号">
-          <el-input v-model="search1" placeholder="请输入读者编号" clearable />
+        <el-form-item :label="$t('user.readerId')">
+          <el-input v-model="search1" :placeholder="$t('user.readerId')" clearable />
         </el-form-item>
-        <el-form-item label="姓名">
-          <el-input v-model="search2" placeholder="请输入姓名" clearable />
+        <el-form-item :label="$t('user.name')">
+          <el-input v-model="search2" :placeholder="$t('user.name')" clearable />
         </el-form-item>
-        <el-form-item label="电话号码">
-          <el-input v-model="search3" placeholder="请输入电话号码" clearable />
+        <el-form-item :label="$t('user.phone')">
+          <el-input v-model="search3" :placeholder="$t('user.phone')" clearable />
         </el-form-item>
-        <el-form-item label="地址">
-          <el-input v-model="search4" placeholder="请输入地址" clearable />
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="load" style="width:100%">查询</el-button>
+        <el-form-item :label="$t('user.address')">
+          <el-input v-model="search4" :placeholder="$t('user.address')" clearable />
         </el-form-item>
         <el-form-item>
-          <el-button type="danger" @click="clear" style="width:100%">重置</el-button>
+          <el-button type="primary" @click="load" style="width:100%">{{ $t('user.search') }}</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="danger" @click="clear" style="width:100%">{{ $t('user.reset') }}</el-button>
         </el-form-item>
       </el-form>
     </div>
     <!-- 右侧内容区 -->
     <div class="content-area">
       <div class="content-header">
-        <el-button type="primary" @click="add" v-if="user.role == 1">新增读者</el-button>
-        <el-popconfirm title="确认删除?" @confirm="deleteBatch" v-if="user.role == 1">
+        <el-button type="primary" @click="add" v-if="user.role == 1">{{ $t('user.addReader') }}</el-button>
+        <el-popconfirm :title="$t('user.confirmDelete')" @confirm="deleteBatch" v-if="user.role == 1">
           <template #reference>
-            <el-button type="danger" size="mini">批量删除</el-button>
+            <el-button type="danger" size="mini">{{ $t('user.deleteBatch') }}</el-button>
           </template>
         </el-popconfirm>
       </div>
       <div class="table-wrap">
         <el-table :data="tableData" stripe border @selection-change="handleSelectionChange">
           <el-table-column v-if="user.role==1" type="selection" width="55" />
-          <el-table-column prop="id" label="读者编号" sortable />
-          <el-table-column prop="username" label="用户名" />
-          <el-table-column prop="nickName" label="姓名" />
-          <el-table-column prop="phone" label="电话号码" />
-          <el-table-column prop="sex" label="性别" />
-          <el-table-column prop="address" label="地址" />
-          <el-table-column label="操作" width="160">
+          <el-table-column prop="id" :label="$t('user.readerId')" sortable />
+          <el-table-column prop="username" :label="$t('user.username')" />
+          <el-table-column prop="nickName" :label="$t('user.name')" />
+          <el-table-column prop="phone" :label="$t('user.phone')" />
+          <el-table-column :label="$t('user.sex')">
+            <template v-slot="scope">{{ scope.row.sex === '男' ? $t('user.male') : scope.row.sex === '女' ? $t('user.female') : scope.row.sex }}</template>
+          </el-table-column>
+          <el-table-column prop="address" :label="$t('user.address')" />
+          <el-table-column :label="$t('user.actions')" width="160">
             <template v-slot="scope">
               <div class="action-btns">
-                <el-button type="primary" class="btn-edit" size="mini" @click="handleEdit(scope.row)">编辑</el-button>
-                <el-popconfirm title="确认删除?" @confirm="handleDelete(scope.row.id)">
+                <el-button type="primary" class="btn-edit" size="mini" @click="handleEdit(scope.row)">{{ $t('user.edit') }}</el-button>
+                <el-popconfirm :title="$t('user.confirmDelete')" @confirm="handleDelete(scope.row.id)">
                   <template #reference>
-                    <el-button type="danger" size="mini">删除</el-button>
+                    <el-button type="danger" size="mini">{{ $t('user.delete') }}</el-button>
                   </template>
                 </el-popconfirm>
               </div>
@@ -75,32 +77,32 @@
 
       <el-dialog v-model="dialogVisible" :title="form.id ? '编辑读者信息' : '新增读者'" width="30%">
         <el-form :model="form" label-width="120px">
-          <el-form-item label="用户名">
+          <el-form-item :label="$t('user.username')">
             <el-input style="width: 80%" v-model="form.username" :disabled="!!form.id"></el-input>
           </el-form-item>
-          <el-form-item label="初始密码" v-if="!form.id">
-            <el-input style="width: 80%" v-model="form.password" type="password" placeholder="请输入初始密码"></el-input>
+          <el-form-item :label="$t('user.initPassword')" v-if="!form.id">
+            <el-input style="width: 80%" v-model="form.password" type="password" :placeholder="$t('user.initPassword')"></el-input>
           </el-form-item>
-          <el-form-item label="昵称">
+          <el-form-item :label="$t('user.nickname')">
             <el-input style="width: 80%" v-model="form.nickName"></el-input>
           </el-form-item>
-          <el-form-item label="电话号码">
+          <el-form-item :label="$t('user.phone')">
             <el-input style="width: 80%" v-model="form.phone"></el-input>
           </el-form-item>
-          <el-form-item label="性别">
+          <el-form-item :label="$t('user.sex')">
             <div>
-              <el-radio v-model="form.sex" label="男">男</el-radio>
-              <el-radio v-model="form.sex" label="女">女</el-radio>
+              <el-radio v-model="form.sex" label="男">{{ $t('user.male') }}</el-radio>
+              <el-radio v-model="form.sex" label="女">{{ $t('user.female') }}</el-radio>
             </div>
           </el-form-item>
-          <el-form-item label="地址">
+          <el-form-item :label="$t('user.address')">
             <el-input type="textarea" style="width: 80%" v-model="form.address"></el-input>
           </el-form-item>
         </el-form>
         <template #footer>
       <span class="dialog-footer">
-        <el-button type="danger" @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="save">确 定</el-button>
+        <el-button type="danger" @click="dialogVisible = false">{{ $t('common.cancel') }}</el-button>
+        <el-button type="primary" @click="save">{{ $t('common.confirm') }}</el-button>
       </span>
         </template>
       </el-dialog>

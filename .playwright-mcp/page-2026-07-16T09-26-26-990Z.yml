@@ -1,0 +1,136 @@
+- generic [ref=f11e4]:
+  - generic [ref=f11e5]:
+    - generic [ref=f11e6]:
+      - generic [ref=f11e7]: Library Management System
+      - generic [ref=f11e10]:
+        - generic [ref=f11e11] [cursor=pointer]: ☀️ Light
+        - generic [ref=f11e12]: "|"
+        - generic [ref=f11e13]: 简中/EN
+        - generic [ref=f11e14]: "|"
+        - button "管理员" [ref=f11e17] [cursor=pointer]
+    - generic [ref=f11e21]:
+      - generic [ref=f11e22] [cursor=pointer]: Dashboard
+      - generic [ref=f11e25] [cursor=pointer]: Profile
+      - generic [ref=f11e28] [cursor=pointer]: Reader Management
+      - generic [ref=f11e31] [cursor=pointer]: Book Management
+      - generic [ref=f11e34] [cursor=pointer]: Lend Records
+      - generic [ref=f11e37] [cursor=pointer]: Borrow Status
+      - generic [ref=f11e41] [cursor=pointer]: Operation Log
+  - generic [ref=f11e44]:
+    - generic [ref=f11e45]:
+      - generic [ref=f11e46]: Search Filters
+      - generic [ref=f11e47]:
+        - generic [ref=f11e48]:
+          - generic [ref=f11e49]: Reader ID
+          - textbox "Reader ID" [ref=f11e52]
+        - generic [ref=f11e53]:
+          - generic [ref=f11e54]: Name
+          - textbox "Name" [ref=f11e57]
+        - generic [ref=f11e58]:
+          - generic [ref=f11e59]: Phone
+          - textbox "Phone" [ref=f11e62]
+        - generic [ref=f11e63]:
+          - generic [ref=f11e64]: Address
+          - textbox "Address" [ref=f11e67]
+        - button "Search" [ref=f11e70] [cursor=pointer]
+        - button "Reset" [ref=f11e74] [cursor=pointer]
+    - generic [ref=f11e76]:
+      - generic [ref=f11e77]:
+        - button "Add Reader" [ref=f11e78] [cursor=pointer]
+        - button "Batch Delete" [ref=f11e80] [cursor=pointer]
+      - generic [ref=f11e83]:
+        - table [ref=f11e85]:
+          - rowgroup [ref=f11e95]:
+            - row "Reader ID Username Name Phone Gender Address Actions" [ref=f11e96]:
+              - columnheader [ref=f11e97]:
+                - generic [ref=f11e100] [cursor=pointer]:
+                  - checkbox
+              - columnheader [ref=f11e102] [cursor=pointer]
+              - columnheader "Username" [ref=f11e107]
+              - columnheader "Name" [ref=f11e109]
+              - columnheader "Phone" [ref=f11e111]
+              - columnheader "Gender" [ref=f11e113]
+              - columnheader "Address" [ref=f11e115]
+              - columnheader "Actions" [ref=f11e117]
+        - table [ref=f11e120]:
+          - rowgroup [ref=f11e130]:
+            - row "18 reader 读者 13900000000 Female 学校 Edit Delete" [ref=f11e131]:
+              - cell [ref=f11e132]:
+                - generic [ref=f11e135] [cursor=pointer]:
+                  - checkbox
+              - cell "18" [ref=f11e137]
+              - cell "reader" [ref=f11e139]
+              - cell "读者" [ref=f11e141]
+              - cell "13900000000" [ref=f11e143]
+              - cell "Female" [ref=f11e145]
+              - cell "学校" [ref=f11e147]
+              - cell [ref=f11e149]:
+                - generic [ref=f11e151]:
+                  - button "Edit" [ref=f11e152] [cursor=pointer]
+                  - button "Delete" [ref=f11e154] [cursor=pointer]
+            - row "24 reader2 读者B Edit Delete" [ref=f11e156]:
+              - cell [ref=f11e157]:
+                - generic [ref=f11e160] [cursor=pointer]:
+                  - checkbox
+              - cell "24" [ref=f11e162]
+              - cell "reader2" [ref=f11e164]
+              - cell "读者B" [ref=f11e166]
+              - cell [ref=f11e168]
+              - cell [ref=f11e169]
+              - cell [ref=f11e170]
+              - cell [ref=f11e171]:
+                - generic [ref=f11e173]:
+                  - button "Edit" [ref=f11e174] [cursor=pointer]
+                  - button "Delete" [ref=f11e176] [cursor=pointer]
+            - row "26 testreader-1784123240 临时读者-1784123240 13800000000 Male Edit Delete" [ref=f11e178]:
+              - cell [ref=f11e179]:
+                - generic [ref=f11e182] [cursor=pointer]:
+                  - checkbox
+              - cell "26" [ref=f11e184]
+              - cell "testreader-1784123240" [ref=f11e186]
+              - cell "临时读者-1784123240" [ref=f11e188]
+              - cell "13800000000" [ref=f11e190]
+              - cell "Male" [ref=f11e192]
+              - cell [ref=f11e194]
+              - cell [ref=f11e195]:
+                - generic [ref=f11e197]:
+                  - button "Edit" [ref=f11e198] [cursor=pointer]
+                  - button "Delete" [ref=f11e200] [cursor=pointer]
+            - row "27 testreader-1784123261 临时读者-1784123261 13800000000 Male Edit Delete" [ref=f11e202]:
+              - cell [ref=f11e203]:
+                - generic [ref=f11e206] [cursor=pointer]:
+                  - checkbox
+              - cell "27" [ref=f11e208]
+              - cell "testreader-1784123261" [ref=f11e210]
+              - cell "临时读者-1784123261" [ref=f11e212]
+              - cell "13800000000" [ref=f11e214]
+              - cell "Male" [ref=f11e216]
+              - cell [ref=f11e218]
+              - cell [ref=f11e219]:
+                - generic [ref=f11e221]:
+                  - button "Edit" [ref=f11e222] [cursor=pointer]
+                  - button "Delete" [ref=f11e224] [cursor=pointer]
+            - row "28 testreader-1784123276 临时读者-1784123276 13800000000 Male Edit Delete" [ref=f11e226]:
+              - cell [ref=f11e227]:
+                - generic [ref=f11e230] [cursor=pointer]:
+                  - checkbox
+              - cell "28" [ref=f11e232]
+              - cell "testreader-1784123276" [ref=f11e234]
+              - cell "临时读者-1784123276" [ref=f11e236]
+              - cell "13800000000" [ref=f11e238]
+              - cell "Male" [ref=f11e240]
+              - cell [ref=f11e242]
+              - cell [ref=f11e243]:
+                - generic [ref=f11e245]:
+                  - button "Edit" [ref=f11e246] [cursor=pointer]
+                  - button "Delete" [ref=f11e248] [cursor=pointer]
+      - generic "pagination" [ref=f11e251]:
+        - generic [ref=f11e252]: Total 5
+        - textbox "Select" [ref=f11e257] [cursor=pointer]: 10/page
+        - button [disabled] [ref=f11e262]
+        - list [ref=f11e266]:
+          - listitem [ref=f11e267]: "1"
+        - button [disabled] [ref=f11e268]
+        - generic [ref=f11e272]:
+          - text: Go to
+          - spinbutton [ref=f11e274]: "1"

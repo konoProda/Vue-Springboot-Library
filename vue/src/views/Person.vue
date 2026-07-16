@@ -1,33 +1,34 @@
 <template>
   <div>
     <el-card style="width: 40%; margin-left: 120px; margin-top: 40px" >
-        <h2 style="padding: 30px">个人信息</h2>
+        <h2 style="padding: 30px">{{ $t('person.title') }}</h2>
       <el-form :model="form" ref="form" label-width="80px">
-        <el-form-item label="用户名">
+        <el-form-item :label="$t('person.username')">
           <el-input style="width: 80%" v-model="form.username" disabled></el-input>
         </el-form-item>
-        <el-form-item label="姓名">
+        <el-form-item :label="$t('person.name')">
           <el-input style="width: 80%" v-model="form.nickName"></el-input>
         </el-form-item>
-        <el-form-item label="权限">
-            <span v-if="form.role==1" style="margin:5px">管理员</span>
-            <span v-if="form.role==2" style="margin:5px">读者</span>
+        <el-form-item :label="$t('person.role')">
+            <span v-if="form.role==1" style="margin:5px">{{ $t('person.admin') }}</span>
+            <span v-if="form.role==2" style="margin:5px">{{ $t('person.reader') }}</span>
         </el-form-item>
-        <el-form-item label="电话号码">
+        <el-form-item :label="$t('person.phone')">
           <el-input style="width: 80%" v-model="form.phone"></el-input>
         </el-form-item>
-        <el-form-item label="性别">
+        <el-form-item :label="$t('person.sex')">
           <div>
-            <el-radio v-model="form.sex" label="男">男</el-radio>
-            <el-radio v-model="form.sex" label="女">女</el-radio>
+            <el-radio v-model="form.sex" label="男">{{ $t('person.male') }}</el-radio>
+            <el-radio v-model="form.sex" label="女">{{ $t('person.female') }}</el-radio>
           </div>
         </el-form-item>
-        <el-form-item label="地址">
+        <el-form-item :label="$t('person.address')">
           <el-input type="textarea" style="width: 80%" v-model="form.address"></el-input>
         </el-form-item>
       </el-form>
       <div style="text-align: center">
-        <el-button type="primary" @click="update">保存</el-button>
+        <el-button type="primary" @click="update">{{ $t('person.save') }}</el-button>
+        <el-button type="warning" @click="$router.push('/password')" style="margin-left:12px">{{ $t('person.changePassword') }}</el-button>
       </div>
     </el-card>
   </div>

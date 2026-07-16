@@ -4,37 +4,37 @@
       <el-icon :size="18"><Menu /></el-icon>
     </div>
     <div class="search-sidebar" :class="{ collapsed: !sidebarOpen }">
-      <div class="sidebar-title">搜索条件</div>
+      <div class="sidebar-title">{{ $t('lendRecord.sidebarTitle') }}</div>
       <el-form size="small" label-position="top">
-        <el-form-item label="图书编号">
-          <el-input v-model="search1" placeholder="请输入图书编号" clearable />
+        <el-form-item :label="$t('lendRecord.isbn')">
+          <el-input v-model="search1" :placeholder="$t('lendRecord.isbn')" clearable />
         </el-form-item>
-        <el-form-item label="图书名称">
-          <el-input v-model="search2" placeholder="请输入图书名称" clearable />
+        <el-form-item :label="$t('lendRecord.bookName')">
+          <el-input v-model="search2" :placeholder="$t('lendRecord.bookName')" clearable />
         </el-form-item>
-        <el-form-item label="读者编号">
-          <el-input v-model="search3" placeholder="请输入读者编号" clearable />
+        <el-form-item :label="$t('lendRecord.readerId')">
+          <el-input v-model="search3" :placeholder="$t('lendRecord.readerId')" clearable />
         </el-form-item>
-        <el-form-item label="借阅状态">
-          <el-select v-model="overdueFilter" clearable placeholder="全部" @change="load">
-            <el-option label="逾期未还" value="1" />
-            <el-option label="已归还" value="2" />
-            <el-option label="未归还" value="3" />
+        <el-form-item :label="$t('lendRecord.statusFilter')">
+          <el-select v-model="overdueFilter" clearable :placeholder="$t('common.all')" @change="load">
+            <el-option :label="$t('common.overdueUnreturned')" value="1" />
+            <el-option :label="$t('common.returnedOption')" value="2" />
+            <el-option :label="$t('common.unreturnedOption')" value="3" />
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="load" style="width:100%">查询</el-button>
+          <el-button type="primary" @click="load" style="width:100%">{{ $t('lendRecord.search') }}</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button type="danger" @click="clear" style="width:100%">重置</el-button>
+          <el-button type="danger" @click="clear" style="width:100%">{{ $t('lendRecord.reset') }}</el-button>
         </el-form-item>
       </el-form>
     </div>
     <div class="content-area">
       <div class="content-header">
-        <el-popconfirm title="确认删除?" @confirm="deleteBatch" v-if="user.role == 1">
+        <el-popconfirm :title="$t('lendRecord.confirmDelete')" @confirm="deleteBatch" v-if="user.role == 1">
           <template #reference>
-            <el-button type="danger" size="mini">批量删除</el-button>
+            <el-button type="danger" size="mini">{{ $t('lendRecord.deleteBatch') }}</el-button>
           </template>
         </el-popconfirm>
       </div>
@@ -46,23 +46,23 @@
                        type="selection"
                        width="55">
       </el-table-column>
-      <el-table-column prop="isbn" label="图书编号" sortable />
-      <el-table-column prop="bookname" label="图书名称" />
-      <el-table-column prop="readerId" label="读者编号" sortable/>
-      <el-table-column prop="lendTime" label="借阅时间" sortable/>
-      <el-table-column prop="returnTime" label="归还时间" sortable/>
-      <el-table-column prop="status" label="状态" >
+      <el-table-column prop="isbn" :label="$t('lendRecord.isbn')" sortable />
+      <el-table-column prop="bookname" :label="$t('lendRecord.bookName')" />
+      <el-table-column prop="readerId" :label="$t('lendRecord.readerId')" sortable/>
+      <el-table-column prop="lendTime" :label="$t('lendRecord.lendTime')" sortable/>
+      <el-table-column prop="returnTime" :label="$t('lendRecord.returnTime')" sortable/>
+      <el-table-column prop="status" :label="$t('lendRecord.status')" >
         <template v-slot="scope">
-          <el-tag v-if="scope.row.status == 0" type="warning">未归还</el-tag>
-          <el-tag v-else type="success">已归还</el-tag>
+          <el-tag v-if="scope.row.status == 0" type="warning">{{ $t('lendRecord.unreturned') }}</el-tag>
+          <el-tag v-else type="success">{{ $t('lendRecord.returned') }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column v-if="user.role === 1" label="操作" width="160">
+      <el-table-column v-if="user.role === 1" :label="$t('lendRecord.actions')" width="160">
         <template v-slot="scope">
           <div class="action-btns">
-            <el-button type="primary" class="btn-edit" size="mini" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-popconfirm title="确认删除?" @confirm="handleDelete(scope.row)">
-              <template #reference><el-button type="danger" size="mini">删除</el-button></template>
+            <el-button type="primary" class="btn-edit" size="mini" @click="handleEdit(scope.row)">{{ $t('lendRecord.edit') }}</el-button>
+            <el-popconfirm :title="$t('lendRecord.confirmDelete')" @confirm="handleDelete(scope.row)">
+              <template #reference><el-button type="danger" size="mini">{{ $t('lendRecord.delete') }}</el-button></template>
             </el-popconfirm>
           </div>
         </template>

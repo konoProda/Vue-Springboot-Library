@@ -4,73 +4,73 @@
       <el-icon :size="18"><Menu /></el-icon>
     </div>
     <div class="search-sidebar" :class="{ collapsed: !sidebarOpen }">
-      <div class="sidebar-title">操作日志筛选</div>
+      <div class="sidebar-title">{{ $t('log.sidebarTitle') }}</div>
       <el-form size="small" label-position="top">
-        <el-form-item label="操作类型">
-          <el-select v-model="searchType" placeholder="全部" clearable>
-            <el-option label="全部" value="" />
-            <el-option label="借书" value="BORROW" />
-            <el-option label="还书" value="RETURN" />
-            <el-option label="续借" value="RENEW" />
-            <el-option label="新增图书" value="ADD_BOOK" />
-            <el-option label="修改图书" value="EDIT_BOOK" />
-            <el-option label="删除图书" value="DELETE_BOOK" />
-            <el-option label="新增用户" value="ADD_USER" />
-            <el-option label="修改用户" value="EDIT_USER" />
-            <el-option label="删除用户" value="DELETE_USER" />
-            <el-option label="修改借阅记录" value="EDIT_LEND_RECORD" />
-            <el-option label="删除借阅记录" value="DELETE_LEND_RECORD" />
-            <el-option label="修改借阅状态" value="EDIT_BOOKWITHUSER" />
+        <el-form-item :label="$t('log.opType')">
+          <el-select v-model="searchType" :placeholder="$t('common.all')" clearable>
+            <el-option :label="$t('common.all')" value="" />
+            <el-option :label="$t('log.types.BORROW')" value="BORROW" />
+            <el-option :label="$t('log.types.RETURN')" value="RETURN" />
+            <el-option :label="$t('log.types.RENEW')" value="RENEW" />
+            <el-option :label="$t('log.types.ADD_BOOK')" value="ADD_BOOK" />
+            <el-option :label="$t('log.types.EDIT_BOOK')" value="EDIT_BOOK" />
+            <el-option :label="$t('log.types.DELETE_BOOK')" value="DELETE_BOOK" />
+            <el-option :label="$t('log.types.ADD_USER')" value="ADD_USER" />
+            <el-option :label="$t('log.types.EDIT_USER')" value="EDIT_USER" />
+            <el-option :label="$t('log.types.DELETE_USER')" value="DELETE_USER" />
+            <el-option :label="$t('log.types.EDIT_LEND_RECORD')" value="EDIT_LEND_RECORD" />
+            <el-option :label="$t('log.types.DELETE_LEND_RECORD')" value="DELETE_LEND_RECORD" />
+            <el-option :label="$t('log.types.EDIT_BOOKWITHUSER')" value="EDIT_BOOKWITHUSER" />
           </el-select>
         </el-form-item>
-        <el-form-item label="操作人">
-          <el-input v-model="searchUser" placeholder="请输入用户名" clearable />
+        <el-form-item :label="$t('log.operator')">
+          <el-input v-model="searchUser" :placeholder="$t('log.operator')" clearable />
         </el-form-item>
-        <el-form-item label="开始时间">
-          <el-date-picker v-model="startTime" type="datetime" placeholder="开始时间"
+        <el-form-item :label="$t('log.startTime')">
+          <el-date-picker v-model="startTime" type="datetime" :placeholder="$t('log.startTime')"
             value-format="YYYY-MM-DD HH:mm:ss" />
         </el-form-item>
-        <el-form-item label="结束时间">
-          <el-date-picker v-model="endTime" type="datetime" placeholder="结束时间"
+        <el-form-item :label="$t('log.endTime')">
+          <el-date-picker v-model="endTime" type="datetime" :placeholder="$t('log.endTime')"
             value-format="YYYY-MM-DD HH:mm:ss" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="load" style="width:100%">查询</el-button>
+          <el-button type="primary" @click="load" style="width:100%"> {{ $t('log.search') }} </el-button>
         </el-form-item>
         <el-form-item>
-          <el-button type="danger" @click="clear" style="width:100%">重置</el-button>
+          <el-button type="danger" @click="clear" style="width:100%"> {{ $t('log.reset') }} </el-button>
         </el-form-item>
       </el-form>
     </div>
     <div class="content-area">
       <div class="table-wrap">
         <el-table :data="tableData" stripe border>
-      <el-table-column type="index" label="序号" width="60" />
-      <el-table-column label="操作人" width="180">
+      <el-table-column type="index" :label="$t('log.idx')" width="60" />
+      <el-table-column :label="$t('log.operator')" width="180">
         <template v-slot="scope">
           {{ scope.row.username }} (ID:{{ scope.row.userId }})
         </template>
       </el-table-column>
-      <el-table-column prop="userRole" label="权限" width="80">
+      <el-table-column prop="userRole" :label="$t('log.role')" width="80">
         <template v-slot="scope">
           <el-tag :type="scope.row.userRole == 1 ? 'danger' : 'info'" size="small">
-            {{ scope.row.userRole == 1 ? '管理员' : '非管理员' }}
+            {{ scope.row.userRole == 1 ? $t('log.admin') : $t('log.nonAdmin') }}
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="operationType" label="操作类型" width="110">
+      <el-table-column prop="operationType" :label="$t('log.opType')" width="110">
         <template v-slot="scope">
           <el-tag :type="typeColor(scope.row.operationType)" size="small">
             {{ typeLabel(scope.row.operationType) }}
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="detail" label="操作详情" min-width="300">
+      <el-table-column prop="detail" :label="$t('log.detail')" min-width="300">
         <template v-slot="scope">
           {{ formatDetail(scope.row.detail) }}
         </template>
       </el-table-column>
-      <el-table-column prop="createTime" label="操作时间" width="180" sortable />
+      <el-table-column prop="createTime" :label="$t('log.opTime')" width="180" sortable />
     </el-table>
 
       </div>
@@ -105,20 +105,7 @@ export default {
       pageSize: 10,
       total: 0,
       tableData: [],
-      typeMap: {
-        BORROW: '借书',
-        RETURN: '还书',
-        RENEW: '续借',
-        ADD_BOOK: '新增图书',
-        EDIT_BOOK: '修改图书',
-        DELETE_BOOK: '删除图书',
-        ADD_USER: '新增用户',
-        EDIT_USER: '修改用户',
-        DELETE_USER: '删除用户',
-        EDIT_LEND_RECORD: '修改借阅记录',
-        DELETE_LEND_RECORD: '删除借阅记录',
-        EDIT_BOOKWITHUSER: '修改借阅状态'
-      }
+      typeMap: {}
     }
   },
   created() {
@@ -149,7 +136,7 @@ export default {
       this.load()
     },
     typeLabel(type) {
-      return this.typeMap[type] || type
+      return this.$t('log.types.' + type) || type
     },
     typeColor(type) {
       const colors = {

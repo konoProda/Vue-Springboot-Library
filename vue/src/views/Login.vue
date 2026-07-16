@@ -4,7 +4,7 @@
   <div class="login-topbar">
     <div class="topbar-left">
       <img :src="logoUrl" class="topbar-logo" />
-      <span>图书馆管理系统</span>
+      <span>{{ $t('header.systemName') }}</span>
     </div>
     <div class="topbar-right">
       <span :class="{ active: $i18n.locale === 'zh' }" @click="switchLang('zh')">简中</span>
@@ -93,17 +93,17 @@ export default {
       this.$refs['form'].validate((valid) => {
         if (valid) {
           if (!this.form.validCode) {
-            ElMessage.error("请填写验证码")
+            ElMessage.error(this.$t('login.fillCaptcha'))
             return
           }
           if(this.form.validCode.toLowerCase() !== this.validCode.toLowerCase()) {
-            ElMessage.error("验证码错误")
+            ElMessage.error(this.$t('login.wrongCaptcha'))
             return
           }
 
           request.post("user/login", this.form).then(res => {
             if (res.code == 0) {
-              ElMessage.success("登录成功")
+              ElMessage.success(this.$t('login.loginSuccess'))
               sessionStorage.setItem("user",JSON.stringify(res.data))
               this.$router.push("/dashboard")
             } else {

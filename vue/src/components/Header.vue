@@ -4,12 +4,12 @@
   <div class="header-row1">
     <div class="header-left">
       <img :src="imgUrl" class="header-logo" />
-      <span class="header-title">图书馆管理系统</span>
+      <span class="header-title">{{ $t('header.systemName') }}</span>
     </div>
     <div class="header-right">
       <!-- 深色模式 -->
       <span class="header-widget" @click="toggleDark" style="cursor:pointer; user-select:none;">
-        {{ isDark ? '🌙' : '☀️' }} {{ isDark ? '深色' : '浅色' }}
+        {{ isDark ? '🌙' : '☀️' }} {{ isDark ? $t('header.dark') : $t('header.light') }}
       </span>
       <span class="header-divider">|</span>
       <!-- 语言切换 -->
@@ -26,7 +26,7 @@
         </span>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item @click="exit">退出系统</el-dropdown-item>
+            <el-dropdown-item @click="exit">{{ $t('header.logout') }}</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -37,31 +37,31 @@
   <div class="header-row2">
     <div class="nav-item" :class="{ active: isActive('/dashboard') }" @click="$router.push('/dashboard')">
       <svg class="nav-icon"><use xlink:href="#icondashboard" /></svg>
-      展示板
+      {{ $t('nav.dashboard') }}
     </div>
     <div class="nav-item" :class="{ active: isActive('/person') }" @click="$router.push('/person')">
       <svg class="nav-icon"><use xlink:href="#icon-mingpian" /></svg>
-      个人信息
+      {{ $t('nav.profile') }}
     </div>
     <div class="nav-item" v-if="user.role == 1" :class="{ active: isActive('/user') }" @click="$router.push('/user')">
       <svg class="nav-icon"><use xlink:href="#iconreader" /></svg>
-      读者管理
+      {{ $t('nav.readerMgmt') }}
     </div>
     <div class="nav-item" :class="{ active: isActive('/book') }" @click="$router.push('/book')">
       <svg class="nav-icon"><use xlink:href="#iconbook" /></svg>
-      {{ user.role == 1 ? '书籍管理' : '图书查询' }}
+      {{ user.role == 1 ? $t('nav.bookMgmt') : $t('nav.bookSearch') }}
     </div>
     <div class="nav-item" :class="{ active: isActive('/lendrecord') }" @click="$router.push('/lendrecord')">
       <svg class="nav-icon"><use xlink:href="#iconlend-record" /></svg>
-      {{ user.role == 1 ? '借阅记录' : '借阅信息' }}
+      {{ user.role == 1 ? $t('nav.lendRecord') : $t('nav.lendInfo') }}
     </div>
     <div class="nav-item" :class="{ active: isActive('/bookwithuser') }" @click="$router.push('/bookwithuser')">
       <el-icon><grid /></el-icon>
-      借阅状态
+      {{ $t('nav.borrowStatus') }}
     </div>
     <div class="nav-item" v-if="user.role == 1" :class="{ active: isActive('/log') }" @click="$router.push('/log')">
       <svg class="nav-icon"><use xlink:href="#iconlend-record" /></svg>
-      操作日志
+      {{ $t('nav.opLog') }}
     </div>
   </div>
 </div>
