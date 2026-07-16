@@ -94,6 +94,12 @@ echo "  reader token: ${READER_TOKEN:0:20}..."
 echo ""
 echo "--- 准备测试数据 ---"
 
+# 确保 reader2 存在（用于 TC2 交叉验证）
+curl -s -X POST "${BASE_URL}/user" \
+    -H 'Content-Type: application/json' \
+    -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+    -d '{"username":"reader2","password":"123456","nickName":"验证读者B","role":2}' > /dev/null
+
 # 创建一本测试图书 (totalCopies=1)
 curl -s -X POST "${BASE_URL}/book" \
     -H 'Content-Type: application/json' \
